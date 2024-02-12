@@ -21,4 +21,4 @@
 
 
 ## Ultima modificacion
--  ![Last commit](https://img.shields.io/github/last-commit/No-Country/c16-29-n-node-react?style=flat-square) s
+-  ![Last commit](https://img.shields.io/github/last-commit/No-Country/c16-29-n-node-react?style=flat-square)
