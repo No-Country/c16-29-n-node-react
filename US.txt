@@ -1,0 +1,76 @@
+
+Historias de Usuario
+Creación de Cuentas:
+Usuario: Directivo/Secretaria
+Historia de Usuario: Como Directivo o Secretaria, quiero poder crear cuentas de Profesores para que puedan acceder al sistema y administrar la información relacionada con su labor docente.
+Usuario: Directivo/Secretaria
+Historia de Usuario: Como Directivo o Secretaria, quiero poder crear cuentas de Alumnos para que puedan acceder al sistema y gestionar su información académica.
+Usuario: Directivo/Secretaria
+Historia de Usuario: Como Directivo o Secretaria, quiero poder crear cuentas de Padres para que puedan acceder al sistema y estar informados sobre el progreso académico de sus hijos.
+Administración de Entidades:
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Profesores para administrar el personal docente registrado en la institución.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Alumnos para administrar los alumnos registrados en la institución.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Padres para administrar los padres registrados en la institución.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Grupos para administrar los grupos de alumnos.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Alumnos a las Materias para gestionar la cantidad de alumnos en cada materia.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Profesores a las Materias para asignar profesores a cada materia.
+Usuario: Directivo/Secretaria
+
+Historia de Usuario: Como Directivo o Secretaria, quiero poder agregar, quitar y editar Eventos para gestionar eventos institucionales.
+Funcionalidades del Profesor:
+Usuario: Profesor
+
+Historia de Usuario: Como Profesor, quiero poder tomar lista de asistencias, tardanzas y ausencias de los alumnos en cada materia para registrar su participación y puntualidad.
+Usuario: Profesor
+
+Historia de Usuario: Como Profesor, quiero poder asignar amonestaciones a los alumnos para registrar su comportamiento y desempeño en clase.
+Usuario: Profesor
+
+Historia de Usuario: Como Profesor, quiero poder asignar notas a los alumnos para evaluar su rendimiento académico en cada materia.
+Usuario: Profesor
+
+Historia de Usuario: Como Profesor, quiero poder asignar anotaciones u observaciones privadas a los alumnos para registrar información relevante sobre su desempeño individual.
+Usuario: Profesor
+
+Historia de Usuario: Como Profesor, quiero poder crear eventos relacionados con la materia para informar a los alumnos sobre actividades académicas importantes.
+Funcionalidades del Padre:
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder acceder a las amonestaciones de mis hijos para estar informado sobre su comportamiento en clase.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder acceder a la lista de asistencia de mis hijos para conocer su asistencia a clase.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder acceder a las notas de mis hijos para seguir su progreso académico.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder acceder a las anotaciones u observaciones públicas de mis hijos para conocer información relevante sobre su desempeño escolar.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder acceder a los eventos globales o de las materias asignadas a mis hijos para estar al tanto de las actividades académicas.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder enviar mensajes directos a los profesores asignados a mis hijos para comunicarme con ellos sobre su desempeño académico.
+Usuario: Padre
+
+Historia de Usuario: Como Padre, quiero poder confirmar la lectura de las amonestaciones recibidas de mis hijos para demostrar que estoy informado sobre su comportamiento en clase.
+Funcionalidades del Alumno:
+Usuario: Alumno
+
+Historia de Usuario: Como Alumno, quiero poder acceder a las amonestaciones asignadas a mí para conocer mi comportamiento en clase.
+Usuario: Alumno
+
+Historia de Usuario: Como Alumno, quiero poder acceder a la lista de asistencia asignada a mí para conocer mi historial de asistencia a clase.
