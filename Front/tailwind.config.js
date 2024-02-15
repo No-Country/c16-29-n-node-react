@@ -5,8 +5,16 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "purple": "#6202B6",
+        "custom-menu": "#4D5862",
+        "light-white": "rgba(255,255,255,0.17)",
+      },
+      fontFamily: {
+        'poppins': ['Poppins'],
+      }
+    },
   },
   plugins: [],
 }
-
