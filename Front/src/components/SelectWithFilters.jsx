@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import chroma from 'chroma-js'
 import makeAnimated from 'react-select/animated'
-import { colourOptions } from '../utils/data'
 import Select from 'react-select'
 
 const animatedComponents = makeAnimated()
 
 const colourStyles = {
-  control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+  control: (styles) => ({ ...styles, backgroundColor: '#EEFAFF' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
     const color = chroma(data.color);
     return {
@@ -22,8 +21,8 @@ const colourStyles = {
       color: isDisabled
         ? '#ccc'
         : isSelected
-          ? chroma.contrast(color, 'white') > 2
-            ? 'white'
+          ? chroma.contrast(color, '#EEFAFF') > 2
+            ? '#EEFAFF'
             : 'black'
           : data.color,
       cursor: isDisabled ? 'not-allowed' : 'default',
@@ -59,13 +58,41 @@ const colourStyles = {
   }),
 };
 
-export default () => (
-  <Select
-    components={animatedComponents}
-    closeMenuOnSelect={false}
-    defaultValue={[colourOptions[0], colourOptions[1]]}
-    isMulti
-    options={colourOptions}
-    styles={colourStyles}
-  />
-)
+
+
+const SelectWithFilters = ({ data }) => {
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const handleSelectionChange = (selectedOptions) => {
+    setSelectedOptions(selectedOptions)
+  };
+
+  return (
+    <Select
+      components={animatedComponents}
+      closeMenuOnSelect={false}
+      defaultValue={[data[0], data[1]]}
+      isMulti
+      options={data}
+      onChange={handleSelectionChange}
+      styles={colourStyles}
+      value={selectedOptions}
+    />
+  );
+}
+
+export default SelectWithFilters;
+
+// Ejemplo de formato del array "data"
+// [
+//   { value: 'ocean', label: 'Matematica', color: '#00B8D9', isFixed: true },
+//   { value: 'blue', label: 'Lengua', color: '#0052CC', isDisabled: false },
+//   { value: 'purple', label: 'Ciencias Sociales', color: '#5243AA' },
+//   { value: 'red', label: 'Ciencias Naturales', color: '#FF5630', isFixed: true },
+//   { value: 'orange', label: 'Musica', color: '#FF8B00' },
+//   { value: 'yellow', label: 'Educacion Fisica', color: '#FFC400' },
+//   { value: 'green', label: 'Historia', color: '#36B37E' },
+//   { value: 'forest', label: 'Geografia', color: '#00875A' },
+//   { value: 'slate', label: 'Economia', color: '#253858' },
+//   { value: 'silver', label: 'Contabilidad', color: '#666666' },
+// ]

@@ -1,4 +1,5 @@
 import SelectWithFilters from "./components/SelectWithFilters"
+import { colourOptions } from './utils/data'
 import Sidebar from "./components/Sidebar"
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
     <>
       {/* <Sidebar /> */}
       <div className="w-72">
-      <SelectWithFilters />
+      <SelectWithFilters data={colourOptions} />
       </div>
       
     </>
