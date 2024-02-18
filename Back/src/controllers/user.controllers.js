@@ -1,11 +1,21 @@
 import { User } from "../models/UserModel";
 import { hash, compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
+/* const { generateToken } = require("../helpers/jwt.helper");
+const {
+    getUsers,
+    getUserById,
+    insertUser,
+    updateUser,
+    deleteUser,
+    getUserByEmail,
+  } = require("../services/user.service"); */
 
 const {TOKEN_KEY} = process.env;
 let newUser = {};
 let users = [];
 
+/* mover a capa de servicio como  (register = insertUser) */
 const register = async (req, res) => {
     try{
         if(!req.body){
@@ -34,8 +44,8 @@ const register = async (req, res) => {
     }
 
     return res.status(201).json(newUser);
-}
-
+} 
+/* mover a capa de servicio */
 const login = async (req, res) => {
     try{
         const {email, password} = req.body;
@@ -57,6 +67,6 @@ const login = async (req, res) => {
     }catch(err){
         console.log("Ha ocurrido un error", error);
     }
-}
+}/*  mover a capa de servicio */
 
 export default {register, login}
