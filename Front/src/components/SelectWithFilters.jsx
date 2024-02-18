@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setSelectedOptions } from '../actions/actions';
 import chroma from 'chroma-js'
 import makeAnimated from 'react-select/animated'
 import Select from 'react-select'
@@ -61,12 +63,12 @@ const colourStyles = {
 
 
 const SelectWithFilters = ({ data }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const selectedOptions = useSelector(state => state.selectedOptions);
+  const dispatch = useDispatch();
 
   const handleSelectionChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions)
+    dispatch(setSelectedOptions(selectedOptions));
   };
-
   return (
     <Select
       components={animatedComponents}
