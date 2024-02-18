@@ -1,16 +1,19 @@
-const initialState = {
-    
-};
+import { SET_SELECTED_OPTIONS } from '../actions/actions'
 
-function rootReducer(state = initialState, { type, payload }) {
-    switch (type) {
-        case 1:
-            return {
-                
-            }
-        default:
-            return state;
-    }
+const initialState = {
+  selectedOptions: [],
 }
 
-export default rootReducer;
+const rootReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case SET_SELECTED_OPTIONS:
+      return {
+        ...state,
+        selectedOptions: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export default rootReducer
