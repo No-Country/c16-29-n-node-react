@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSelectedOptions } from '../actions/actions';
+import { setSelectedOptions } from '../actions/actions'
 import chroma from 'chroma-js'
 import makeAnimated from 'react-select/animated'
 import Select from 'react-select'
@@ -58,17 +58,19 @@ const colourStyles = {
       color: 'white',
     },
   }),
-};
+}
 
 
 
 const SelectWithFilters = ({ data }) => {
-  const selectedOptions = useSelector(state => state.selectedOptions);
-  const dispatch = useDispatch();
+
+  const selectedOptionsFromRedux  = useSelector(state => state.selectedOptions)
+  const dispatch = useDispatch()
 
   const handleSelectionChange = (selectedOptions) => {
-    dispatch(setSelectedOptions(selectedOptions));
-  };
+    dispatch(setSelectedOptions(selectedOptions))
+  }
+
   return (
     <Select
       components={animatedComponents}
@@ -78,14 +80,14 @@ const SelectWithFilters = ({ data }) => {
       options={data}
       onChange={handleSelectionChange}
       styles={colourStyles}
-      value={selectedOptions}
+      value={selectedOptionsFromRedux}
     />
-  );
+  )
 }
 
-export default SelectWithFilters;
+export default SelectWithFilters
 
-// Ejemplo de formato del array "data"
+// Ejemplo de formato del array "data", lo que se deberia pasar por props:
 // [
 //   { value: 'ocean', label: 'Matematica', color: '#00B8D9', isFixed: true },
 //   { value: 'blue', label: 'Lengua', color: '#0052CC', isDisabled: false },

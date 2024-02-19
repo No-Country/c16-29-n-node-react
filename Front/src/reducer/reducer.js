@@ -1,4 +1,4 @@
-import { SET_SELECTED_OPTIONS } from '../actions/actions'
+import { SET_SELECTED_OPTIONS, CLEAR_SELECTED_OPTIONS } from '../actions/actions'
 
 const initialState = {
   selectedOptions: [],
@@ -11,8 +11,13 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         selectedOptions: action.payload,
       }
+    case CLEAR_SELECTED_OPTIONS:
+      return {
+        ...state,
+        selectedOptions: [],
+      }
     default:
-      return state;
+      return state
   }
 }
 
