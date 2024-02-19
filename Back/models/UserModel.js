@@ -4,11 +4,15 @@ import db from "../database/db.js";
 import { DataTypes } from "sequelize";
 
 
-export const UserModel = db.define('registered_voters', {
-    id_number: { type: DataTypes.INTEGER },
-    nombre: { type: DataTypes.STRING },
-    first_last_name: { type: DataTypes.STRING},
-    second_last_name: { type: DataTypes.STRING},
-},{
-    timestamps: false
+export const UserModel = db.define('Users', {
+    id: { type: DataTypes.INTEGER, primaryKey: true },
+    username: { type: DataTypes.STRING },    
+    password: { type: DataTypes.STRING },
+    first_name: { type: DataTypes.STRING },
+    last_name: { type: DataTypes.STRING},
+    role: { type: DataTypes.ENUM('PRINCIPAL', 'TEACHER', 'TUTOR', 'STUDENT'), defaultValue:'STUDENT', allowNull: false}, 
+    email: { type: DataTypes.STRING},
+    phone: { type: DataTypes.STRING},
+    created_at: { type: DataTypes.timestamps},
+    updated_at: { type: DataTypes.timestamps},
 })

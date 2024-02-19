@@ -1,34 +1,34 @@
-import persModel from "../models/PersModel.js";
+import attendancesModel from "../models/AttendancesModel.js";
 
 //Metodos CRUD
 
 //Mostrar todos los registros
-export const getAllPers = async (req, res) => {
+export const getAllAttendances = async (req, res) => {
     try {
-        const pers = await persModel.findAll()
-        res.json(pers) 
+        const attendances = await attendancesModel.findAll()
+        res.json(attendances) 
     } catch (error) {
         res.json({message: error.message})
     }
 }
 
 //Mostrar un registro
-export const getPers = async (req, res) => {
+export const getAttendances = async (req, res) => {
     try {
-        const pers = await persModel.findAll({
-            where:{id_number:req.params.id}
+        const attendances = await attendancesModel.findAll({
+            where:{id:req.params.id}
         })
-        res.json(pers)
+        res.json(attendances)
     } catch (error) {
         res.json({message: error.message})
     }
 }
 
 //Crear un registro
-export const createPers = async(req, res) => {
+export const createAttendances = async(req, res) => {
     console.log(req.body)
     try {
-        await persModel.create(req.body)
+        await attendancesModel.create(req.body)
         res.json({
             "message":"Registro creado correctamente"
         })
@@ -38,10 +38,10 @@ export const createPers = async(req, res) => {
 }
 
 //Actualizar
-export const updatePers = async(req, res) => {
+export const updateAttendances = async(req, res) => {
     try {
-        persModel.update(req.body, {
-            where: {id_number: req.params.id}
+        attendancesModel.update(req.body, {
+            where: {id: req.params.id}
         })
     } catch (error) {
         res.json({
@@ -52,10 +52,10 @@ export const updatePers = async(req, res) => {
 
 
 //Eliminar
-export const deletePers = async(req, res) => {
+export const deleteAttendances = async(req, res) => {
     console.log(req.params.id)
     try {
-        persModel.destroy({
+        attendancesModel.destroy({
             where: {id_number: req.params.id}
         })
     } catch (error) {

@@ -1,8 +1,11 @@
-import { User } from "../models/UserModel";
-import { hash, compare } from "bcryptjs";
+import { User } from "../models/Users";
+import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv/config');
+}
 
-const {TOKEN_KEY} = process.env;
+const {KEY} = process.env;
 let newUser = {};
 let users = [];
 
@@ -48,7 +51,7 @@ const login = async (req, res) => {
 
         console.log(user, users);
         if(user && (await compare(password, user.password))){
-            const token = sign({email}, TOKEN_KEY, {expiresIn: "2h"})
+            const token = sign({email}, KEY, {expiresIn: "2h"})
             user.token = token;
             res.status(200).json(user);
         }else{
