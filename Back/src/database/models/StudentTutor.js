@@ -17,6 +17,11 @@
        timestamps: false
     };
     const StudentTutor = sequelize.define(alias,cols, config);
-    
+
+    StudentTutor.associate = (models) =>{
+        StudentTutor.belongsTo(models.Users, { foreignKey:"student_id"});
+        StudentTutor.belongsTo(models.Users, { as: 'supervisor', foreignKey: 'tutor_id'});
+    }
+ }    
     return StudentTutor;
 };

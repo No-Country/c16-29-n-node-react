@@ -18,6 +18,10 @@ module.exports = (sequelize, dataTypes) =>{
     };
     const StudentSubject = sequelize.define(alias,cols, config);
     
+    StudentSubject.associate = (models) =>{
+        StudentSubject.belongsTo(models.Subjects, {foreignKey:"subjectId"});
+        StudentSubject.belongsTo(models.Users, {as:"student", foreignKey:"student_id"});
+    }
     return StudentSubject;
 };
 
