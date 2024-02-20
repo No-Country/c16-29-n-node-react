@@ -13,4 +13,6 @@ module.exports = (sequelize, dataTypes) =>{
     timestamps: false
  } 
 const Marks = sequelize.define(alias,cors, config);
+
+return Marks;
 }
