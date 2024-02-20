@@ -1,3 +1,4 @@
+
 import { useRoutes, BrowserRouter } from "react-router-dom";
 import { Login } from "./components/Login";
 import { Directivo } from "./pages/Directivo"; 
@@ -23,6 +24,8 @@ function App() {
       <AppRoutes />
     </BrowserRouter>
   );
+
+
 }
 
 export default App;
