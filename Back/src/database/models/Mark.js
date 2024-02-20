@@ -1,18 +1,34 @@
-const { config } = require("dotenv");
+/* CREATE TABLE `Marks` (
+    `id` int(11) NOT NULL,
+    `score` int(11) NOT NULL,
+    `note` varchar(255) DEFAULT NULL,
+    `subject_id` int(11) NOT NULL,
+    `student_id` int(11) NOT NULL,
+    `teacher_id` int(11) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+   */
 
 
 module.exports = (sequelize, dataTypes) =>{
 
-    alias = "Marks";
-    cors = {
-        id: { type: dataTypes.INTEGER, primaryKey: true 
-    }
+    let alias = "Mark";
+    let  cols = {
+        id: { type: dataTypes.INTEGERI(11), primaryKey: true },
+        score: { type: dataTypes.INTEGER(11), allowNull: false },
+        note: { type: dataTypes.STRING(250), allowNull: false},
+        subject_id: {type: dataTypes.INTEGER(11), allowNull: false},
+        student_id: {type: dataTypes.INTEGER(11), allowNull: false},
+        teacher_id: {type: dataTypes.INTEGER(11), allowNull: false},
+        created_at: {type: dataTypes.DATE, allowNull: false},
+        updated_at: {type: dataTypes.DATE, allowNull: false},
 };
  const config = {
     dataTable : "Marks",
-    timestamps: false
+    timestamps: true
  } 
-const Marks = sequelize.define(alias,cors, config);
+const Marks = sequelize.define(alias,cols, config);
 
 return Marks;
 }
