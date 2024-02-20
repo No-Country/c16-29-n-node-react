@@ -1,0 +1,142 @@
+[
+    {
+        "id": 1,
+        "Nombre Completo": "Nikolaos Caspell",
+        "Materia Asociada": "Czech Republic",
+        "Estado": false,
+        "Acciones": "NBL"
+    },
+    {
+        "id": 2,
+        "Nombre Completo": "Warren Roselli",
+        "Materia Asociada": "Portugal",
+        "Estado": true,
+        "Acciones": "BNX"
+    },
+    {
+        "id": 3,
+        "Nombre Completo": "Cloe Inman",
+        "Materia Asociada": "Georgia",
+        "Estado": false,
+        "Acciones": "RBY"
+    },
+    {
+        "id": 4,
+        "Nombre Completo": "En este caso, he añadido la clase overflow-y-auto para habilitar el scroll vertical en caso de que el contenido sea más grande que la altura de la celda. Además, he agregado la clase max-h-[100px] para establecer una altura máxima para las celdas y evitar que crezcan indefinidamente. Puedes ajustar el valor de max-h-[100px] según tus necesidades",
+        "Materia Asociada": "Poland",
+        "Estado": false,
+        "Acciones": "YGJ"
+    },
+    {
+        "id": 5,
+        "Nombre Completo": "Nara Fulle",
+        "Materia Asociada": "Honduras",
+        "Estado": true,
+        "Acciones": "DEI"
+    },
+    {
+        "id": 6,
+        "Nombre Completo": "Delmar Jouhandeau",
+        "Materia Asociada": "Philippines",
+        "Estado": false,
+        "Acciones": "WSM"
+    },
+    {
+        "id": 7,
+        "Nombre Completo": "Helaine Braisted",
+        "Materia Asociada": "Russia",
+        "Estado": false,
+        "Acciones": "NPE"
+    },
+    {
+        "id": 8,
+        "Nombre Completo": "En este caso, he añadido la clase overflow-y-auto para habilitar el scroll vertical en caso de que el contenido sea más grande que la altura de la celda. Además, he agregado la clase max-h-[100px] para establecer una altura máxima para las celdas y evitar que crezcan indefinidamente. Puedes ajustar el valor de max-h-[100px] según tus necesidades",
+        "Materia Asociada": "Peru",
+        "Estado": true,
+        "Acciones": "LBF"
+    },
+    {
+        "id": 9,
+        "Nombre Completo": "estar dsa.",
+        "Materia Asociada": "China",
+        "Estado": true,
+        "Acciones": "BNC"
+    },
+    {
+        "id": 10,
+        "Nombre Completo": "Anders Duffill",
+        "Materia Asociada": "Niger",
+        "Estado": true,
+        "Acciones": "PCF"
+    },
+    {
+        "id": 11,
+        "Nombre Completo": "Cammi Messingham",
+        "Materia Asociada": "Portugal",
+        "Estado": false,
+        "Acciones": "APC"
+    },
+    {
+        "id": 12,
+        "Nombre Completo": "En este caso, he añadido la clase overflow-y-auto para habilitar el scroll vertical en caso de que el contenido sea más grande que la altura de la celda. Además, he agregado la clase max-h-[100px] para establecer una altura máxima para las celdas y evitar que crezcan indefinidamente. Puedes ajustar el valor de max-h-[100px] según tus necesidades",
+        "Materia Asociada": "Brazil",
+        "Estado": false,
+        "Acciones": "JHL"
+    },
+    {
+        "id": 13,
+        "Nombre Completo": "Alexis Curry",
+        "Materia Asociada": "Colombia",
+        "Estado": false,
+        "Acciones": "ZFW"
+    },
+    {
+        "id": 14,
+        "Nombre Completo": "Alaster Fitzsimons",
+        "Materia Asociada": "Brazil",
+        "Estado": true,
+        "Acciones": "YMN"
+    },
+    {
+        "id": 15,
+        "Nombre Completo": "Barret Duthy",
+        "Materia Asociada": "Zambia",
+        "Estado": true,
+        "Acciones": "GAP"
+    },
+    {
+        "id": 16,
+        "Nombre Completo": "Barret Duthy",
+        "Materia Asociada": "Zambia",
+        "Estado": true,
+        "Acciones": "GAP"
+    },
+    {
+        "id": 17,
+        "Nombre Completo": "Barret Duthy",
+        "Materia Asociada": "Zambia",
+        "Estado": true,
+        "Acciones": "GAP"
+    },
+    {
+        "id": 18,
+        "Nombre Completo": "Barret Duthy",
+        "Materia Asociada": "Zambia",
+        "Estado": true,
+        "Acciones": "GAP"
+    },
+    {
+        "id": 19,
+        "Nombre Completo": "Cammi Messingham",
+        "Materia Asociada": "Portugal",
+        "Estado": false,
+        "Acciones": "APC"
+    },
+    {
+        "id": 20,
+        "Nombre Completo": "Cammi Messingham",
+        "Materia Asociada": "Portugal",
+        "Estado": false,
+        "Acciones": "APC"
+    }
+]
