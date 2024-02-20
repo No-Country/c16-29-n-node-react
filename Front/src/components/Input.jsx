@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import validateInput from '../utils/validateInput';
 export const Input = ({ type, name, value, onChange, placeholder, validateInputConfig, ...rest }) =>{
       const [error, setError] = useState('');
   
@@ -23,9 +24,10 @@ export const Input = ({ type, name, value, onChange, placeholder, validateInputC
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder={placeholder}
+        validations={validateInputConfig}
         {...rest}
         />       
-         {error && <p className="text-red-500 text-xs italic">{error}</p>}
+         {error && <p className="text-red-500 text-xs">{error}</p>}
         </>
     )
 }

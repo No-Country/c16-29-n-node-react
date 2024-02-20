@@ -1,9 +1,12 @@
 import { isAlphabetic, isAlphaNumeric, isValidEmail,isValidPassword, isValidPhone, minLength } from '../utils/validation';
 
-export const validateInput = (validations, value) => {
+export const validateInput = (validations= {}, value) => {
     let errorMessage = '';
     if (validations.required && !value) {
       errorMessage = 'Este campo es obligatorio.';
+    }
+    else if (!validations.required && !value) {
+     return errorMessage;
     } else if (validations.isAlphabetic && !isAlphabetic(value)) {
       errorMessage = 'Solo se permiten caracteres alfabéticos.';
     } else if (validations.isAlphaNumeric && !isAlphaNumeric(value)) {
