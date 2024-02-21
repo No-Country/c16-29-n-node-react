@@ -24,7 +24,6 @@ const dispatch = useDispatch();
 const [formData, setFormData]=useState(formInitialState)
 const [fieldErrors, setFieldErrors] = useState({});
 const [formAlert, setFormAlert] = useState({ message: '', type: '' });
-
 const handleChange = useCallback((e) =>{
     const { name, value } = e.target;
     setFormData(prevFormData =>({ ...prevFormData, [name]: value }));
@@ -70,11 +69,11 @@ const handleSubmit = useCallback((e) =>{
 
          onSubmit(updatedFormData); 
         setFormAlert({ message: 'Se ha creado correctamente.', type: 'success' });
-
-        console.log(updatedFormData);
         setFormData(formInitialState);
         handleCloseForm();
       }
+    
+      
 },[fields,formData, onSubmit,formInitialState, handleCloseForm, selectedOptions])
 return (
     

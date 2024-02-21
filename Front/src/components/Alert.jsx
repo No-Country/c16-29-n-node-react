@@ -15,3 +15,5 @@ export const Alert = ({message, type, onDismiss}) =>{
       </div>
     )
 }
+
+export default Alert
