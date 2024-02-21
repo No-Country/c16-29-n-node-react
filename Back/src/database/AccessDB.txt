@@ -1,0 +1,20 @@
+Access DB MySql
+
+phpMyAdmin
+user:
+onlyback
+pass:
+N0t3d1g0
+
+url
+https://phpmyadmin.alwaysdata.com/
+
+Remote Access
+mysql
+host: 185.31.41.41
+
+Server: sql10.freemysqlhosting.net
+Name: sql10684703
+Username: sql10684703
+Password: bQveMu2qvd
+Port number: 3306

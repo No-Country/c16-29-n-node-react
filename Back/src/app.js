@@ -4,7 +4,7 @@ import cors from 'cors'
 
 //import db from './database/db.js'
 
-import persRouter from './routes/PersRoutes.js'
+import persRouter from '../routes/PersRoutes.js'
 
 
 const app = express()
