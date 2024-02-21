@@ -19,8 +19,8 @@
     const StudentTutor = sequelize.define(alias,cols, config);
 
     StudentTutor.associate = (models) =>{
-        StudentTutor.belongsTo(models.Users, { foreignKey:"student_id"});
-        StudentTutor.belongsTo(models.Users, { as: 'supervisor', foreignKey: 'tutor_id'});
+        StudentTutor.belongsTo(models.User, { foreignKey:"student_id"});
+        StudentTutor.belongsTo(models.User, { as: 'padre', foreignKey: 'tutor_id'});
     }
     return StudentTutor;
  };  

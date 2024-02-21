@@ -5,7 +5,7 @@
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
   module.exports = ( sequelize , dataTypes) =>{
-    let alias = "TeacherSubjects";
+    let alias = "TeacherSubject";
     let cols = {
         id: { type: dataTypes.INTEGER(11), allowNull: false},
         subject_id : { type: dataTypes.INTEGER(11), allowNull: false},
@@ -19,8 +19,8 @@
         const TeacherSubject =  sequelize.define(alias,cols,config);
 
         TeacherSubject.associate = (models) =>{
-            TeacherSubject.belongsTo( models.Subjects , { foreignKey:'subject_id'});
-            TeacherSubject.belongsTo( models.Users , {foreignKey:"teacher_id"})
+            TeacherSubject.belongsTo( models.Subject , { foreignKey:'subject_id'});
+            TeacherSubject.belongsTo( models.User , {foreignKey:"teacher_id"})
           }
           return TeacherSubject;
   };

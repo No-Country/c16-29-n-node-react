@@ -28,12 +28,12 @@ module.exports = (sequelize, dataTypes) =>{
     tableName : "Marks",
     timestamps: true
  } 
-const Marks = sequelize.define(alias,cols, config);
+const Mark = sequelize.define(alias,cols, config);
 
-Marks.associate = (models) =>{
-    Marks.belongsTo(models.Subject, {foreignKey:'subject_id', as:'subject'});
-    Marks.belongsTo(models.Student, { foreignKey: 'student_id', as: 'student' });
-    Marks.belongsTo(models.Teacher, { foreignKey: 'teacher_id', as: 'teacher' });
+Mark.associate = (models) =>{
+    Mark.belongsTo(models.Subject, {foreignKey:'subject_id', as:'subject'});
+    Mark.belongsTo(models.User, { foreignKey: 'user_id', as: 'student' });
+    Mark.belongsTo(models.User, { foreignKey: 'user_id', as: 'teacher' });
 }
 
 return Marks;

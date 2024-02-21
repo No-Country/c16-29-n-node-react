@@ -8,9 +8,9 @@ module.exports = (sequelize, dataTypes) =>{
 
     let alias = "StudentSubject";
     let cols = {
-        id:  dataTypes.INTEGER, primaryKey: true, primaryKey: true,
-        subjectId:  dataTypes.INTEGER,
-        studentId: dataTypes.STRING
+        id: {type: dataTypes.INTEGER, primaryKey: true, primaryKey: true, },
+        subject_id: {type: dataTypes.INTEGER(11), allowNull: false },
+        student_id: {type:  dataTypes.INTEGER(11), allowNull: false},
     };
     const config = {
        dataTable : "StudentSubjects",
@@ -19,8 +19,8 @@ module.exports = (sequelize, dataTypes) =>{
     const StudentSubject = sequelize.define(alias,cols, config);
     
     StudentSubject.associate = (models) =>{
-        StudentSubject.belongsTo(models.Subjects, {foreignKey:"subjectId"});
-        StudentSubject.belongsTo(models.Users, {as:"student", foreignKey:"student_id"});
+        StudentSubject.belongsTo(models.Subject, {foreignKey:"subject_id"});
+        StudentSubject.belongsTo(models.User, {as:"student", foreignKey:"student_id"});
     }
     return StudentSubject;
 };
