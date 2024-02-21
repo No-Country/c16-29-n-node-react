@@ -1,4 +1,5 @@
 export const colourOptions = [
+
   { value: 'ocean', label: 'Matematica', color: '#00B8D9', isFixed: true },
   { value: 'blue', label: 'Lengua', color: '#0052CC', isDisabled: false },
   { value: 'purple', label: 'Ciencias Sociales', color: '#5243AA' },
@@ -32,3 +33,4 @@ export const defaultArgs = {
   options: colourOptions,
   placeholder: 'Select...',
 }
+
