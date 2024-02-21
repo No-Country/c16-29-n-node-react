@@ -10,7 +10,7 @@ export const Alert = ({message, type, onDismiss}) =>{
         return () => clearTimeout(timer);
     }, [message, type, onDismiss]);
      return(
-        <div role="alert" className={` border px-4 py-3 rounded relative ${alertStyles[type]}`}>
+        <div role="alert" className={` border px-4 py-3 relative ${alertStyles[type]}`}>
         <span className="block sm:inline">{message}</span>
       </div>
     )

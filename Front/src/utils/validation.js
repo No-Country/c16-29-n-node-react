@@ -1,5 +1,5 @@
 
-export const isAlphabetic = value => /^[A-Za-z]+$/.test(value);
+export const isAlphabetic = value => /^[A-Za-z]+(?: [A-Za-z]+)*$/.test(value);
 
 export const isAlphaNumeric = value => /^[0-9A-Za-z]+$/.test(value);
 

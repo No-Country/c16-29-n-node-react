@@ -1,26 +1,29 @@
-import React, {useState, useCallback } from "react";
+import React, {useState, useCallback} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Label from "./Label";
 import Input from "./Input";
-import { Alert } from "./Alert";
+import  Alert  from "./Alert";
 import validateInput from "../utils/validateInput";
+import SelectWithFilters from "./SelectWithFilters";
+import { setSelectedOptions, clearSelectedOptions } from '../actions/actions';
 export const OffCanvas = ({
     title,
     actionType,
     onSubmit,
     fields,
-    selectedOption,
     handleCloseForm,
 
 }) =>{
+
 const formInitialState = fields.reduce((acc,field)=>({
     ...acc,
     [field.name]:field.defaultValue || ''}),{});
 
-const buttonText = actionType.includes('crear') ? 'Crear' : 'Editar';
-
+const buttonText = actionType.includes('crear') ? 'Crear' : 'Actualizar';
+const dispatch = useDispatch();
 const [formData, setFormData]=useState(formInitialState)
 const [fieldErrors, setFieldErrors] = useState({});
-const [formAlert, setFormAlert] = useState('');
+const [formAlert, setFormAlert] = useState({ message: '', type: '' });
 
 const handleChange = useCallback((e) =>{
     const { name, value } = e.target;
@@ -30,49 +33,60 @@ const handleChange = useCallback((e) =>{
     }
 },[setFormData, fieldErrors])
 
-const handleSelectChange = useCallback((name, selectedOption)=>{
-    const field = fields.find(f => f.name === name);
-    const isMulti = field ? field.isMulti : false;
-    const values = isMulti ? selectedOption.map(option => option.value) : selectedOption.value;
-    setFormData(prevFormData=>({ ...prevFormData, [name]: values }));
-},[setFormData, fields])
+const handleSelectChange = useCallback((fieldName, selectedOptions)=>{
+    const updatedValues = selectedOptions.map(option => option.value);
+    setFormData(prevFormData => ({
+        ...prevFormData,
+        [fieldName]: updatedValues 
+    }))
+  dispatch(setSelectedOptions(selectedOptions || []));
+}, [setFormData]);
+const selectedOptions = useSelector(state => state.selectedOptions);
 
 const handleSubmit = useCallback((e) =>{
     e.preventDefault();
     let isValid = true;
     let errors = {};
+    let dynamicSelections = {};
     fields.forEach(field => {
         const error = validateInput(field.validations, formData[field.name]);
         if (error) {
             errors[field.name] = error;
             isValid = false;
         }
+        if (field.type === 'select' && field.targetField) {
+            dynamicSelections[field.targetField] = selectedOptions.map(option => option.value);
+        }
     });
     setFieldErrors(errors); 
 
     if (!isValid) {
-        setFormAlert('Falta completar campos obligatorios.');
+        setFormAlert({ message: 'Falta completar campos obligatorios.', type: 'error' });
       } else {
-        onSubmit(formData).then(() => {
-            setFormAlert('Se ha creado correctamente.');
-            setFormData(formInitialState);
-            handleCloseForm();
-        }).catch(() => {
-            setFormAlert('Hubo un error al enviar el formulario.');
-        });
+        const updatedFormData = {
+            ...formData,
+            ...dynamicSelections,
+        };
+
+         onSubmit(updatedFormData); 
+        setFormAlert({ message: 'Se ha creado correctamente.', type: 'success' });
+
+        console.log(updatedFormData);
+        setFormData(formInitialState);
+        handleCloseForm();
       }
-},[fields,formData, onSubmit,formInitialState, handleCloseForm])
+},[fields,formData, onSubmit,formInitialState, handleCloseForm, selectedOptions])
 return (
     
     <div className={` fixed top-0 right-0 z-40 w-80 h-screen overflow-y-auto bg-white border-l transition-transform`}>
    
-    {formAlert && (
+    {formAlert.message && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
         <div className=" p-4 rounded w-auto ">
     <Alert
-        type='error'
-        message={formAlert} 
-        onDismiss={() => setFormAlert('')} 
+        type={formAlert.type} 
+        message={formAlert.message} 
+        onDismiss={() => setFormAlert({ message: '', type: '' })} 
     />
         </div>
         </div>
@@ -104,11 +118,12 @@ return (
                 {fields.filter(field => field.type === 'select').map((field) => (
                         <div key={field.name}>
                         <Label htmlFor={field.name}>{field.label}</Label>
-                        <Select
+                        <SelectWithFilters
                         name={field.name}
-                        options={field.options}
-                        value={formData[field.name]}
-                        onChange={handleSelectChange}
+                        data={field.options}
+                        value={formData[field.value]}
+                        onChange={(selectedOptions) => handleSelectChange(field.name, selectedOptions)}
+                        selectedOptions={formData[field.name]}
                         isMulti={field.isMulti}
                         styles={field.styles}
                         />
