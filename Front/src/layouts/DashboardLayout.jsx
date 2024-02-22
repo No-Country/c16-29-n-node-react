@@ -7,8 +7,8 @@ function DashboardLayout({ menues, children }) {
   return (
     <div className="w-full h-full flex">
       <Sidebar menues={menues} />
-      <div className="grow bg-light-white p-4">
-        <h1 className="capitalize font-bold text-2xl">{decodeURI(pathname.split("/").at(-1))}</h1>
+      <div className="grow bg-light-white p-4 pb-0 h-screen flex flex-col">
+        <h1 className="capitalize font-bold text-[#123259] text-2xl">{decodeURI(pathname.split(/(\/)/).slice(4).join(" "))}</h1>
         {children}
       </div>
     </div>
