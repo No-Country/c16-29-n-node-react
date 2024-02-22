@@ -43,8 +43,7 @@ module.exports = {
         try {
             const MARK_STUDENT = req.params.id;
             const { id, score, subject_id , teacher_id } = await getMarkByStudent(MARK_STUDENT);
-            const RESPONSE =
-             { id, score, subject_id, teacher_id };
+            const RESPONSE = { id, score, subject_id, teacher_id };
              return res.status(200).json(RESPONSE);
         } catch (error) {
             return res.status(500).json({Error: error})
@@ -72,5 +71,5 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({Error: error})
         }
-    }
-}
+    },
+};

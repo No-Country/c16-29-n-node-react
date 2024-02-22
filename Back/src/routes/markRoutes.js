@@ -3,7 +3,7 @@ const { verifyToken } = require("../middlewares/auth");
 const { getMarkById, getMarks, createMark, updateMark , getMarkByStudent } = require("../controllers/mark.controller");
 
 router
-      .get("/", verifyToken  ,getMarks )
+      .get("/", verifyToken  , getMarks )
       .get("/:id", verifyToken , getMarkById )
       .get("/current", verifyToken , getMarkByStudent )
       .post("/exams",  verifyToken ,createMark )

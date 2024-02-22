@@ -28,7 +28,7 @@ const getMarkById = async (id) => {
 
 const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
   try {
-    return await User.findOne({//busca un mark por id de estudiante
+    return await Mark.findOne({//busca un mark por id de estudiante
       where: {
         student_id,
       },
@@ -39,31 +39,31 @@ const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR
   }
 };
 
-const insertMark = async (TeacherData) => {//agrega una mark // create
+const insertMark = async (markData) => {//agrega una mark // create
   try {
-    return await Mark.create(TeacherData);
+    return await Mark.create(markData);
   } catch (error) {
     console.error("Error while insert Mark:", error);
     throw new Error("Error insert Mark");
   }
 };
- const updateMark = async (studentData) => {
+ const updateMark = async (scoreData) => {
   try {
-    return await User.update(studentData, { where: { id: studentData.id } });
+    return await Mark.update(scoreData, { where: { id: student_id } });
   } catch (error) {
     console.error("Error while update mark:", error);
     throw new Error("Error update mark");
   }
-}; */
+}; 
 
-const deleteMark = async (studentId) => { /* PUT /api/marks/:id [TEACHER] */
+ const deleteMark = async (studentId) => { /* PUT /api/marks/:id [TEACHER] */
   try {
     return await Mark.destroy({ where: { id: studentId.id } });
   } catch (error) {
     console.error("Error while delete mark:", error);
     throw new Error("Error delete mark");
   }
-};
+}; 
 
 module.exports = {
   getMarks,
