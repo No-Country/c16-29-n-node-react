@@ -45,6 +45,10 @@ export const SimpleTable = ({ columns, data, actions }) => {
     state: {
       sorting: sorting,
       globalFilter: filtering,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 25
+      }
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
@@ -150,7 +154,7 @@ export const SimpleTable = ({ columns, data, actions }) => {
             ? (
               <tr>
                 <td
-                  className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
+                  className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 bg-[#FFFFFD] whitespace-normal overflow-y-auto"
                   colSpan={table.getVisibleFlatColumns().length}
                 >
                   Sin datos
