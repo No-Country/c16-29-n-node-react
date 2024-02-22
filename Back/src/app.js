@@ -4,7 +4,9 @@ import cors from 'cors'
 
 //import db from './database/db.js'
 
-import persRouter from '../routes/PersRoutes.js'
+import persRouter from './routes/PersRoutes.js'
+
+const  [ markRouter, ] = require("./routes");
 
 
 const app = express()
@@ -13,7 +15,7 @@ app.use(cors())
 app.use(express.json())
 app.use('/pers', persRouter)
 app.use('/login', persRouter)
-
+app.use(`/api/marks`, markRouter);
 /*try {
     await db.authenticate()
     console.log('Conexion exitosa a la DB')

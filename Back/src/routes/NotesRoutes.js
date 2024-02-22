@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { verifyToken } from '../src/middlewares/auth.js';
-import { createNotes, deleteNotes, getAllNotes, getNotes, updateNotes } from "../src/controllers/NotesController.js";
+import { verifyToken } from '../middlewares/auth.js';
+import { createNotes, deleteNotes, getAllNotes, getNotes, updateNotes } from "../controllers/NotesController.js";
 
 const notesRouter = Router()
 
