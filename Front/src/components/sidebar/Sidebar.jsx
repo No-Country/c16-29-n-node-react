@@ -20,7 +20,7 @@ function Sidebar({ menues }) {
           <ul className={`pt-6 pb-6 flex flex-col ${open && 'w-full'} overflow-x-hidden`}>
             {menues.map((menu, index) => (
               <li key={index} onClick={() => navigate(`./${menu.text.toLocaleLowerCase()}`)} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md'}>
-                <img src={`/assets/${menu.title}.png`} />
+                  <img src={`/assets/${menu.title}.png`} />
                 <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80`}>{menu.text}</span>
               </li>
             ))}
