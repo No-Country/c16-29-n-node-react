@@ -37,7 +37,7 @@ export const Login = () => {
     <div className="w-full h-full pt-16 flex justify-center items-center">
       <div className="flex flex-col justify-center items-center w-[498px] h-[590px] p-12 bg-neutral-100 rounded-lg border-4 border-neutral-700 gap-12">
         <div className="w-[402px] h-18 mt-0 ml-12 mr-12">
-          <h1 className="text-5xl text-center font-poppins font-normal text-[#1368CE]">
+          <h1 className="text-5xl text-center font-normal text-[#1368CE]">
             AppRendimiento
           </h1>
         </div>
@@ -56,7 +56,7 @@ export const Login = () => {
           />
           <a
             href="#"
-            className="font-poppins text-blue-500 mt-32 ml-56 absolute"
+            className="text-blue-500 mt-32 ml-56 absolute"
           >
             ¿Olvidaste tu contraseña?
           </a>
@@ -68,7 +68,7 @@ export const Login = () => {
           />
         </div>
         <div className="flex justify-end w-[410px] h-12 pb-4 items-end">
-          <button className="w-[186px] h-10 px-4  bg-[#9312FF] font-poppins font-light text-white rounded-sm focus:outline-none hover:bg-violet-700"
+          <button className="w-[186px] h-10 px-4  bg-[#9312FF] font-light text-white rounded-sm focus:outline-none hover:bg-violet-700"
            onClick={roleAssignment}>
             INICIAR SESIÓN |--
           </button>

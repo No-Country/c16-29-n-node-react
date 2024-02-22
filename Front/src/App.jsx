@@ -5,15 +5,16 @@ import { Directivo } from "./pages/Directivo";
 import { Profesor } from "./pages/Profesor";
 import { Tutor } from "./pages/Tutor";
 import { Alumno } from "./pages/Alumno";
-
+import DashboardLayout from "./layouts/DashboardLayout";
+import { PrincipalMenues, TeacherMenues, TutorMenues, StudentMenues } from "./components/sidebar/menues";
 
 const AppRoutes = () => {
   let routes = useRoutes([
     { path: "/", element: <Login/> },
-    { path: "/directivo", element: <Directivo /> },
-    { path: "/profesor", element: <Profesor/> },
-    { path: "/tutor", element: <Tutor /> },
-    { path: "/alumno", element: <Alumno /> },    
+    { path: "/directivo/*", element: <DashboardLayout menues={PrincipalMenues}><Directivo /></DashboardLayout> },
+    { path: "/profesor/*", element: <DashboardLayout menues={TeacherMenues}><Profesor/></DashboardLayout> },
+    { path: "/tutor/*", element: <DashboardLayout menues={TutorMenues}><Tutor /></DashboardLayout> },
+    { path: "/alumno/*", element: <DashboardLayout menues={StudentMenues}><Alumno /></DashboardLayout> },    
   ]);
   return routes;
 };
