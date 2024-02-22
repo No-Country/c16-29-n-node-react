@@ -2,7 +2,7 @@ export const PaginatedButtons = ({ table }) => {
 
       {/* <div className="w-[439px] h-[28X] flex items-center justify-between" style={{marginTop: 'auto', marginBottom: '12px'}}>
         <button onClick={() => table.previousPage()}
-        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm font-poppins focus:text-[#1368CE] active:text-[#1368CE]"
+        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm focus:text-[#1368CE] active:text-[#1368CE]"
         >
           <svg
             width="13"
@@ -22,7 +22,7 @@ export const PaginatedButtons = ({ table }) => {
         </button>
         <span>0</span>
         <button onClick={() => table.nextPage()}
-        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm font-poppins focus:text-[#1368CE] active:text-[#1368CE]"
+        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm focus:text-[#1368CE] active:text-[#1368CE]"
         >
           Siguiente
           <svg
@@ -48,7 +48,7 @@ export const PaginatedButtons = ({ table }) => {
     >
       <button
         onClick={() => table.previousPage()}
-        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm font-poppins focus:text-[#1368CE] active:text-[#1368CE]"
+        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm focus:text-[#1368CE] active:text-[#1368CE]"
       >
         <svg
           width="13"
@@ -69,7 +69,7 @@ export const PaginatedButtons = ({ table }) => {
       <span>0</span>
       <button
         onClick={() => table.nextPage()}
-        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm font-poppins focus:text-[#1368CE] active:text-[#1368CE]"
+        className="w-[97px] flex gap-x-6 justify-between content-center text-[#A9A9A9] font-bold text-sm focus:text-[#1368CE] active:text-[#1368CE]"
       >
         Siguiente
         <svg

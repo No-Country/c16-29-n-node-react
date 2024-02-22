@@ -74,7 +74,7 @@ export const SimpleTable = () => {
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
-                    className="px-3 py-1 text-[#123259] text-xs font-bold font-poppins leading-4 not-italic text-left cursor-pointer"
+                    className="px-3 py-1 text-[#123259] text-xs font-bold leading-4 not-italic text-left cursor-pointer"
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -134,7 +134,7 @@ export const SimpleTable = () => {
 
                 {/* aca van los <th> para los botones del rol Profesor*/}
 
-                {/* <th className="px-3 py-1 text-[#123259] text-xs font-bold font-poppins leading-4 not-italic text-left cursor-pointer">
+                {/* <th className="px-3 py-1 text-[#123259] text-xs font-bold leading-4 not-italic text-left cursor-pointer">
                   Acciones
                 </th>
                 <div
@@ -179,7 +179,7 @@ export const SimpleTable = () => {
             {table.getRowModel().rows.length === 0 && (
               <tr>
                 <td
-                  className="px-3 py-1 text-[#4D5862] text-[16px] font-poppins not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
+                  className="px-3 py-1 text-[#4D5862] text-[16px] not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
                   colSpan={table.visibleColumns.length}
                 >
                   Sin datos
@@ -194,7 +194,7 @@ export const SimpleTable = () => {
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-3 py-1 w-[418px] text-[#4D5862] text-[16px] font-poppins not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
+                    className="px-3 py-1 w-[418px] text-[#4D5862] text-[16px] not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
                      >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>

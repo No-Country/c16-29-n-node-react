@@ -1,7 +1,15 @@
+import { useRoutes } from "react-router-dom";
+
 export const Directivo = () => {
-  return (
-    <div className="w-full h-full flex justify-center items-center">
-      <h1 className="bg-slate-500">Directivo</h1>
-    </div>
-  );
+
+  const routes = useRoutes([
+    {path: "dashboard", element: <div>dashboard</div>},
+    {path: "profesores", element: <div>profesores</div>},
+    {path: "alumnos", element: <div>alumnos</div>},
+    {path: "tutor", element: <div>tutor</div>},
+    {path: "materia", element: <div>materia</div>},
+    {path: "configuración", element: <div>configuración</div>}
+  ])
+
+  return routes;
 };
