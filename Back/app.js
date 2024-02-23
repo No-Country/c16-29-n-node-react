@@ -4,7 +4,7 @@ import  cors  from "cors";
 
 import db from './database/db.js'
 
-import attendancesRouter from './routes/AttendancesRoutes.js'
+import nonAttendancesRouter from './routes/NonAttendancesRoutes.js'
 import bannsRouter from './routes/BannsRoutes.js'
 import notesRouter from './routes/NotesRoutes.js'
 import LoginRouter  from "./routes/LoginRoutes.js"
@@ -13,10 +13,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/attendances", attendancesRouter);
-app.use("/banns", bannsRouter);
-app.use("/notes", notesRouter);
-app.use("/login", LoginRouter);
+app.use("/api/nonattendances", nonAttendancesRouter);
+app.use("/api/banns", bannsRouter);
+app.use("/api/notes", notesRouter);
+app.use("/api/login", LoginRouter);
 
 try {
     await db.authenticate()

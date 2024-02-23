@@ -1,11 +1,11 @@
-import attendancesModel from "../models/AttendancesModel.js";
+import nonAttendancesModel from "../models/NonAttendancesModel.js";
 
 //Metodos CRUD
 
 //Mostrar todos los registros
-export const getAllAttendances = async (req, res) => {
+export const getAllNonAttendances = async (req, res) => {
     try {
-        const attendances = await attendancesModel.findAll()
+        const nonAttendances = await nonAttendancesModel.findAll()
         res.json(attendances) 
     } catch (error) {
         res.json({message: error.message})
@@ -13,7 +13,7 @@ export const getAllAttendances = async (req, res) => {
 }
 
 //Mostrar un registro
-export const getAttendances = async (req, res) => {
+export const getNonAttendances = async (req, res) => {
     try {
         const attendances = await attendancesModel.findAll({
             where:{id:req.params.id}
@@ -25,7 +25,7 @@ export const getAttendances = async (req, res) => {
 }
 
 //Crear un registro
-export const createAttendances = async(req, res) => {
+export const createNonAttendances = async(req, res) => {
     console.log(req.body)
     try {
         await attendancesModel.create(req.body)
@@ -38,7 +38,7 @@ export const createAttendances = async(req, res) => {
 }
 
 //Actualizar
-export const updateAttendances = async(req, res) => {
+export const updateNonAttendances = async(req, res) => {
     try {
         attendancesModel.update(req.body, {
             where: {id: req.params.id}
@@ -52,10 +52,10 @@ export const updateAttendances = async(req, res) => {
 
 
 //Eliminar
-export const deleteAttendances = async(req, res) => {
+export const deleteNonAttendances = async(req, res) => {
     console.log(req.params.id)
     try {
-        attendancesModel.destroy({
+        nonAttendancesModel.destroy({
             where: {id_number: req.params.id}
         })
     } catch (error) {

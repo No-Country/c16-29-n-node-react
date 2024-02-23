@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken"
 
-import {TOKEN_KEY} from "../d_config.js"
-
-//const jwt = require("jsonwebtoken");
+import {TOKEN_KEY} from "../d_config.js";
 
 
 export const verifyToken = (req, res, next) => {

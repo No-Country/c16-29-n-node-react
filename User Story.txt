@@ -1,0 +1,35 @@
+Historias de Usuario:
+
+-Como Alumno, quiero poder acceder a:
+ - las amonestaciones asignadas a mí para conocer mi comportamiento en clase.
+ - la lista de asistencia asignada a mí para conocer mi historial de asistencia a clase.
+ - las notas de mis materias.
+ - las anotaciones u observaciones públicas que el profesor me envia. 
+
+- Como Padre, quiero poder acceder a:
+ - las amonestaciones de mis hijos para estar informado sobre su comportamiento en clase.
+ - la lista de asistencia de mis hijos para conocer su asistencia a clase.
+ - las notas de mis hijos para seguir su progreso académico.
+ - las anotaciones u observaciones públicas de mis hijos para conocer información relevante sobre su desempeño escolar.
+ - los eventos globales o de las materias asignadas a mis hijos para estar al tanto de las actividades académicas.
+ - envio de mensajes directos a los profesores asignados a mis hijos para comunicarme con ellos sobre su desempeño académico.
+ - la opcion para confirmar la lectura de las amonestaciones recibidas de mis hijos para demostrar que estoy informado sobre su comportamiento en clase.
+
+- Como Profesor, quiero poder:
+ - tomar lista de asistencias, tardías y ausencias de los alumnos en cada materia para registrar su puntualidad.
+ - asignar amonestaciones a los alumnos para registrar su comportamiento y desempeño en clase.
+ - asignar notas a los alumnos para evaluar su rendimiento académico en cada materia.
+ - asignar anotaciones u observaciones privadas a los alumnos para registrar información relevante sobre su desempeño y su participación individual.
+ - crear eventos relacionados con la materia para informar a los alumnos sobre actividades académicas importantes.
+
+- Como Director o Secretaría, quiero poder:
+ - crear cuentas de Profesores para que puedan acceder al sistema y administrar la información relacionada con su labor docente.
+ - crear cuentas de Alumnos para que puedan acceder al sistema y gestionar su información académica.
+ - crear cuentas de Padres para que puedan acceder al sistema y estar informados sobre el progreso académico de sus hijos.
+ - agregar, quitar y editar Profesores para administrar el personal docente registrado en la institución.
+ - agregar, quitar y editar Alumnos para administrar los alumnos registrados en la institución.
+ - agregar, quitar y editar Padres para administrar los padres registrados en la institución.
+ - agregar, quitar y editar Grupos para administrar los grupos de alumnos.
+ - agregar, quitar y editar Alumnos a las Materias para gestionar la cantidad de alumnos en cada materia.
+ - agregar, quitar y editar Profesores a las Materias para asignar profesores a cada materia.
+ - agregar, quitar y editar Eventos para gestionar eventos institucionales.
