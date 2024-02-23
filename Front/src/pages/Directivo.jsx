@@ -1,5 +1,6 @@
 import { useRoutes } from "react-router-dom";
 import PrincipalSubjectsView from "./principal/subjects";
+import { DirectivoTutor } from "./principal/subjects/directivoTutor";
 import PrincipalStudentsView from "./principal/students";
 
 export const Directivo = () => {
