@@ -2,11 +2,15 @@ import {APP_PORT} from "../d_config.js"
 import express from "express"
 import cors from 'cors'
 
+require("dotenv").config();
+
 //import db from './database/db.js'
+
+
 
 import persRouter from './routes/PersRoutes.js'
 
-const  [ markRouter, ] = require("./routes");
+const  [ markRouter, subjectsRouter ] = require("./routes");
 
 
 const app = express()
@@ -23,6 +27,11 @@ app.use(`/api/subjects`, subjectsRouter);
 } catch (error) {
     console.log('Error de conexion a la DB =', error)
 }*/
+// Manejo de errores
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+});
 
 app.listen(APP_PORT, ()=>{
     console.log(`Server UP run in https://localhost:${APP_PORT}/`)
