@@ -3,8 +3,8 @@ import { SimpleTable } from "../../../components/SimpleTabla"
 
 export const DirectivoTutor = () => {
   
-    
     const [data, setData] = useState([]);
+
     
     const columns = useMemo(() => {        
         
@@ -43,7 +43,7 @@ export const DirectivoTutor = () => {
       }, [])
 
     return(
-        <div className="grow flex flex-col overflow-auto">
+      <div className="grow flex flex-col overflow-auto">
         <SimpleTable columns={columns} data={data} />
       </div>
     )
