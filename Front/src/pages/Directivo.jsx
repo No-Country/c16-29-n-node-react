@@ -8,7 +8,7 @@ export const Directivo = () => {
     { path: "dashboard", element: <div>dashboard</div> },
     { path: "profesores", element: <div>profesores</div> },
     { path: "alumnos/*", element: <PrincipalStudentsView />  },
-    { path: "tutor", element: <div>tutor</div> },
+    { path: "tutor", element: <DirectivoTutor /> },
     { path: "materia/*", element: <PrincipalSubjectsView /> },
     { path: "configuración", element: <div>configuración</div> },
   ]);

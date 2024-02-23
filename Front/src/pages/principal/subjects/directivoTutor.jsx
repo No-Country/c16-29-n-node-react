@@ -1,13 +1,10 @@
 import { useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla"
-import MOCK from "./mock";
-
-
 
 export const DirectivoTutor = () => {
   
-    
-    const [data, setData] = useState(MOCK);
+    const [data, setData] = useState([]);
+
     
     const columns = useMemo(() => {        
         
@@ -46,7 +43,7 @@ export const DirectivoTutor = () => {
       }, [])
 
     return(
-        <div className="grow overflow-auto">
+      <div className="grow flex flex-col overflow-auto">
         <SimpleTable columns={columns} data={data} />
       </div>
     )
