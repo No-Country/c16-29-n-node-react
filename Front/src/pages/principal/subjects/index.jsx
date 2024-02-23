@@ -3,6 +3,11 @@ import { SimpleTable } from "../../../components/SimpleTabla";
 import MOCK from "./mock";
 import { useRoutes, Link } from "react-router-dom";
 import SubjectView from "./see-subject/index";
+import OffCanvas from "../../../components/OffCanvas";
+import Button from "../../../components/ui/button";
+import Offcanvas from "../../../components/ui/offcanvas";
+import Modal from "../../../components/ui/modal";
+import useDisclosure from "../../../hooks/useDisclosure";
 
 const PrincipalSubjectsView = () => {
   const routes = useRoutes([
@@ -14,59 +19,19 @@ const PrincipalSubjectsView = () => {
 };
 
 const SubjectsView = () => {
-  const handleAction = (action) => (row) => {
-    console.log(action, row);
-  }
-
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState({
+    type: "",
+    row: {}
+  });
+  const {handleClose, handleOpen, isOpen} = useDisclosure();
   const [data, setData] = useState(MOCK);
 
-  const filterSomething = (e) => {
-    setData(data.filter((subject) => e.currentTarget.value))
+  const handleAction = (action) => (row) => {
+    setActive({
+      type: action,
+      row
+    })
   }
-
-  const filters = [
-    (table) => (
-    <div className="border-2">
-      <label htmlFor="name"></label>
-      <input type="text" />
-    </div>
-    ),
-    (table) => (
-    <div className="border-2">
-      <label htmlFor="name"></label>
-      <input type="text" />
-    </div>
-    ),
-  ]
-
-  const tabs = [
-    (table, index) => (
-      <div onClick={() => setActive(index)} className={`border-b-2 ${active === index ? "bg-slate-500" : ""}`}>
-        Materia
-      </div>
-      ),
-    (table, index) => (
-    <div onClick={() => setActive(index)} className={`border-b-2 ${active === index ? "bg-slate-500" : ""}`}>
-      Calificaciones
-    </div>
-    ),
-    (table, index) => (
-      <div onClick={() => setActive(index)} className={`border-b-2 ${active === index ? "bg-slate-500" : ""}`}>
-        Inasistencias
-      </div>
-      ),
-    (table, index) => (
-    <div onClick={() => setActive(index)} className={`border-b-2 ${active === index ? "bg-slate-500" : ""}`}>
-      Amonestaciones
-    </div>
-    ),
-    (table, index) => (
-      <div onClick={() => setActive(index)} className={`border-b-2 ${active === index ? "bg-slate-500" : ""}`}>
-        Anotacioness
-      </div>
-      ),
-  ]
 
   const columns = useMemo(() => {
     return [
@@ -114,7 +79,34 @@ const SubjectsView = () => {
 
   return (
     <div className="grow overflow-auto">
-      <SimpleTable columns={columns} data={data} filters={filters} tabs={tabs} />
+      <button onClick={handleOpen}>Hola</button>
+      <SimpleTable 
+        columns={columns} 
+        data={data}
+        actions={<Button onClick={handleAction("create")}>Crear Materia</Button>}
+      />
+      {
+        active.type === "edit" && <OffCanvas 
+          title={"Editar Materia"}
+          fields={[]}
+          actionType={""}
+          handleCloseForm={() => setActive({
+            row: "",
+            type: {}
+          })}
+        />
+      }
+      <Offcanvas
+        isOpen={false}
+        onClose={handleClose}
+        title={"Crear Materia"}
+      >
+
+      </Offcanvas>
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+      ></Modal>
     </div>
   );
 }

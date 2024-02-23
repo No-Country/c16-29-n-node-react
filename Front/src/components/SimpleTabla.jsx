@@ -11,7 +11,7 @@ import { useState } from "react";
 import { PaginatedButtons } from "./PaginatedButtons";
 import Input from "./Input";
 
-export const SimpleTable = ({ columns, data }) => {
+export const SimpleTable = ({ columns, data, actions }) => {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
 
@@ -59,14 +59,20 @@ export const SimpleTable = ({ columns, data }) => {
 
   return (
     <div className="h-full flex flex-col items-start">
-      <div className="border-solid my-4 flex gap-4">
-        <Input
-          className="border-2"
-          placeholder="Buscar"
-          type="text"
-          value={filtering}
-          onChange={(e) => setFiltering(e.target.value)}
-        />
+      <p>{data.length} Registros</p>
+      <div className="w-full my-4 flex justify-between gap-4">
+        <div>
+          <Input
+            className="border-2"
+            placeholder="Buscar"
+            type="text"
+            value={filtering}
+            onChange={(e) => setFiltering(e.target.value)}
+          />
+        </div>
+        <div>
+          {actions}
+        </div>
       </div>
       <div className="w-full  overflow-auto scrollbar grow mb-4">
         <table className="w-full border-solid rounded border-[#C6D5DB] shadow-custom border-2">
