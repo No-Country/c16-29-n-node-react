@@ -13,8 +13,11 @@ export const UsersModel = db.define('Users', {
     role: { type: DataTypes.ENUM('PRINCIPAL', 'TEACHER', 'TUTOR', 'STUDENT'), defaultValue:'STUDENT', allowNull: false}, 
     email: { type: DataTypes.STRING},
     phone: { type: DataTypes.STRING},
-   // created_at: { type: DataTypes.DATE},
-    //updated_at: { type: DataTypes.DATE},
+    grade: { type: DataTypes.STRING },
+    created_at: { type: DataTypes.DATE},
+    updated_at: { type: DataTypes.DATE},
+},{
+    timestamps: false
 })
 
 export default UsersModel

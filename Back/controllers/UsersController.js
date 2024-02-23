@@ -1,5 +1,6 @@
 import usersModel from "../models/UsersModel.js";
 import { encrypt, verified } from "../middlewares/encrypt.js";
+import { compare } from "bcrypt";
 
 //Metodos CRUD
 
@@ -13,11 +14,23 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
+//Mostrar todos los registros
+export const getAllUsersxRole = async (req, res) => {
+    try {
+        const users = await usersModel.findAll({
+            where:{role:req.body.role}
+        })
+        res.json(users) 
+    } catch (error) {
+        res.json({message: error.message})
+    }
+}
+
 //Mostrar un registro
 export const getUsers = async (req, res) => {
     try {
         const users = await usersModel.findAll({
-            where:{username:req.params.username}
+            where:{username:req.body.username}
         })
         res.json(users)
     } catch (error) {
@@ -29,10 +42,10 @@ export const getUsers = async (req, res) => {
 export const createUsers = async(req, res) => {
     
     console.log(req.body)
-    try {
+    try {        
         let pass =  req.body.password;
-        req.body.password=await encrypt(pass);
-
+        let hpass = await encrypt(pass);
+        req.body.password = hpass;
         await usersModel.create(req.body)
         res.json({
             "message":"Registro creado correctamente"
@@ -45,16 +58,24 @@ export const createUsers = async(req, res) => {
 //Actualizar
 export const updateUsers = async(req, res) => {
     try {
+        console.log(req.body)
         let pass =  req.body.password;
-        req.body.password=await encrypt(pass);
+        //console.log(pass)
+        if (pass){
+            let pass =  req.body.password;
+            let hpass = await encrypt(pass);
+            req.body.password = hpass;
+        }
 
-        usersModel.update(req.body, {
-            where: {id: req.params.id}
+        await usersModel.update(req.body, {
+            where: {username: req.body.username}
         })
-    } catch (error) {
+
         res.json({
             "message":"Registro actualizado correctamente"
         })
+    } catch (error) {
+        res.json({message: error.message})
     }
 }
 
