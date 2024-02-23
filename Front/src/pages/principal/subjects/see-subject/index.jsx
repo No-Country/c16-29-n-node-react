@@ -1,12 +1,16 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MOCK from "../mock"
 import { SimpleTable } from "../../../../components/SimpleTabla";
 import usePromise from "../../../../hooks/usePromise";
+import Button from '../../../../components/ui/button';
+import Offcanvas from '../../../../components/ui/offcanvas';
+import useDisclosure from '../../../../hooks/useDisclosure';
+import AssignStudents from "../../../../components/forms/assign-students";
 
 const SubjectView = () => {
   const { id } = useParams();
-  const [data, isLoading, isError] = usePromise(() => {
+  const [promiseResult, isLoading, isError] = usePromise(() => {
     const [subject, grade, divition] = id.split(" ");
     const parsedGrade = parseInt(grade.charAt(0))
     const foundedSubject = MOCK.find((current) => 
@@ -18,8 +22,16 @@ const SubjectView = () => {
 
     return foundedSubject.students;
   })
+  const [data, setData] = useState();
+  const { handleClose, handleOpen, isOpen } = useDisclosure();
 
-  console.log(data, isLoading, isError);
+  useEffect(() => {
+    setData(promiseResult);
+  }, [promiseResult]);
+
+  const handleDeleteStudent = (id) => {
+    setData((data) => data.filter((student) => student.id !== id));
+  }
 
   const columns = useMemo(() => {
     return [
@@ -32,7 +44,7 @@ const SubjectView = () => {
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex jutify-center gap-2">
-            <button >
+            <button onClick={() => handleDeleteStudent(original.id)}>
               <img src="/assets/trash.svg" alt="eliminar materia" />
             </button>
           </div>
@@ -49,11 +61,25 @@ const SubjectView = () => {
         isError && <p>Hubo un error buscando la materia...</p> 
       }
       {
-        !isError && !isLoading && (<SimpleTable 
-        columns={columns}
-        data={data ?? []}
-      />)
+        !isError && !isLoading && (
+          <SimpleTable 
+            columns={columns}
+            data={data ?? []}
+            actions={<Button onClick={handleOpen}>Asignar Alumnos</Button>}
+          />
+        )
       }
+      <Offcanvas
+        isOpen={isOpen}
+        onClose={handleClose}
+        title={"Asignar Alumnos"}
+      >
+        <AssignStudents
+          key={Math.random()}
+          onClose={handleClose} 
+          assigneds={data ?? []}  
+        />
+      </Offcanvas>
     </div>
   )
 }

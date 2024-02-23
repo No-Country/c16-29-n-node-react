@@ -3,11 +3,13 @@ import { SimpleTable } from "../../../components/SimpleTabla";
 import MOCK from "./mock";
 import { useRoutes, Link } from "react-router-dom";
 import SubjectView from "./see-subject/index";
-import OffCanvas from "../../../components/OffCanvas";
+import CreateSubject from "../../../components/forms/create-subject";
+import EditSubject from "../../../components/forms/edit-subject";
 import Button from "../../../components/ui/button";
 import Offcanvas from "../../../components/ui/offcanvas";
 import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
+import ConfirmDelete from "../../../components/modals/confirm-delete";
 
 const PrincipalSubjectsView = () => {
   const routes = useRoutes([
@@ -23,14 +25,43 @@ const SubjectsView = () => {
     type: "",
     row: {}
   });
-  const {handleClose, handleOpen, isOpen} = useDisclosure();
+  const offcanvas = useDisclosure();
+  const modal = useDisclosure();
   const [data, setData] = useState(MOCK);
 
-  const handleAction = (action) => (row) => {
+  const resetState = (action) => () => {
+    action();
     setActive({
-      type: action,
+      type: "",
+      row: {}
+    });
+  } 
+
+  const handleConfirmCreateItem = () => {
+    setActive({
+      type: "create"
+    });
+    offcanvas.handleOpen();
+  }
+
+  const handleEditItem = (row) => {
+    setActive({
+      type: "edit",
       row
     })
+    offcanvas.handleOpen();
+  }
+
+  const handleConfirmDeleteItem = (row) => {
+    setActive({
+      type: "delete",
+      row
+    })
+    modal.handleOpen();
+  }
+
+  const handleDeleteItem = ({ id }) => {
+    setData((subjects) => subjects.filter((subject) => subject.id !== id))
   }
 
   const columns = useMemo(() => {
@@ -38,7 +69,14 @@ const SubjectsView = () => {
       {
         Header: "Materia",
         accessorKey: "name",
-        cell: ({ row: { original } }) => <Link to={`${original.name} ${original.grade}° ${original.divition}`}>{original.name}</Link>
+        cell: ({ row: { original } }) => (
+          <Link 
+            to={`${original.name} ${original.grade}° ${original.divition}`}
+            className="underline text-[#1368CE]"
+          >
+            {original.name}
+          </Link>
+        )
       },
       {
         id: "grade",
@@ -65,10 +103,10 @@ const SubjectsView = () => {
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex jutify-center gap-2">
-            <button onClick={() => handleAction("edit")(original)}>
+            <button onClick={() => handleEditItem(original)}>
               <img src="/assets/edit.svg" alt="editar materia" />
             </button>
-            <button onClick={() => handleAction("delete")(original)}>
+            <button onClick={() => handleConfirmDeleteItem(original)}>
               <img src="/assets/trash.svg" alt="eliminar materia" />
             </button>
           </div>
@@ -77,36 +115,42 @@ const SubjectsView = () => {
     ];
   }, [])
 
+  const handleCreateItem = (submit) => {
+    console.log(submit);
+  }
+
   return (
     <div className="grow overflow-auto">
-      <button onClick={handleOpen}>Hola</button>
       <SimpleTable 
         columns={columns} 
         data={data}
-        actions={<Button onClick={handleAction("create")}>Crear Materia</Button>}
+        actions={<Button onClick={handleConfirmCreateItem}>Crear Materia</Button>}
       />
-      {
-        active.type === "edit" && <OffCanvas 
-          title={"Editar Materia"}
-          fields={[]}
-          actionType={""}
-          handleCloseForm={() => setActive({
-            row: "",
-            type: {}
-          })}
-        />
-      }
       <Offcanvas
-        isOpen={false}
-        onClose={handleClose}
+        isOpen={offcanvas.isOpen}
+        onClose={resetState(offcanvas.handleClose)}
         title={"Crear Materia"}
       >
-
+        { active.type === "create" && (
+          <CreateSubject 
+            onClose={resetState(offcanvas.handleClose)}
+            onSubmit={handleCreateItem}
+          />
+        ) }
+        { active.type === "edit" && <EditSubject /> }
       </Offcanvas>
       <Modal
-        isOpen={isOpen}
-        onClose={handleClose}
-      ></Modal>
+        isOpen={modal.isOpen}
+        onClose={modal.handleClose}
+      >
+        { active.type === "delete" && (
+          <ConfirmDelete 
+            text={`${active.row.name} ${active.row.grade}° ${active.row.divition}`}
+            onClose={resetState(modal.handleClose)}
+            onConfirm={() => handleDeleteItem(active.row)}
+          />
+        ) }
+      </Modal>
     </div>
   );
 }
