@@ -8,6 +8,7 @@ import nonAttendancesRouter from './routes/NonAttendancesRoutes.js'
 import bannsRouter from './routes/BannsRoutes.js'
 import notesRouter from './routes/NotesRoutes.js'
 import LoginRouter  from "./routes/LoginRoutes.js"
+import UsersRouter  from "./routes/UsersRoutes.js"
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api/nonattendances", nonAttendancesRouter);
 app.use("/api/banns", bannsRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/login", LoginRouter);
+app.use("/api/user", UsersRouter);
 
 try {
     await db.authenticate()
