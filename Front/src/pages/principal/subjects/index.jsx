@@ -149,7 +149,8 @@ const SubjectsView = () => {
   }, [])
 
   return (
-    <div className="grow overflow-auto">
+    <div className="grow flex flex-col overflow-auto">
+      <p>{data.length} Registros</p>
       <SimpleTable 
         columns={columns} 
         data={data}

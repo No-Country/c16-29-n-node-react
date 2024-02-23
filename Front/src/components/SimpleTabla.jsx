@@ -62,8 +62,7 @@ export const SimpleTable = ({ columns, data, actions }) => {
   // 5- la anchura de las celdas se modifican
 
   return (
-    <div className="h-full flex flex-col items-start">
-      <p>{data.length} Registros</p>
+    <div className="grow flex flex-col items-start">
       <div className="w-full my-4 flex justify-between gap-4">
         <div>
           <Input

@@ -3,6 +3,7 @@ import { SimpleTable } from "../../../components/SimpleTabla";
 import MOCK from "./mock";
 import { useRoutes, Link } from "react-router-dom";
 import StudentView from "./see-student/index";
+import Button from "../../../components/ui/button";
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
@@ -102,8 +103,9 @@ const StudentsView = () => {
   }, [])
 
   return (
-    <div className="grow overflow-auto">
-      <SimpleTable columns={columns} data={data} />
+    <div className="grow flex flex-col overflow-auto">
+      <p>{data.length} registros</p>
+      <SimpleTable columns={columns} data={data} actions={<Button>Crear Alumno</Button>} />
     </div>
   );
 }
