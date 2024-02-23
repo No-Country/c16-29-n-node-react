@@ -18,6 +18,24 @@
         timestamps: false
     };
     const Subject = sequelize.define( alias , cols, config);
-    
-   return Subject
-  };
+
+    Subject.associate = (models) =>{
+        // many-to-one association between models
+        Subject.belongsTo(models.User, { foreignKey: 'teacher_id' });
+        Subject.hasMany(models.Mark, { as:"marks"});
+        Subject.belogsToMany(models.User,
+             { as: "students",
+            through: "StudentSubject",
+            foreignKey:  "subject_id", 
+            otherKey: "student_id"});
+        
+            Subject.belogsToMany(models.User,
+                 { as: "teachers",
+                through: "TeacherSubject",
+                foreignKey:  "subject_id", 
+                otherKey: "teacher_id"});
+    };
+    return Subject;
+};
+
+
