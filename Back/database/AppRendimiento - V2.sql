@@ -12,6 +12,7 @@ CREATE TABLE `Users` (
 );
 
 CREATE TABLE `StudentsTutors` (
+  `id` integer PRIMARY KEY,
   `student_id` integer,
   `tutor_id` integer
 );
@@ -59,9 +60,9 @@ CREATE TABLE `Attendances` (
   `id` integer PRIMARY KEY,
   `type` ENUM ('NON_ATTENDANCE', 'DELAYED'),
   `date` timestamp NOT NULL,
-  `attendance_list_id` integer NOT NULL,
+  `teacher_id` integer NOT NULL,
   `student_id` integer NOT NULL,
-  `created_at` timestamp
+  `subject_id` integer NOT NULL
 );
 
 CREATE TABLE `Notes` (
@@ -96,8 +97,6 @@ ALTER TABLE `Banns` ADD FOREIGN KEY (`subject_id`) REFERENCES `Subjects` (`id`);
 ALTER TABLE `Banns` ADD FOREIGN KEY (`student_id`) REFERENCES `Users` (`id`);
 
 ALTER TABLE `Banns` ADD FOREIGN KEY (`teacher_id`) REFERENCES `Users` (`id`);
-
-ALTER TABLE `Subjects` ADD FOREIGN KEY (`id`) REFERENCES `Attendances` (`attendance_list_id`);
 
 ALTER TABLE `Users` ADD FOREIGN KEY (`id`) REFERENCES `Attendances` (`student_id`);
 

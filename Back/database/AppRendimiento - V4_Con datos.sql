@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: sql10.freemysqlhosting.net
--- Tiempo de generación: 19-02-2024 a las 23:58:56
+-- Tiempo de generación: 23-02-2024 a las 07:16:03
 -- Versión del servidor: 5.5.62-0ubuntu0.14.04.1
 -- Versión de PHP: 7.0.33-0ubuntu0.16.04.16
 
@@ -21,28 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `sql10684703`
 --
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `Attendances`
---
-
-CREATE TABLE `Attendances` (
-  `id` int(11) NOT NULL,
-  `type` enum('NON_ATTENDANCE','DELAYED') DEFAULT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `teacher_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
-  `subjects_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Volcado de datos para la tabla `Attendances`
---
-
-INSERT INTO `Attendances` (`id`, `type`, `date`, `teacher_id`, `student_id`, `subjects_id`) VALUES
-(1, 'DELAYED', '2024-02-18 10:15:00', 4, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -89,6 +67,28 @@ CREATE TABLE `Marks` (
 
 INSERT INTO `Marks` (`id`, `score`, `note`, `subject_id`, `student_id`, `teacher_id`, `created_at`, `updated_at`) VALUES
 (1, 90, 'Examen 1T', 1, 4, 2, '2024-02-18 21:00:00', '2024-02-18 21:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `NonAttendances`
+--
+
+CREATE TABLE `NonAttendances` (
+  `id` int(11) NOT NULL,
+  `type` enum('NON_ATTENDANCE','DELAYED') DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `teacher_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `subjects_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `NonAttendances`
+--
+
+INSERT INTO `NonAttendances` (`id`, `type`, `date`, `teacher_id`, `student_id`, `subjects_id`) VALUES
+(1, 'DELAYED', '2024-02-18 13:15:00', 4, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -204,29 +204,24 @@ CREATE TABLE `Users` (
   `role` enum('PRINCIPAL','TEACHER','TUTOR','STUDENT') DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
+  `grade` varchar(4) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `Users`
 --
 
-INSERT INTO `Users` (`id`, `username`, `password`, `first_name`, `last_name`, `role`, `email`, `phone`, `created_at`, `updated_at`) VALUES
-(1, 'isflores', 'comono', 'isaac', 'flores', 'PRINCIPAL', 'prueba@prueba.com', '123456789', '2024-02-19 04:20:55', '2024-02-18 23:36:37'),
-(2, 'n2', '1234', 'prof1', 'profap', 'TEACHER', 'prof1@gmail.com', '00000000', '2024-02-19 23:49:34', '2024-02-19 00:09:01'),
-(3, 'n3', '1235', 'tutor1', 'tutop', 'TUTOR', 'tuto1@gmail.com', '00000000', '2024-02-19 00:00:01', '2024-02-19 00:09:01'),
-(4, 'n4', '1236', 'stu1', 'stuap', 'STUDENT', 'stu1@gmail.com', '00000000', '2024-02-19 23:48:38', '2024-02-19 00:09:01');
+INSERT INTO `Users` (`id`, `username`, `password`, `first_name`, `last_name`, `role`, `email`, `phone`, `grade`, `created_at`, `updated_at`) VALUES
+(1, 'principal', '$2b$05$XNqSsEGMFYQ4/Gu237nVD.8MVlrgcgx5TKelk/6lsG2slqz2wkT2m', 'Principal', 'Principal', 'PRINCIPAL', 'principal@prueba.com', '123456789', NULL, '2024-02-21 02:00:39', '2024-02-18 23:36:37'),
+(2, 'teacher1', '$2b$05$iQo8892Uo.0FXyxIDH1ile5nbwWhHoWGgInIl.qIYbBuDdRHIJA.m', 'profesor1', 'profeap', 'TEACHER', 'prof1@gmail.com', '00000000', NULL, '2024-02-23 07:03:55', '2024-02-19 00:09:01'),
+(3, 'tutor1', '$2b$05$K1mHa/vN6efW6ozS44ThjumoDcCOic4SdaNgNtyBuzvvWRaHfCmjm', 'tutor1', 'tutorap', 'TUTOR', 'tuto1@gmail.com', '00000000', NULL, '2024-02-23 07:05:33', '2024-02-19 00:09:01'),
+(4, 'student1', '$2b$05$YCl6DfIprXNm45ryZRVRXeyNIL1S8F7UBVzBOqUP9Vnjl/b5tn3Ai', 'student1', 'studentap', 'STUDENT', 'stu1@gmail.com', '00000000', NULL, '2024-02-23 07:05:03', '2024-02-19 00:09:01');
 
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `Attendances`
---
-ALTER TABLE `Attendances`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `Banns`
@@ -282,11 +277,6 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
---
--- AUTO_INCREMENT de la tabla `Attendances`
---
-ALTER TABLE `Attendances`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `Banns`
 --

@@ -4,7 +4,7 @@ import db from "../database/db.js";
 import { DataTypes } from "sequelize";
 
 
-export const UserModel = db.define('Users', {
+export const UsersModel = db.define('Users', {
     id: { type: DataTypes.INTEGER, primaryKey: true },
     username: { type: DataTypes.STRING },    
     password: { type: DataTypes.STRING },
@@ -13,6 +13,8 @@ export const UserModel = db.define('Users', {
     role: { type: DataTypes.ENUM('PRINCIPAL', 'TEACHER', 'TUTOR', 'STUDENT'), defaultValue:'STUDENT', allowNull: false}, 
     email: { type: DataTypes.STRING},
     phone: { type: DataTypes.STRING},
-    created_at: { type: DataTypes.timestamps},
-    updated_at: { type: DataTypes.timestamps},
+   // created_at: { type: DataTypes.DATE},
+    //updated_at: { type: DataTypes.DATE},
 })
+
+export default UsersModel
