@@ -41,7 +41,8 @@ module.exports = {
     getSubjectsByTeacherId: async (req, res) =>{
         try {
             const TEACHER_ID = req.params.teacher_id;
-            return res.status(200).json(TEACHER_ID);
+            const subjects = getSubjectsByTeacherId(TEACHER_ID);
+            return res.status(200).json(subjects);
         } catch (error) {
             res.status(500).json({Error: error});
         }
@@ -53,7 +54,8 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({Error: error});
         }
-    },updateSubject: async (req ,res) =>{
+    },
+    updateSubject: async (req ,res) =>{
         try {
             const  NEW_DATA = req.body;
             const result = await updateSubject(NEW_DATA);

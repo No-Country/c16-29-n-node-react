@@ -1,10 +1,12 @@
 
 
 
-
-
-
+/*   GET /api/subjects/current [TEACHER] */
+/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
+/* GET /api/subjects [PRINCIPAL] */
 /* DELETE /api/subjects/:id [PRINCIPAL] */
+/* POST /api/subjects [PRINCIPAL] */
+/* PUT /api/subjects/:id [PRINCIPAL] */
 
 
   const { Subject } = require("../database/models");

@@ -16,6 +16,7 @@ app.use(express.json())
 app.use('/pers', persRouter)
 app.use('/login', persRouter)
 app.use(`/api/marks`, markRouter);
+app.use(`/api/subjects`, subjectsRouter);
 /*try {
     await db.authenticate()
     console.log('Conexion exitosa a la DB')
