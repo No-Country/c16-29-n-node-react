@@ -16,10 +16,6 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
     defaultValues: initialValues
   })
 
-  const submitHandler = () => {
-    console.log("SUBMIT");
-  }
-
   return (
     <>
       <Offcanvas.Body>
@@ -56,7 +52,7 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
           </div>
           <div>
             <label htmlFor="teacher" className="text-base font-medium">
-              Division
+              Profesor Asociado
             </label>
             <Select
               id="teacher"
@@ -70,7 +66,7 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
       </Offcanvas.Body>
       <Offcanvas.Footer 
         text={"Asignar"}
-        onSubmit={handleSubmit(submitHandler)}
+        onSubmit={handleSubmit(onSubmit)}
         onClose={onClose}
       />
     </>

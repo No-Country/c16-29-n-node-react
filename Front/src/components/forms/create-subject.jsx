@@ -15,10 +15,6 @@ const CreateSubject = ({ onClose, onSubmit }) => {
     resolver: zodResolver(schema)
   })
 
-  const submitHandler = () => {
-    console.log("SUBMIT");
-  }
-
   return (
     <>
       <Offcanvas.Body>
@@ -55,7 +51,7 @@ const CreateSubject = ({ onClose, onSubmit }) => {
           </div>
           <div>
             <label htmlFor="teacher" className="text-base font-medium">
-              Division
+              Profesor Asociado
             </label>
             <Select
               id="teacher"
@@ -68,7 +64,7 @@ const CreateSubject = ({ onClose, onSubmit }) => {
       </Offcanvas.Body>
       <Offcanvas.Footer 
         text={"Asignar"}
-        onSubmit={handleSubmit(submitHandler)}
+        onSubmit={handleSubmit(onSubmit)}
         onClose={onClose}
       />
     </>

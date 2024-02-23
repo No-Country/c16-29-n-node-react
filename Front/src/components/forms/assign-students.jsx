@@ -4,11 +4,7 @@ import Label from '../Label';
 import { useEffect, useState } from 'react';
 import { students } from '../../pages/principal/subjects/mock';
 
-const AssignStudents = ({ onClose, assigneds }) => {
-  const handleSubmit = () => {
-    console.log("SUBMIT");
-  }
-
+const AssignStudents = ({ onClose, onSubmit, assigneds }) => {
   const [data, setData] = useState(() => students.map((student) => ({
     value: student.id,
     label: student.name
@@ -31,6 +27,11 @@ const AssignStudents = ({ onClose, assigneds }) => {
 
   const handleDeselectOne = (option) => {
     setSelecteds((selecteds) => selecteds.filter((selected) => selected !== option));
+  }
+
+  const handleSubmit = () => {
+    onSubmit(selecteds);
+    onClose();
   }
 
   return (

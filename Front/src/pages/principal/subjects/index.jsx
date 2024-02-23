@@ -44,12 +44,45 @@ const SubjectsView = () => {
     offcanvas.handleOpen();
   }
 
-  const handleEditItem = (row) => {
+  const handleConfirmEditItem = (row) => {
     setActive({
       type: "edit",
       row
     })
     offcanvas.handleOpen();
+  }
+
+  const handleEditItem = (row) => {
+    setData((data) => data.map((subject) => {
+      return subject.id === active.row.id 
+      ? (
+          {
+            ...row,
+            name: row.subject,
+            teachers: [{
+              id: row.teacher.value,
+              name: row.teacher.label,
+            }],
+            students: []
+          }
+        ) 
+      : (
+        subject
+      )
+    })
+    )
+  }
+
+  const handleCreateItem = (row) => {
+    setData((data) => data.concat({
+      ...row,
+      name: row.subject,
+      teachers: [{
+        id: row.teacher.value,
+        name: row.teacher.label,
+      }],
+      students: []
+    }))
   }
 
   const handleConfirmDeleteItem = (row) => {
@@ -103,7 +136,7 @@ const SubjectsView = () => {
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex jutify-center gap-2">
-            <button onClick={() => handleEditItem(original)}>
+            <button onClick={() => handleConfirmEditItem(original)}>
               <img src="/assets/edit.svg" alt="editar materia" />
             </button>
             <button onClick={() => handleConfirmDeleteItem(original)}>
@@ -114,10 +147,6 @@ const SubjectsView = () => {
       },
     ];
   }, [])
-
-  const handleCreateItem = (submit) => {
-    console.log(submit);
-  }
 
   return (
     <div className="grow overflow-auto">
@@ -137,7 +166,21 @@ const SubjectsView = () => {
             onSubmit={handleCreateItem}
           />
         ) }
-        { active.type === "edit" && <EditSubject /> }
+        { active.type === "edit" && (
+          <EditSubject 
+            onClose={resetState(offcanvas.handleClose)}
+            onSubmit={handleEditItem}
+            initialValues={{
+              subject: active.row.name,
+              grade: active.row.grade.toString(),
+              divition: active.row.divition,
+              teacher: {
+                value: active.row.teachers[0].id,
+                label: active.row.teachers[0].name
+              }
+            }}
+          />
+        ) }
       </Offcanvas>
       <Modal
         isOpen={modal.isOpen}

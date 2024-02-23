@@ -33,6 +33,13 @@ const SubjectView = () => {
     setData((data) => data.filter((student) => student.id !== id));
   }
 
+  const handleAssignStudent = (selected) => {
+    setData((data) => data.concat(selected.map((student) => ({
+      id: student.value,
+      name: student.label
+    }))));
+  }
+
   const columns = useMemo(() => {
     return [
       {
@@ -77,7 +84,8 @@ const SubjectView = () => {
         <AssignStudents
           key={Math.random()}
           onClose={handleClose} 
-          assigneds={data ?? []}  
+          assigneds={data ?? []}
+          onSubmit={handleAssignStudent}
         />
       </Offcanvas>
     </div>
