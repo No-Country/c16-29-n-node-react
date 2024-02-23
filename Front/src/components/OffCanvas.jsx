@@ -119,7 +119,7 @@ export const OffCanvas = ({
         <div className="bg-gradient-to-br from-blue-400 to-purple-600 py-2 px-3 flex justify-between items-center">
           <h3 className="text-lg font-bold text-blue-950">{title}</h3>
           <button className="cursor-pointer" onClick={handleCloseForm}>
-            <img src="./src/assets/Close.png" alt="btn-close" />
+            <img src="/assets/Close.png" alt="btn-close" />
           </button>
         </div>
         <div className="flex flex-col flex-1 p-2 gap-2 text-base">

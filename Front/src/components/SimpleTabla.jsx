@@ -11,7 +11,7 @@ import { useState } from "react";
 import { PaginatedButtons } from "./PaginatedButtons";
 import Input from "./Input";
 
-export const SimpleTable = ({ columns, data }) => {
+export const SimpleTable = ({ columns, data, actions }) => {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
 
@@ -45,6 +45,10 @@ export const SimpleTable = ({ columns, data }) => {
     state: {
       sorting: sorting,
       globalFilter: filtering,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 25
+      }
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
@@ -58,15 +62,20 @@ export const SimpleTable = ({ columns, data }) => {
   // 5- la anchura de las celdas se modifican
 
   return (
-    <div className="h-full flex flex-col items-start">
-      <div className="border-solid my-4 flex gap-4">
-        <Input
-          className="border-2"
-          placeholder="Buscar"
-          type="text"
-          value={filtering}
-          onChange={(e) => setFiltering(e.target.value)}
-        />
+    <div className="grow flex flex-col items-start">
+      <div className="w-full my-4 flex justify-between gap-4">
+        <div>
+          <Input
+            className="border-2"
+            placeholder="Buscar"
+            type="text"
+            value={filtering}
+            onChange={(e) => setFiltering(e.target.value)}
+          />
+        </div>
+        <div>
+          {actions}
+        </div>
       </div>
       <div className="w-full  overflow-auto scrollbar grow mb-4">
         <table className="w-full border-solid rounded border-[#C6D5DB] shadow-custom border-2">
@@ -144,7 +153,7 @@ export const SimpleTable = ({ columns, data }) => {
             ? (
               <tr>
                 <td
-                  className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
+                  className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 bg-[#FFFFFD] whitespace-normal overflow-y-auto"
                   colSpan={table.getVisibleFlatColumns().length}
                 >
                   Sin datos
