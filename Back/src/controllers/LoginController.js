@@ -5,17 +5,23 @@ import jwt from "jsonwebtoken";
 import { TOKEN_KEY } from "../../d_config.js";
 let newUser = {};
 let users = [];
+const bcrypt = require("bcryptjs");
+
+//validations  
+const { validationResult } = require("express-validator");
 
 export const register = async (req, res) => {
   try {
-    if (!req.body) {
-      res.status(400).send("Debes indicar nombre, email, password");
-    }
-    console.log(req.body);
-    const { name, email, password } = req.body;
+    //egregando errores de validaciones//
+    let errors = validationResult(req);
 
+    if(!errors.isEmpty()){
+    if (!req.body) {
+      res.status(400).send(errors.mapped());
+    }
+    const { name, email, password } = req.body;
     if (!(email && name && password)) {
-      res.status(400).send("Debes indicar nombre, email, password");
+      res.status(400).send(errors.mapped());
     }
 
     const userExists = users.find((user) => user.email === email);
@@ -32,10 +38,11 @@ export const register = async (req, res) => {
     newUser = User(name, email, encryptedPassword);
 
     users = [...users, newUser];
+  }
   } catch (err) {
     console.log("Ha ocurrido un error", err);
   }
-
+  
   return res.status(201).json(newUser);
 };
 import { validateUser } from './UsersController.js'
@@ -48,11 +55,14 @@ let res_user= {};
 export const login = async (req, res) => {
  
   try {
-    const { username, password } = req.body;
+    let errors = validationResult(req);
 
+    const { username, password } = req.body;
+    if(!errors.isEmpty()){
     if (!(username && password)) {
-      res.status(400).send("Indica username y contraseña");
+      res.status(400).send(errors.mapped());
     }
+  }
 
     const user = await validateUser(username);
 
