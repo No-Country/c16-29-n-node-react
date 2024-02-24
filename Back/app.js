@@ -1,4 +1,4 @@
-import { APP_PORT } from "./d_config.js";
+import { PORT } from "./d_config.js";
 import  express  from "express";
 import  cors  from "cors";
 
@@ -27,6 +27,6 @@ try {
     console.log('Error de conexion a la DB =', error)
 }
 
-app.listen(APP_PORT, () => {
-  console.log(`Server UP run in https://localhost:${APP_PORT}/`);
+app.listen(PORT, () => {
+  console.log(`Server UP run in https://localhost:${PORT}/`);
 });
