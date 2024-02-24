@@ -1,9 +1,22 @@
 import Sidebar from "../components/sidebar/Sidebar";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function DashboardLayout({ menues, children }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const role = useSelector((state) => state.auth.role);
+
+  useEffect(() => {
+    console.log(role);
+    if(role.length === 0){
+      return navigate(`..`);
+    }
+    if(pathname.split("/")[1] !== role){
+      return navigate(`/${role}`);
+    }
+  }, [role, navigate, pathname]);
 
   const paths = pathname.split(/(\/)/).slice(4);
 
