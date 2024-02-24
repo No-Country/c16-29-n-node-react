@@ -11,6 +11,8 @@ const bannsModel = db.define('Banns', {
     teacher_id: { type: DataTypes.INTEGER, allowNull: false},
     student_id: { type: DataTypes.INTEGER, allowNull: false},
     subject_id: { type: DataTypes.INTEGER, allowNull: false},
+},{
+    timestamps: false
 })
 
 export default bannsModel

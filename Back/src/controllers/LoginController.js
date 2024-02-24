@@ -38,23 +38,31 @@ export const register = async (req, res) => {
 
   return res.status(201).json(newUser);
 };
+import { validateUser } from './UsersController.js'
+import { verified } from "../middlewares/encrypt.js";
+import jwt from "jsonwebtoken";
+import { TOKEN_KEY } from "../d_config.js";
+let role;
+let res_user= {};
 
 export const login = async (req, res) => {
+ 
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    console.log(email);
-    if (!(email && password)) {
-      res.status(400).send("Indica email y contraseña");
+    if (!(username && password)) {
+      res.status(400).send("Indica username y contraseña");
     }
 
-    const user = users.find((us) => us.email === email);
+    const user = await validateUser(username);
 
-    console.log(user, users);
-    if (user && (await compare(password, user.password))) {
-      const token = jwt.sign({ email }, TOKEN_KEY, { expiresIn: "2h" });
-      user.token = token;
-      res.status(200).json(user);
+    if (user && (await verified(password, user.passHash))) {
+      const token = jwt.sign({ role }, TOKEN_KEY, { expiresIn: "2h" });
+      
+      res_user.role= user.role;
+      res_user.token = token;
+      
+      res.status(200).json(res_user);
     } else {
       res.status(403).send("Credenciales inválidas");
     }
