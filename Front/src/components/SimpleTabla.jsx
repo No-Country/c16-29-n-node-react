@@ -45,10 +45,6 @@ export const SimpleTable = ({ columns, data, actions }) => {
     state: {
       sorting: sorting,
       globalFilter: filtering,
-      pagination: {
-        pageIndex: 0,
-        pageSize: 25
-      }
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
@@ -62,7 +58,7 @@ export const SimpleTable = ({ columns, data, actions }) => {
   // 5- la anchura de las celdas se modifican
 
   return (
-    <div className="grow flex flex-col items-start">
+    <div className="grow flex flex-col items-start overflow-y-hidden">
       <div className="w-full my-4 flex justify-between gap-4">
         <div>
           <Input
@@ -77,9 +73,9 @@ export const SimpleTable = ({ columns, data, actions }) => {
           {actions}
         </div>
       </div>
-      <div className="w-full  overflow-auto scrollbar grow mb-4">
-        <table className="w-full border-solid rounded border-[#C6D5DB] shadow-custom border-2">
-          <thead className="bg-[#DCE5E9]">
+      <div className="w-full scrollbar grow mb-4 overflow-y-hidden">
+        <table className="w-full border-solid rounded border-[#C6D5DB] border-2 shadow-custom overflow-y-auto">
+          <thead className="bg-[#DCE5E9] sticky top-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -117,7 +113,7 @@ export const SimpleTable = ({ columns, data, actions }) => {
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody className="">
             {/* 
             <tbody>
             {table.getRowModel().rows.length === 0 ? (

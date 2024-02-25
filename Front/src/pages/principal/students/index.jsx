@@ -103,7 +103,7 @@ const StudentsView = () => {
   }, [])
 
   return (
-    <div className="grow flex flex-col overflow-auto">
+    <div className="grow flex flex-col overflow-y-hidden">
       <p>{data.length} registros</p>
       <SimpleTable columns={columns} data={data} actions={<Button>Crear Alumno</Button>} />
     </div>

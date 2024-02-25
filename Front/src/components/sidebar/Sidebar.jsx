@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slice/auth";
 
 function Sidebar({ menues }) {
 
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   return (
@@ -24,7 +27,7 @@ function Sidebar({ menues }) {
                 <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80`}>{menu.text}</span>
               </li>
             ))}
-           <li onClick={() => navigate("/")} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
+           <li onClick={() => dispatch(logout())} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
             <img src='/assets/logout.png' />
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>Cerrar</span>
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>sesión</span>

@@ -62,7 +62,7 @@ const SubjectView = () => {
 
   return (
     <div
-      className='grow overflow-y-auto'
+      className='grow flex flex-col overflow-y-auto'
     >
       {
         isError && <p>Hubo un error buscando la materia...</p> 
