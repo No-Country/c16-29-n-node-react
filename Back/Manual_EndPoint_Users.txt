@@ -2,7 +2,7 @@ EndPoint Tabla Users:
 
 1- Lista total de Usuarios
 
-ruta: /api/users
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user
 method: GET
 
 datos a enviar:
@@ -12,8 +12,8 @@ datos a enviar:
 
 2- Lista total de Usuarios solicitado por rol
 
-ruta: /api/users/role
-method: GET
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/role
+method: POST
 
 datos a enviar:
 {
@@ -23,7 +23,7 @@ datos a enviar:
 
 3- Datos de Usuario por username
 
-ruta: /api/users/username
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/role/username
 method: GET
 
 datos a enviar:
@@ -34,7 +34,7 @@ datos a enviar:
 
 3- Creacion de Usuario
 
-ruta: /api/users/create
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/create
 method: POST
 
 datos a enviar:
@@ -55,7 +55,7 @@ datos a enviar:
 
 4- Modificar de Usuario
 
-ruta: /api/users/update
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/update
 method: PUT
 
 datos a enviar:
@@ -95,7 +95,7 @@ let bodyContent = JSON.stringify({
 });
 
 let reqOptions = {
-  url: "localhost:5002/api/user/update",
+  url: "https://nocontrybackend.4.us-1.fl0.io/api/user/update",
   method: "PUT",
   headers: headersList,
   data: bodyContent,

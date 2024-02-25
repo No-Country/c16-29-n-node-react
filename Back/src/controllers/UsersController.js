@@ -7,18 +7,39 @@ import { compare } from "bcrypt";
 //Mostrar todos los registros
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await usersModel.findAll()
+        const users = await usersModel.findAll({
+            attributes: ['username','first_name','last_name','role','email','phone','created_at','updated_at']
+        })
         res.json(users) 
     } catch (error) {
         res.json({message: error.message})
     }
 }
 
-//Mostrar todos los registros
+//Mostrar todos los registros por role
 export const getAllUsersxRole = async (req, res) => {
     try {
+        let attributes = []
+        if(req.body.role === 'STUDENT'){
+            attributes = ['username','first_name','last_name','role','email','phone','grade','created_at','updated_at']
+        }else{
+            attributes = ['username','first_name','last_name','role','email','phone','created_at','updated_at']
+        }
         const users = await usersModel.findAll({
+            attributes: attributes,
             where:{role:req.body.role}
+        })
+        res.json(users) 
+    } catch (error) {
+        res.json({message: error.message})
+    }
+}
+
+//Mostrar todos los registros por grado
+export const getAllUsersxGrade = async (req, res) => {
+    try {
+        const users = await usersModel.findAll({
+            where:{grade:req.body.grade}
         })
         res.json(users) 
     } catch (error) {
@@ -58,9 +79,7 @@ export const createUsers = async(req, res) => {
 //Actualizar
 export const updateUsers = async(req, res) => {
     try {
-        console.log(req.body)
         let pass =  req.body.password;
-        //console.log(pass)
         if (pass){
             let pass =  req.body.password;
             let hpass = await encrypt(pass);
@@ -82,7 +101,6 @@ export const updateUsers = async(req, res) => {
 
 //Eliminar
 export const deleteUsers = async(req, res) => {
-    console.log(req.params.id)
     try {
         usersModel.destroy({
             where: {id_number: req.params.id}     })

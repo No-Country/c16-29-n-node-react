@@ -2,7 +2,7 @@ EndPoint:
 
 1- Login
 
-ruta: url/api/login/
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/login
 method: POST
 
 datos a enviar:
@@ -56,7 +56,7 @@ let bodyContent = JSON.stringify({
 });
 
 let reqOptions = {
-  url: "localhost:5002/api/login/",
+  url: "https://nocontrybackend.4.us-1.fl0.io/api/login",
   method: "POST",
   headers: headersList,
   data: bodyContent,
@@ -70,7 +70,7 @@ codigo para usar jquery:
 const settings = {
   "async": true,
   "crossDomain": true,
-  "url": "localhost:0.0.19.138/api/login/",
+  "url": "https://nocontrybackend.4.us-1.fl0.io/api/login",
   "method": "POST",
   "headers": {
     "Accept": "*/*",
@@ -101,7 +101,7 @@ xhr.addEventListener("readystatechange", function () {
   }
 });
 
-xhr.open("POST", "localhost:0.0.19.138/api/login/");
+xhr.open("POST", "https://nocontrybackend.4.us-1.fl0.io/api/login");
 xhr.setRequestHeader("Accept", "*/*");
 xhr.setRequestHeader("User-Agent", "Thunder Client (https://www.thunderclient.com)");
 xhr.setRequestHeader("Content-Type", "application/json");
