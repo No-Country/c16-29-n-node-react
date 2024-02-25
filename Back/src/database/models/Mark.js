@@ -10,8 +10,8 @@
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
 
-
-module.exports = (sequelize, dataTypes) =>{
+  
+export default (sequelize, dataTypes) =>{
 
     let alias = "Mark";
     let  cols = {
@@ -36,5 +36,7 @@ Mark.associate = (models) =>{
     Mark.belongsTo(models.User, { foreignKey: 'teacher_id', as: 'teacher' });
 }
 
-return Marks;
+return Mark;
 }
+
+

@@ -1,14 +1,8 @@
+import Mark from "../database/models/Mark.js";
 
-/*
-POST /api/exams [TEACHER]
-GET /api/exams/current [TEACHER]
-
-
- */
-const { Mark } = require("../database/models");
 
 //sevicios pasa informacion de  la base de datos al controlador//
-const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
+export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   try {                        
     return await Mark.findAll();//todos los usuarios
   } catch (error) {
@@ -17,7 +11,7 @@ const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   }
 };
 
-const getMarkById = async (id) => {  
+export const getMarkById = async (id) => {  
   try { /* GET /api/exams/:id/marks [TEACHER] */
     return await Mark.findByPk(id);//usuario por id
   } catch (error) {
@@ -26,7 +20,7 @@ const getMarkById = async (id) => {
   }
 };
 
-const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
+export const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
   try {
     return await Mark.findOne({//busca un mark por id de estudiante
       where: {
@@ -39,7 +33,7 @@ const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR
   }
 };
 
-const insertMark = async (markData) => {//agrega una mark // create
+export const insertMark = async (markData) => {//agrega una mark // create
   try {
     return await Mark.create(markData);
   } catch (error) {
@@ -47,7 +41,7 @@ const insertMark = async (markData) => {//agrega una mark // create
     throw new Error("Error insert Mark");
   }
 };
- const updateMark = async (scoreData) => {
+ export const updateMark = async (scoreData) => {
   try {
     return await Mark.update(scoreData, { where: { id: student_id } });
   } catch (error) {
@@ -56,7 +50,7 @@ const insertMark = async (markData) => {//agrega una mark // create
   }
 }; 
 
- const deleteMark = async (studentId) => { /* PUT /api/marks/:id [TEACHER] */
+ export const deleteMark = async (studentId) => { /* PUT /api/marks/:id [TEACHER] */
   try {
     return await Mark.destroy({ where: { id: studentId.id } });
   } catch (error) {
@@ -64,12 +58,3 @@ const insertMark = async (markData) => {//agrega una mark // create
     throw new Error("Error delete mark");
   }
 }; 
-
-module.exports = {
-  getMarks,
-  getMarkById,
-  getMarkByStudent,
-  insertMark,
-  updateMark,
-  deleteMark
-}; /* metodos de los usuarios */

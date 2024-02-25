@@ -40,7 +40,7 @@ module.exports = {
     },
     getSubjectsByTeacherId: async (req, res) =>{
         try {
-            const TEACHER_ID = req.params.teacher_id;
+            const TEACHER_ID = req.user.id;
             const subjects = getSubjectsByTeacherId(TEACHER_ID);
             return res.status(200).json(subjects);
         } catch (error) {

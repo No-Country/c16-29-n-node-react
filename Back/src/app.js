@@ -9,14 +9,15 @@ import bannsRouter from './routes/BannsRoutes.js'
 import notesRouter from './routes/NotesRoutes.js'
 import LoginRouter  from "./routes/LoginRoutes.js"
 import UsersRouter  from "./routes/UsersRoutes.js"
+import dotenv from 'dotenv';
+import markRouter from "./routes/markRoutes.js"
 
-require( 'dotenv').config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));//captura eventos de formulario
-app.use(methodOverride('_method'));
+/* app.use(methodOverride('_method')); */
 app.use("/api/nonattendances", nonAttendancesRouter);
 app.use("/api/banns", bannsRouter);
 app.use("/api/notes", notesRouter);

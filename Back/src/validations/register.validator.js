@@ -1,6 +1,6 @@
-const  { check, body} = require("express-validator");
-const db = require("../database/models");
-const {} = require("../services/user.service");
+import { check, body } from "express-validator";
+import db from "../database/models";
+import { servicio } from "../services/user.service.js";
 // api de registro
  /* CREATE TABLE `Users` (
     `id` int(11) NOT NULL,
@@ -19,11 +19,10 @@ const {} = require("../services/user.service");
 const userRegisterValidationRules = () =>{
     return [
         check("username").notEmpty().withMessage("el nombre de usuario es requerido"),
-        check("password").notEmpty().isLength({min: 6, max: 12}).withMessage("la contraseña debe tener un minimo de 8 caracteres"),
+        check("password").notEmpty().isLength({min: 6, max: 12}).withMessage("la contraseña debe tener un minimo de 6 caracteres y maximo de 12"),
         check("first_name").notEmpty().withMessage("el nombre es requerido"),
         check("last_name").notEmpty().withMessage("El apellido es requerido"),
         check("email").isEmail().withMessage("ingresar un email valido")
     ];
 };
-module.exports ={
-     userRegisterValidationRules};
+export default{ userRegisterValidationRules};

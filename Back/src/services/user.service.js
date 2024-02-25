@@ -1,6 +1,6 @@
-const { User } = require("../database/models");
+import  User  from "../database/models.js";
 
-const getUserByEmail = async (email) => {// usuario por email
+export const getUserByEmail = async (email) => {// usuario por email
     try {
       return await User.findOne({//busca un usuario por su email
         where: {

@@ -1,5 +1,5 @@
 
-import attendancesModel from "../database/models/AttendancesModel.js"
+import  attendancesModel  from "../database/models/NonAttendancesModel.js"
 //Metodos CRUD
 
 //Mostrar todos los registros

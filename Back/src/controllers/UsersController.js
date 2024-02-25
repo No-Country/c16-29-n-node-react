@@ -1,4 +1,4 @@
-import usersModel from "../models/UsersModel.js";
+import usersModel from "../database/models/UsersModel.js";
 import { encrypt, verified } from "../middlewares/encrypt.js";
 import { compare } from "bcrypt";
 

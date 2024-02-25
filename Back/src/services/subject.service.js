@@ -26,7 +26,7 @@
 };
   const getSubjectById =  async (id) => {/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
     try {
-        return await Subject.findByPk(id, {
+        return await Subject.findByPk(id , {
             include: [
                 {association: "students"},
                 { association : 'teachers'} ,
@@ -39,12 +39,31 @@
   };
   const getSubjectsByTeacherId = async (teacherId) =>{/*   GET /api/subjects/current [TEACHER] */
     try {
-        return await Subject.findOne(
-            {
-                where: {
-                    teacher_id: teacherId,
+
+         /* [
+    {
+        "subject": "Nombre de la materia",
+        "grade": "Grado de la materia",
+        "divition": "Division de la materia",
+        "students": [{
+          "id": "Id del estudiante",
+          "name": "Nombre y apellido del estudiante"
+        }],
+        "teachers": [{
+          "id": "Id del profesor",
+          "name": "Nombre y apellido del profesor"
+        }]
+    }
+] */
+        return await Subject.findOne( {
+            include: [
+                {association: "students"},
+                { association : 'teachers'} ,
+            ]   
+        }
+            where: {
+                    teacher_id: teacherId,   
                 }
-            }
         )
        } catch (error) {
            console.error('Error al obtener la informacion de las asignaturas del profesor', error);

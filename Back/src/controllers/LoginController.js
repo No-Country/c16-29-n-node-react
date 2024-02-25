@@ -5,10 +5,14 @@ import jwt from "jsonwebtoken";
 import { TOKEN_KEY } from "../../d_config.js";
 let newUser = {};
 let users = [];
-const bcrypt = require("bcryptjs");
+import { validateUser } from './UsersController.js'
+import { verified } from "../middlewares/encrypt.js";
+let role;
+let res_user= {};
+
 
 //validations  
-const { validationResult } = require("express-validator");
+import { validationResult } from "express-validator";
 
 export const register = async (req, res) => {
   try {
@@ -45,12 +49,6 @@ export const register = async (req, res) => {
   
   return res.status(201).json(newUser);
 };
-import { validateUser } from './UsersController.js'
-import { verified } from "../middlewares/encrypt.js";
-import jwt from "jsonwebtoken";
-import { TOKEN_KEY } from "../d_config.js";
-let role;
-let res_user= {};
 
 export const login = async (req, res) => {
  
