@@ -4,25 +4,30 @@ import jwt from "jsonwebtoken";
 import { TOKEN_KEY } from "../d_config.js";
 let role;
 let res_user = {};
+let msjError = {"Error":"Asegúrese de introducir los datos de su registro actual. En caso de NO poder iniciar sesión, póngase en contacto con la secretaría del centro educativo."}
 
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!(username && password)) {
-      res.status(400).send({"error":"Indica username y contraseña"});
+      res.status(400).send(msjError);
     } else {
-      const user = await validateUser(username);
+      let user = await validateUser(username);
 
-      if (user && (await verified(password, user.passHash))) {
+      if (user && (await verified(password, user.password))) {
         const token = jwt.sign({ role }, TOKEN_KEY, { expiresIn: "2h" });
+        console.log(token)
 
-        res_user.role = user.role;
-        res_user.token = token;
+        if(token){
+          res_user = JSON.parse(JSON.stringify(user))
+          delete res_user.password;
+          res_user.token = token;
 
-        res.status(200).json(res_user);
+          res.status(200).json(res_user);
+        }
       } else {
-        res.status(403).json({"error":"Credenciales inválidas"});
+        res.status(403).json(msjError);
       }
     }
   } catch (err) {
