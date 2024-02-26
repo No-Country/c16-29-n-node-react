@@ -1,7 +1,8 @@
-const router = require("express").Router();
-const { getSubjets, getSubjectById, getSubjectsByTeacherId, createSubject, updateSubject } = require("../controllers/subject.controller");
-const verifyToken = require("../middlewares/jwt.middleware");
+import { Router } from "express";
+import { getSubjects, getSubjectById, getSubjectsByTeacherId, createSubject, updateSubject } from "../controllers/subject.controller";
+import verifyToken, { principalTeacher } from "../middlewares/jwt.middleware";
 
+const router = Router();
 /*   GET /api/subjects/current [TEACHER] */
 /* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
 /* GET /api/subjects [PRINCIPAL] */
@@ -9,11 +10,11 @@ const verifyToken = require("../middlewares/jwt.middleware");
 /* POST /api/subjects [PRINCIPAL] */
 /* PUT /api/subjects/:id [PRINCIPAL] */
 router
-      .get("/",  getSubjets)
-      .get("/:id",  verifyToken.principalTeacher, getSubjectById)
+      .get("/",  getSubjects)
+      .get("/:id",  principalTeacher, getSubjectById)
       .get("/current",  verifyToken ,getSubjectsByTeacherId)
       .post("/", verifyToken , createSubject)
       .put( "/:id", verifyToken,  updateSubject)
 /*    .delete("/:id", deleteSubject); */
 
-module.exports = router;
+export default router;

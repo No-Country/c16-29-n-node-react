@@ -45,12 +45,13 @@
         }]
     }
 ] */
-        return await Subject.findOne( {
+        return await Subject.findOne( teacherId, {
             include: [
                 {association: "students"},
                 { association : 'teachers'} ,
                 {
-                    where: { teachers_id: teacherId}
+                    where: { teachers_id: teacherId.id,
+                   name: teacherId.name }
                 }
             ]  
         }

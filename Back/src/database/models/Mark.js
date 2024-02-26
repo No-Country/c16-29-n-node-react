@@ -32,8 +32,8 @@ const Mark = sequelize.define(alias,cols, config);
 
 Mark.associate = (models) =>{
     Mark.belongsTo(models.Subject, {foreignKey:'subject_id', as:'subject'});
-    Mark.belongsTo(models.User, { foreignKey: 'user_id', as: 'student' });
-    Mark.belongsTo(models.User, { foreignKey: 'teacher_id', as: 'teacher' });
+    Mark.belongsTo(models.UserModel, { foreignKey: 'user_id', as: 'student' });
+    Mark.belongsTo(models.UserModel, { foreignKey: 'teacher_id', as: 'teacher' });
 }
 
 return Mark;

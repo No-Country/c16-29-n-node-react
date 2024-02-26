@@ -21,7 +21,15 @@ export const userRegisterValidationRules = () =>{
         check("password").notEmpty().isLength({min: 6, max: 12}).withMessage("la contraseña debe tener un minimo de 6 caracteres y maximo de 12"),
         check("first_name").notEmpty().withMessage("el nombre es requerido"),
         check("last_name").notEmpty().withMessage("El apellido es requerido"),
-        check("email").isEmail().withMessage("ingresar un email valido")
-    ];
+        check("email").notEmpty().withMessage("el email es requerido").isEmail().withMessage("ingresar un email valido"),
+        body("email").custom( async (value) =>{ // caso de que el email ya este registrado
+            const user = await getUserByEmail(value);
+            if(user){//rechaza la promesa y manda el mensjae de error
+                return Promise.reject("Este correo ya se encuentra registrado");
+        }
+      }),
+        check("rolle").isInt().withMessage("roll invalido"),
+
+ ];
 };
 /* export default{ userRegisterValidationRules}; */

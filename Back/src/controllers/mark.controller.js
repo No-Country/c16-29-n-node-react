@@ -11,7 +11,8 @@ export const getMark = async (req, res) => {
                 subject_id,
                 teacher_id,
                 student_id,
-                tutor_id
+                tutor_id,
+                detail: `api/marks/${id}`
             };
         });
         const RESPONSE = {
@@ -35,7 +36,7 @@ export const getMarkId = async (req, res) => {
 }
 export const getMarkStudent = async (req, res) =>  {
     try {
-        const MARK_STUDENT = req.params.id;
+        const MARK_STUDENT = req.params.student_id;
         const { id, score, subject_id, teacher_id } = await getMarkByStudent(MARK_STUDENT);
         const RESPONSE = { id, score, subject_id, teacher_id };
         return res.status(200).json(RESPONSE);
@@ -47,7 +48,7 @@ export const createMark = async (req, res) => {
     try {
         const result = await insertMark({ ...req.body });
         if (result) {
-            const SUCCESS_RESPONSE = " mark Created successfully";
+            const SUCCESS_RESPONSE = " mark created successfully";
             return res.status(201).json({ msj: SUCCESS_RESPONSE });
         } else {
             const ERROR_RESPONSE = "Somethings wrong";

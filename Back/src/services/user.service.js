@@ -1,4 +1,4 @@
-import  { UsersModel }  from "../database/models/UsersModel.js";
+import   { UsersModel }from "../database/models/UsersModel.js";
 
 export const getUserByEmail = async (email) => {// usuario por email
     try {

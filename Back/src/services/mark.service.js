@@ -4,7 +4,12 @@ import Mark from "../database/models/Mark.js";
 //sevicios pasa informacion de  la base de datos al controlador//
 export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   try {                        
-    return await Mark.findAll();//todos los usuarios
+    return await Mark.findAll({
+      include: [
+        { association: "Users"},
+        { association: "Subjects"}
+      ]
+    });//todos los usuarios
   } catch (error) {
     console.error("Error while fetching marks:", error);
     throw new Error("Error fetching marks");
@@ -13,7 +18,12 @@ export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
 
 export const getMarkById = async (id) => {  
   try { /* GET /api/exams/:id/marks [TEACHER] */
-    return await Mark.findByPk(id);//usuario por id
+    return await Mark.findByPk(id, {
+      include: [
+        { association: "Users"},
+        { association: "Subjects"}
+      ]
+    });//usuario por id
   } catch (error) {
     console.error("Error while fetching mark:", error);
     throw new Error("Error fetching mark");

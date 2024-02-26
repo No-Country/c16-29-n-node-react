@@ -31,7 +31,7 @@ export const getSubjects = async (req, res) => {
 export const getSubjectById = async (req, res) => {
     try {
         const SUBJECT_ID = req.params.id;
-        const subject = await getSubjectById(SUBJECT_ID);
+        const subject = await getSubjectId(SUBJECT_ID);
         return res.status(200).json(subject);
     } catch (error) {
         res.status(500).json({ Error: error });
@@ -39,8 +39,8 @@ export const getSubjectById = async (req, res) => {
 }
 export const getSubjectsByTeacherId = async (req, res) =>{
     try {
-        const TEACHER_ID = req.user.id;
-        const subjects = await getSubjectsByTeacherId(TEACHER_ID);
+        const TEACHER_ID = req.user.teacher_id;
+        const subjects = await getSubjectsTeacherId(TEACHER_ID);
         return res.status(200).json(subjects);
     } catch (error) {
         res.status(500).json({ Error: error });
@@ -57,7 +57,7 @@ export const createSubject = async (req, res) => {
 export const updateSubject = async (req, res) =>{
     try {
         const NEW_DATA = req.body;
-        const result = await updateSubject(NEW_DATA);
+        const result = await modifySubject(NEW_DATA);
         return res.status(201).json(result);
     } catch (error) {
         return res.status(500).json({ Error: error });
