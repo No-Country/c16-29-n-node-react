@@ -1,4 +1,4 @@
-import bannsModel from "../models/BannsModel.js";
+import bannsModel from "../database/models/NonAttendancesModel.js";
 
 //Metodos CRUD
 

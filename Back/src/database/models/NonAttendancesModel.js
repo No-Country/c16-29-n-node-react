@@ -1,18 +1,20 @@
 //importa la conexion a la db
-import db from "../database/db.js";
+import db from "../db.js";
 //Importar Sequilize
 import { DataTypes } from "sequelize";
 
 
-const bannsModel = db.define('Banns', {
+const nonAttendancesModel = db.define('Nonttendances', {
     id: { type: DataTypes.INTEGER, primaryKey: true },
-    score: { type: DataTypes.ENUM('EXPELLEDEXPELLED', 'SUSPENDED', 'WARNING'), allowNull: false}, 
-    note: { type: DataTypes.STRING, allowNull: false},
+    type: { type: DataTypes.ENUM('NON_ATTENDANCE', 'DELAYED'), allowNull: true }, 
+    date: { type: DataTypes.DATE},
     teacher_id: { type: DataTypes.INTEGER, allowNull: false},
     student_id: { type: DataTypes.INTEGER, allowNull: false},
     subject_id: { type: DataTypes.INTEGER, allowNull: false},
+    created_at: { type: DataTypes.DATE},
+    updated_at: { type: DataTypes.DATE},
 },{
     timestamps: false
 })
 
-export default bannsModel
+export default nonAttendancesModel

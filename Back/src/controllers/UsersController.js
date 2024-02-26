@@ -1,4 +1,4 @@
-import usersModel from "../models/UsersModel.js";
+import usersModel from "../database/models/UsersModel.js";
 import { encrypt, verified } from "../middlewares/encrypt.js";
 import { compare } from "bcrypt";
 
@@ -63,10 +63,14 @@ export const getUsers = async (req, res) => {
 export const createUsers = async(req, res) => {
     
     console.log(req.body)
-    try {        
+    try {       
         let pass =  req.body.password;
         let hpass = await encrypt(pass);
         req.body.password = hpass;
+        let subjects = req.body.subjects[0];
+        delete req.body.subjects
+
+        console.log(req.body, subjects)
         await usersModel.create(req.body)
         res.json({
             "message":"Registro creado correctamente"
@@ -79,6 +83,7 @@ export const createUsers = async(req, res) => {
 //Actualizar
 export const updateUsers = async(req, res) => {
     try {
+        console.log(req.body)
         let pass =  req.body.password;
         if (pass){
             let pass =  req.body.password;
@@ -109,7 +114,7 @@ export const deleteUsers = async(req, res) => {
     }
 }
 
-
+//Validacion de usuario 
 export const validateUser = async (username) => {
     try {
         const resUser = await usersModel.findOne({

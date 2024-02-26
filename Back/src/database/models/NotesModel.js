@@ -1,5 +1,5 @@
 //importa la conexion a la db
-import db from "../database/db.js";
+import db from "../db.js";
 //Importar Sequilize
 import { DataTypes } from "sequelize";
 
@@ -10,7 +10,9 @@ const notesModel = db.define('Notes', {
     is_public: { type: DataTypes.TINYINT(0,1), defaultValue:'0'},
     teacher_id: { type: DataTypes.INTEGER, allowNull: false},
     student_id: { type: DataTypes.INTEGER, allowNull: false},
-    subject_id: { type: DataTypes.INTEGER, allowNull: false},
+    subject_id: { type: DataTypes.INTEGER, allowNull: false},    
+    created_at: { type: DataTypes.DATE},
+    updated_at: { type: DataTypes.DATE},
 },{
     timestamps: false
 })

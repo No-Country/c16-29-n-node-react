@@ -1,11 +1,11 @@
 //importa la conexion a la db
-import db from "../database/db.js";
+import db from "../db.js";
 //Importar Sequilize
 import { DataTypes } from "sequelize";
 
 
 export const UsersModel = db.define('Users', {
-    id: { type: DataTypes.INTEGER, primaryKey: true },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     username: { type: DataTypes.STRING },    
     password: { type: DataTypes.STRING },
     first_name: { type: DataTypes.STRING },

@@ -23,7 +23,7 @@ CREATE TABLE `TeacherSubjects` (
   `teacher_id` integer NOT NULL
 );
 
-CREATE TABLE `StundetSubjects` (
+CREATE TABLE `StudentSubjects` (
   `id` integer PRIMARY KEY,
   `subject_id` integer NOT NULL,
   `student_id` integer NOT NULL

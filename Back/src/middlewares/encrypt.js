@@ -1,9 +1,7 @@
 import {hash, compare} from "bcrypt"
 
 export const encrypt = async (pass) => {
-    console.log(pass)
     const passHash = await hash(pass, 5)
-    console.log(passHash)
     return passHash 
 }
 

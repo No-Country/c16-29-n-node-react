@@ -1,7 +1,7 @@
 import { validateUser } from "./UsersController.js";
 import { verified } from "../middlewares/encrypt.js";
 import jwt from "jsonwebtoken";
-import { TOKEN_KEY } from "../d_config.js";
+import { TOKEN_KEY } from "../../d_config.js";
 let role;
 let res_user = {};
 let msjError = {"Error":"Asegúrese de introducir los datos de su registro actual. En caso de NO poder iniciar sesión, póngase en contacto con la secretaría del centro educativo."}

@@ -1,34 +1,34 @@
-import notesModel from "../models/NotesModel.js";
+import nonAttendancesModel from "../database/models/NonAttendancesModel.js";
 
 //Metodos CRUD
 
 //Mostrar todos los registros
-export const getAllNotes = async (req, res) => {
+export const getAllNonAttendances = async (req, res) => {
     try {
-        const notes = await notesModel.findAll()
-        res.json(notes) 
+        const nonAttendances = await nonAttendancesModel.findAll()
+        res.json(nonAttendances) 
     } catch (error) {
         res.json({message: error.message})
     }
 }
 
 //Mostrar un registro
-export const getNotes = async (req, res) => {
+export const getNonAttendances = async (req, res) => {
     try {
-        const notes = await notesModel.findAll({
+        const nonAttendances = await nonAttendancesModel.findAll({
             where:{id:req.params.id}
         })
-        res.json(notes)
+        res.json(nonAttendances)
     } catch (error) {
         res.json({message: error.message})
     }
 }
 
 //Crear un registro
-export const createNotes = async(req, res) => {
+export const createNonAttendances = async(req, res) => {
     console.log(req.body)
     try {
-        await notesModel.create(req.body)
+        await nonAttendancesModel.create(req.body)
         res.json({
             "message":"Registro creado correctamente"
         })
@@ -38,9 +38,9 @@ export const createNotes = async(req, res) => {
 }
 
 //Actualizar
-export const updateNotes = async(req, res) => {
+export const updateNonAttendances = async(req, res) => {
     try {
-        notesModel.update(req.body, {
+        nonAttendancesModel.update(req.body, {
             where: {id: req.params.id}
         })
     } catch (error) {
@@ -52,10 +52,10 @@ export const updateNotes = async(req, res) => {
 
 
 //Eliminar
-export const deleteNotes = async(req, res) => {
+export const deleteNonAttendances = async(req, res) => {
     console.log(req.params.id)
     try {
-        notesModel.destroy({
+        nonAttendancesModel.destroy({
             where: {id_number: req.params.id}
         })
     } catch (error) {

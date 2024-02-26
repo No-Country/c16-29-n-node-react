@@ -4,15 +4,17 @@ import db from "../database/db.js";
 import { DataTypes } from "sequelize";
 
 
-const nonAttendancesModel = db.define('Nonttendances', {
+const bannsModel = db.define('Banns', {
     id: { type: DataTypes.INTEGER, primaryKey: true },
-    type: { type: DataTypes.ENUM('NON_ATTENDANCE', 'DELAYED'), allowNull: true }, 
-    date: { type: DataTypes.DATE},
+    score: { type: DataTypes.ENUM('EXPELLEDEXPELLED', 'SUSPENDED', 'WARNING'), allowNull: false}, 
+    note: { type: DataTypes.STRING, allowNull: false},
     teacher_id: { type: DataTypes.INTEGER, allowNull: false},
     student_id: { type: DataTypes.INTEGER, allowNull: false},
     subject_id: { type: DataTypes.INTEGER, allowNull: false},
+    created_at: { type: DataTypes.DATE},
+    updated_at: { type: DataTypes.DATE},
 },{
     timestamps: false
 })
 
-export default nonAttendancesModel
+export default bannsModel
