@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
+import Button from "../../../components/ui/button"
 import OffCanvas from "../../../components/OffCanvas";
 import tutorFields from "../../../config/tutorFields";
 import { colourOptions } from "../../../utils/data";
@@ -16,6 +17,18 @@ export const DirectivoTutor = () => {
   const [data, setData] = useState(MOCK);
   const [showOffCanvas, setShowOffCanvas] = useState(false);
   const [currentForm, setCurrentForm] = useState(null);
+ 
+  const [active, setActive] = useState({
+    type: "",
+    row: {}
+  });
+
+  const handleConfirmCreateItem = () => {
+    setActive({
+      type: "create"
+    });
+    offcanvas.handleOpen();
+  }
 
 
   const columns = useMemo(() => {
@@ -80,17 +93,16 @@ export const DirectivoTutor = () => {
 
   return (
     <div className="grow overflow-auto">
-      <div className="w-full h-full"></div>
-      {/* ); */}
-      <div className="flex justify-between">
+      <div className="w-full"></div>
+            <div className="flex justify-between">
         <p>{data.length} registros</p>
         <div className="">
-          <button
+          {/* <button
             className="px-4 py-2 text-white bg-purple-600 hover:bg-purple-700 rounded transition duration-300 ease-in-out ml-4"
             onClick={handleCreateTutor}
           >
             Crear Profesor
-          </button>
+          </button> */}
         </div>
         {alert.message && (
           <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
@@ -113,7 +125,7 @@ export const DirectivoTutor = () => {
           />
         )}
       </div>
-      <SimpleTable columns={columns} data={data} />
+      <SimpleTable columns={columns} data={data} actions={<Button onClick={handleCreateTutor}>Crear Materia</Button>} />
     </div>
   );
 };
