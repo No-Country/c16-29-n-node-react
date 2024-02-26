@@ -11,7 +11,7 @@ import UsersRouter  from "./routes/UsersRoutes.js"
 import dotenv from 'dotenv';
 //mis rutas
 import markRouter from "./routes/markRoutes.js"
-import subjectRouter from "./routes/UsersRoutes.js"
+import subjectRouter from "./routes/subjectRoutes.js"
 
 const app = express();
 
@@ -24,8 +24,8 @@ app.use("/api/banns", bannsRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/login", LoginRouter);
 app.use("/api/user", UsersRouter);
-app.use(`/api/marks`, markRouter);
-app.use(`/api/subjects`, subjectRouter);
+app.use("/api/marks", markRouter);
+app.use("/api/subjects", subjectRouter);
 
 try {
     await db.authenticate()

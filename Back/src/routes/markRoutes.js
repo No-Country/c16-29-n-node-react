@@ -2,17 +2,16 @@ import { Router  } from "express";
 import { verifyToken } from "../middlewares/auth.js";
 import { getMark, getMarkId, createMark, upMark, getMarkStudent } from "../controllers/mark.controller.js";
 
-const router = Router()
+const markRouter = Router()
 
-router
+markRouter
       .get("/", verifyToken  , getMark )
       .get("/:id", verifyToken , getMarkId )
       .get("/current", verifyToken , getMarkStudent )
       .post("/exams",  verifyToken ,createMark )
       .put("/:id", verifyToken , upMark )
 
-
-export default router;
+export default markRouter;
     /*   POST /api/exams [TEACHER]
 POST /api/exams/marks [TEACHER]
 PUT /api/marks/:id [TEACHER]

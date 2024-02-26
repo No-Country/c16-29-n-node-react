@@ -1,4 +1,4 @@
-import { getSubject, getSubjectId, getSubjectsTeacherId , insertSubjects, modifySubject } from "../services/subject.service";
+import { getSubject, getSubjectId, getSubjectsTeacherId , insertSubjects, modifySubject } from "../services/subject.service.js";
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,

@@ -3,7 +3,7 @@ import { getMarks, getMarkById, getMarkByStudent, insertMark, updateMark, delete
 export const getMark = async (req, res) => {
     try {
         const marks = await getMarks();
-        const marksResponse = marks.map(({ id, score, note, teacher_id, student_id, tutor_id, subject_id }) => {
+       /*  const marksResponse = marks.map(({ id, score, note, teacher_id, student_id, tutor_id, subject_id }) => {
             return {
                 id,
                 score,
@@ -14,10 +14,10 @@ export const getMark = async (req, res) => {
                 tutor_id,
                 detail: `api/marks/${id}`
             };
-        });
+        }); */
         const RESPONSE = {
             count: marks.length,
-            marks: marksResponse,
+            marks/* : marksResponse */,
         };
         return res.status(200).json(RESPONSE);
     } catch (error) {

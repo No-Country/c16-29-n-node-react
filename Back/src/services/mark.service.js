@@ -5,10 +5,8 @@ import Mark from "../database/models/Mark.js";
 export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   try {                        
     return await Mark.findAll({
-      include: [
-        { association: "Users"},
-        { association: "Subjects"}
-      ]
+       attributes: [
+        'id', 'score', "note", "subject_id", "studen_id", "teacher_id", "created_at" , "update_at" ]
     });//todos los usuarios
   } catch (error) {
     console.error("Error while fetching marks:", error);
