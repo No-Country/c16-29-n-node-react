@@ -1,6 +1,6 @@
-const { check, body } = require('express-validator');
-const bcrypt = require("bcrypt");
- const { getUserByEmail } = require('../services/user.service'); 
+import { check, body } from 'express-validator';
+import { compareSync } from "bcrypt";
+ import { getUserByEmail } from '../services/user.service.js'; 
 
  /* CREATE TABLE `Users` (
     `id` int(11) NOT NULL,
@@ -15,7 +15,7 @@ const bcrypt = require("bcrypt");
     `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
- const userLoginValidationsRules = () => {
+ export const userLoginValidationsRules = () => {
     return [
         check("username").notEmpty().withMessage("Ingrese su  usuario"),//obligatorio
         check("password").notEmpty().withMessage("ingrese su contraseña")
@@ -25,7 +25,7 @@ const bcrypt = require("bcrypt");
             
             return getUserByEmail(req.body.email)
             .then((user) =>{
-                if(!bcrypt.compareSync(req.body.password, user.dataValues.password)){
+                if(!compareSync(req.body.password, user.dataValues.password)){
                     return Promise.reject();
                 }
             })
@@ -35,4 +35,4 @@ const bcrypt = require("bcrypt");
     ];
  };
  
- module.exports = userLoginValidationsRules;
+/*  export default userLoginValidationsRules; */

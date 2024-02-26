@@ -1,7 +1,6 @@
 import { PORT } from "../d_config.js";
 import  express  from "express";
 import  cors  from "cors";
-
 import db from './database/db.js'
 
 import nonAttendancesRouter from './routes/NonAttendancesRoutes.js'
@@ -11,6 +10,7 @@ import LoginRouter  from "./routes/LoginRoutes.js"
 import UsersRouter  from "./routes/UsersRoutes.js"
 import dotenv from 'dotenv';
 import markRouter from "./routes/markRoutes.js"
+import subjectRouter from "./routes/UsersRoutes.js"
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use("/api/notes", notesRouter);
 app.use("/api/login", LoginRouter);
 app.use("/api/user", UsersRouter);
 app.use(`/api/marks`, markRouter);
-app.use(`/api/subjects`, subjectsRouter);
+app.use(`/api/subjects`, subjectRouter);
 
 try {
     await db.authenticate()
@@ -40,3 +40,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server UP run in https://localhost:${PORT}/`);
 });
+

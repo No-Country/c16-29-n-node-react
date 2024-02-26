@@ -1,4 +1,4 @@
-import attendancesModel from "../database/models/AttendancesModel.js";
+import  attendancesModel  from "../database/models/AttendancesModel.js";
 
 //Metodos CRUD
 

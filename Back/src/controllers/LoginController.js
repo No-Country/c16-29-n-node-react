@@ -1,4 +1,4 @@
-import { User } from "../database/models/Users.js";
+import  { UsersModel } from "../database/models/UsersModel.js";
 //import { User } from "../models/UserModel";
 import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -12,16 +12,12 @@ let res_user= {};
 
 
 //validations  
-import { validationResult } from "express-validator";
+
 
 export const register = async (req, res) => {
   try {
-    //egregando errores de validaciones//
-    let errors = validationResult(req);
-
-    if(!errors.isEmpty()){
     if (!req.body) {
-      res.status(400).send(errors.mapped());
+      res.status(400).send((req.body));
     }
     const { name, email, password } = req.body;
     if (!(email && name && password)) {
@@ -39,10 +35,9 @@ export const register = async (req, res) => {
     }
 
     const encryptedPassword = await hash(password, 10);
-    newUser = User(name, email, encryptedPassword);
+    newUser = users(name, email, encryptedPassword);
 
     users = [...users, newUser];
-  }
   } catch (err) {
     console.log("Ha ocurrido un error", err);
   }
@@ -53,14 +48,12 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
  
   try {
-    let errors = validationResult(req);
 
     const { username, password } = req.body;
-    if(!errors.isEmpty()){
+   
     if (!(username && password)) {
       res.status(400).send(errors.mapped());
     }
-  }
 
     const user = await validateUser(username);
 

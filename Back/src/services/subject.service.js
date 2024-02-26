@@ -1,17 +1,7 @@
 
+  import  Subject  from "../database/models/Subject.js";
 
-
-/*   GET /api/subjects/current [TEACHER] */
-/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
-/* GET /api/subjects [PRINCIPAL] */
-/* DELETE /api/subjects/:id [PRINCIPAL] */
-/* POST /api/subjects [PRINCIPAL] */
-/* PUT /api/subjects/:id [PRINCIPAL] */
-
-
-  const { Subject } = require("../database/models");
-
-  const getSubjets = async () => {/* GET /api/subjects [PRINCIPAL] */
+  export const getSubject = async () => {/* GET /api/subjects [PRINCIPAL] */
     try {
         return await Subject.findAll({
             include:[
@@ -24,7 +14,7 @@
     throw new Error("Error fetching subject");
     }
 };
-  const getSubjectById =  async (id) => {/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
+ export const getSubjectId =  async (id) => {/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
     try {
         return await Subject.findByPk(id , {
             include: [
@@ -37,7 +27,7 @@
         throw new Error("Error fetching subject");
     }
   };
-  const getSubjectsByTeacherId = async (teacherId) =>{/*   GET /api/subjects/current [TEACHER] */
+  export const getSubjectsTeacherId = async (teacherId) =>{/*   GET /api/subjects/current [TEACHER] */
     try {
 
          /* [
@@ -59,18 +49,18 @@
             include: [
                 {association: "students"},
                 { association : 'teachers'} ,
-            ]   
-        }
-            where: {
-                    teacher_id: teacherId,   
+                {
+                    where: { teachers_id: teacherId}
                 }
+            ]  
+        }
         )
        } catch (error) {
            console.error('Error al obtener la informacion de las asignaturas del profesor', error);
            throw new Error(" error al buscar la materia");
        }
     };
-  const insertSubjects = async (subjectData) =>{/* POST /api/subjects [PRINCIPAL] */
+  export const insertSubjects = async (subjectData) =>{/* POST /api/subjects [PRINCIPAL] */
     try {
         return await Subject.create(subjectData)
     } catch (error) {
@@ -78,7 +68,7 @@
         throw new Error("Error insert subject");
     }
   };
-  const updateSubject = async (subjectData)=>{ /* PUT /api/subjects/:id [PRINCIPAL] */
+  export const modifySubject = async (subjectData)=>{ /* PUT /api/subjects/:id [PRINCIPAL] */
     try {
         return await Subject.update(subjectData, {
             where: { id: subjectData.id}
@@ -89,11 +79,11 @@
     }
   };
 
-module.exports = {
-    getSubjets,
-    getSubjectById,
-    getSubjectsByTeacherId,
+/* export default {
+    getSubject,
+    getSubjectId,
+    getSubjectsTeacherId,
     insertSubjects,
-    updateSubject
-};
+    modifySubject
+}; */
 

@@ -1,8 +1,8 @@
-import  User  from "../database/models.js";
+import  { UsersModel }  from "../database/models/UsersModel.js";
 
 export const getUserByEmail = async (email) => {// usuario por email
     try {
-      return await User.findOne({//busca un usuario por su email
+      return await UsersModel.findOne({//busca un usuario por su email
         where: {
           email,
         },

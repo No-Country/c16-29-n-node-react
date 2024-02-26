@@ -1,8 +1,8 @@
-const path = require('path');
+import { resolve } from 'path';
  
-module.exports = {
- config: path.resolve('./src/database/config', 'config.js'),
- 'models-path': path.resolve('./src/database/models'),
- 'seeders-path': path.resolve('./src/database/seeders'),
- 'migrations-path': path.resolve('./src/database/migrations'),
+export default {
+ config: path.resolve('./src/databse/db.config.js'),
+ 'models-path': resolve('./src/database/models'),
+ 'seeders-path': resolve('./src/database/seeders'),
+ 'migrations-path': resolve('./src/database/migrations'),
 }

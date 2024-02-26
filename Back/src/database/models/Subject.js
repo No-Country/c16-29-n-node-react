@@ -5,7 +5,7 @@
     `divition` varchar(255) NOT NULL
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
-  module.exports = ( sequelize, dataTypes )=> {
+  export default ( sequelize, dataTypes )=> {
     let alias ="Subject";
     let cols = {
         id: {  type:dataTypes.INTEGER(11), allowNull: false,  primaryKey: true },

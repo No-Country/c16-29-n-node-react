@@ -1,7 +1,6 @@
 import { check, body } from "express-validator";
-import db from "../database/models";
-import { servicio } from "../services/user.service.js";
-// api de registro
+import UsersModel from "../database/models/UsersModel.js";
+import  { getUserByEmail } from "../services/user.service.js";
  /* CREATE TABLE `Users` (
     `id` int(11) NOT NULL,
     `username` varchar(255) NOT NULL COMMENT 'DNI',
@@ -16,7 +15,7 @@ import { servicio } from "../services/user.service.js";
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
 
-const userRegisterValidationRules = () =>{
+export const userRegisterValidationRules = () =>{
     return [
         check("username").notEmpty().withMessage("el nombre de usuario es requerido"),
         check("password").notEmpty().isLength({min: 6, max: 12}).withMessage("la contraseña debe tener un minimo de 6 caracteres y maximo de 12"),
@@ -25,4 +24,4 @@ const userRegisterValidationRules = () =>{
         check("email").isEmail().withMessage("ingresar un email valido")
     ];
 };
-export default{ userRegisterValidationRules};
+/* export default{ userRegisterValidationRules}; */

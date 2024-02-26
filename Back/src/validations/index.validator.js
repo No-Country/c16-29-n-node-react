@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+import { validationResult } from "express-validator";
 
 /**
  * La función valida la solicitud y devuelve cualquier error como respuesta JSON.
@@ -28,4 +28,4 @@ const validate = (req, res, next) => {//middelware q ejecuta pedido respuesta y 
   });
 };
 
-module.exports = validate;
+export default validate;
