@@ -8,13 +8,8 @@ import { SubjectModel } from "../database/models/index.js";
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
 export const getSubject = async () => {
-  /* GET /api/subjects [PRINCIPAL] */
   try {
     return await SubjectModel.findAll({
-      /*       include:[
-                {association: "students" },
-                {association: "teachers" },
-            ], */
       attributes: ["id", "name", "grade", "divition"],
     });
   } catch (error) {
@@ -23,15 +18,11 @@ export const getSubject = async () => {
   }
 };
 export const getSubjectId = async (id) => {
-  /* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
   try {
     return await SubjectModel.findByPk(
-      id /* , {
-            include: [
-                {association: "students"},
-                { association : 'teachers'} ,
-            ]
-        } */
+      id ,{
+        attributes: ["id", "name", "grade", "divition"],
+      }
     );
   } catch (error) {
     console.error("Error while fetching subject:", error);
@@ -39,7 +30,6 @@ export const getSubjectId = async (id) => {
   }
 };
 export const getSubjectsTeacherId = async (teacherId) => {
-  /*   GET /api/subjects/current [TEACHER] */
   try {
     /* [
     {
@@ -57,14 +47,11 @@ export const getSubjectsTeacherId = async (teacherId) => {
     }
 ] */
     return await SubjectModel.findOne(teacherId, {
-      include: [
-        { association: "students" },
-        { association: "teachers" },
-        {
-          where: { teachers_id: teacherId.id, name: teacherId.name },
+          where: {
+            teacherId, 
+          }
         },
-      ],
-    });
+    );
   } catch (error) {
     console.error(
       "Error al obtener la informacion de las asignaturas del profesor",

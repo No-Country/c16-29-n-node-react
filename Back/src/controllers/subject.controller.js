@@ -5,6 +5,8 @@ import {
   insertSubjects,
   modifySubject,
 } from "../services/subject.service.js";
+import { encrypt } from "../middlewares/encrypt.js";
+import { hashSync } from "bcrypt";
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,
@@ -16,18 +18,10 @@ import {
 export const getSubjects = async (req, res) => {
   try {
     const subjects = await getSubject();
-    const SUBJECT_RESPONSE = subjects.map(({ id, name, grade, divition }) => {
-      return {
-        id,
-        name,
-        grade,
-        divition,
-        detail: `/api/subjects/${id}`,
-      };
-    });
     const RESPONSE = {
       count: subjects.length,
-      users: SUBJECT_RESPONSE,
+      subjects,
+      detail: `/api/subjects/${subjects[0].id}`
     };
     return res.status(200).json(RESPONSE);
   } catch (error) {
@@ -45,7 +39,8 @@ export const getSubjectById = async (req, res) => {
 };
 export const getSubjectsByTeacherId = async (req, res) => {
   try {
-    const TEACHER_ID = req.user.teacher_id;
+    const TEACHER_ID = req.params.teacher_id;
+    console.log(TEACHER_ID);
     const subjects = await getSubjectsTeacherId(TEACHER_ID);
     return res.status(200).json(subjects);
   } catch (error) {
@@ -54,7 +49,11 @@ export const getSubjectsByTeacherId = async (req, res) => {
 };
 export const createSubject = async (req, res) => {
   try {
-    const result = await insertSubjects({ ...req.body });
+    const result = await insertSubjects({
+         ...req.body,
+         password: hashSync(req.body.password, 12),
+        }
+    );
     return res.status(201).json(result, { msg: `Created subject` });
   } catch (error) {
     return res.status(500).json({ Error: error });

@@ -7,26 +7,14 @@ import {
   deleteMark,
 } from "../services/mark.service.js";
 
-export const getMark = async (req, res) => {
+export const getAllMarks = async (req, res) => {
   try {
     const marks = await getMarks();
-    /*  const marksResponse = marks.map(({ id, score, note, teacher_id, student_id, tutor_id, subject_id }) => {
-            return {
-                id,
-                score,
-                note,
-                subject_id,
-                teacher_id,
-                student_id,
-                tutor_id,
-                detail: `api/marks/${id}`
-            };
-        }); */
     const RESPONSE = {
       count: marks.length,
-      marks /* : marksResponse */,
+      marks,
     };
-    return res.status(200).json(RESPONSE);
+    res.status(200).json(RESPONSE); 
   } catch (error) {
     return res.status(500).json({ Error: error });
   }
@@ -34,13 +22,11 @@ export const getMark = async (req, res) => {
 export const getMarkId = async (req, res) => {
   try {
     const MARK_ID = req.params.id;
-    const { id, score, note, student_id, subject_id } = await getMarkById(
-      MARK_ID
-    );
-    const RESPONSE = { id, score, note, student_id, subject_id };
+    const { id, score, note, student_id, exam_id} = await getMarkById(MARK_ID);
+    const RESPONSE = { id, score, note, student_id, exam_id };
     return res.status(200).json(RESPONSE);
   } catch (error) {
-    return res.Status(500).json({ Error: "Mark inexitente" });
+    return res.status(500).json({ Error: "Mark inexitente" });
   }
 };
 export const getMarkStudent = async (req, res) => {

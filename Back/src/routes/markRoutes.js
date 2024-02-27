@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyToken } from "../middlewares/auth.js";
 import {
-  getMark,
+  getAllMarks,
   getMarkId,
   createMark,
   upMark,
@@ -11,8 +11,8 @@ import {
 const markRouter = Router();
 
 markRouter
-  .get("/", getMark)
-  .get("/:id", verifyToken, getMarkId)
+  .get("/", getAllMarks) 
+  .get("/:id",  getMarkId)
   .get("/current", verifyToken, getMarkStudent)
   .post("/exams", verifyToken, createMark)
   .put("/:id", verifyToken, upMark);
