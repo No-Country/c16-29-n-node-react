@@ -1,18 +1,24 @@
-import { Router  } from "express";
+import { Router } from "express";
 import { verifyToken } from "../middlewares/auth.js";
-import { getMark, getMarkId, createMark, upMark, getMarkStudent } from "../controllers/mark.controller.js";
+import {
+  getMark,
+  getMarkId,
+  createMark,
+  upMark,
+  getMarkStudent,
+} from "../controllers/mark.controller.js";
 
-const markRouter = Router()
+const markRouter = Router();
 
 markRouter
-      .get("/", getMark )
-      .get("/:id", verifyToken , getMarkId )
-      .get("/current", verifyToken , getMarkStudent )
-      .post("/exams",  verifyToken ,createMark )
-      .put("/:id", verifyToken , upMark )
+  .get("/", getMark)
+  .get("/:id", verifyToken, getMarkId)
+  .get("/current", verifyToken, getMarkStudent)
+  .post("/exams", verifyToken, createMark)
+  .put("/:id", verifyToken, upMark);
 
 export default markRouter;
-    /*   POST /api/exams [TEACHER]
+/*   POST /api/exams [TEACHER]
 POST /api/exams/marks [TEACHER]
 PUT /api/marks/:id [TEACHER]
 GET /api/exams/current [TEACHER]

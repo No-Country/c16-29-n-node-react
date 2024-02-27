@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { getSubjects, getSubjectById, getSubjectsByTeacherId, createSubject, updateSubject } from "../controllers/subject.controller.js";
+import {
+  getSubjects,
+  getSubjectById,
+  getSubjectsByTeacherId,
+  createSubject,
+  updateSubject,
+} from "../controllers/subject.controller.js";
 import { verifyToken } from "../middlewares/auth.js";
 
 const subjectRouter = Router();
@@ -10,11 +16,11 @@ const subjectRouter = Router();
 /* POST /api/subjects [PRINCIPAL] */
 /* PUT /api/subjects/:id [PRINCIPAL] */
 subjectRouter
-             .get("/",  getSubjects)
-             .get("/:id", getSubjectById)
-             .get("/current",  verifyToken ,getSubjectsByTeacherId)
-             .post("/", verifyToken , createSubject)
-             .put( "/:id", verifyToken,  updateSubject)
+  .get("/", getSubjects)
+  .get("/:id", getSubjectById)
+  .get("/current", verifyToken, getSubjectsByTeacherId)
+  .post("/", verifyToken, createSubject)
+  .put("/:id", verifyToken, updateSubject);
 /*    .delete("/:id", deleteSubject); */
 
 export default subjectRouter;

@@ -1,23 +1,19 @@
-import  { UsersModel } from "../database/models/UsersModel.js";
-//import { User } from "../models/UserModel";
 import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { TOKEN_KEY } from "../../d_config.js";
 let newUser = {};
 let users = [];
-import { validateUser } from './UsersController.js'
+import { validateUser } from "./UsersController.js";
 import { verified } from "../middlewares/encrypt.js";
 let role;
-let res_user= {};
+let res_user = {};
 
-
-//validations  
-
+//validations
 
 export const register = async (req, res) => {
   try {
     if (!req.body) {
-      res.status(400).send((req.body));
+      res.status(400).send(req.body);
     }
     const { name, email, password } = req.body;
     if (!(email && name && password)) {
@@ -41,16 +37,14 @@ export const register = async (req, res) => {
   } catch (err) {
     console.log("Ha ocurrido un error", err);
   }
-  
+
   return res.status(201).json(newUser);
 };
 
 export const login = async (req, res) => {
- 
   try {
-
     const { username, password } = req.body;
-   
+
     if (!(username && password)) {
       res.status(400).send(errors.mapped());
     }
@@ -59,10 +53,10 @@ export const login = async (req, res) => {
 
     if (user && (await verified(password, user.passHash))) {
       const token = jwt.sign({ role }, TOKEN_KEY, { expiresIn: "2h" });
-      
-      res_user.role= user.role;
+
+      res_user.role = user.role;
       res_user.token = token;
-      
+
       res.status(200).json(res_user);
     } else {
       res.status(403).send("Credenciales inválidas");

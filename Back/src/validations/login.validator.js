@@ -1,8 +1,8 @@
-import { check, body } from 'express-validator';
+import { check, body } from "express-validator";
 import { compareSync } from "bcrypt";
- import { getUserByEmail } from '../services/user.service.js'; 
+import { getUserByUsername } from "../services/user.service.js";
 
- /* CREATE TABLE `Users` (
+/* CREATE TABLE `Users` (
     `id` int(11) NOT NULL,
     `username` varchar(255) NOT NULL COMMENT 'DNI',
     `password` varchar(255) NOT NULL,
@@ -15,24 +15,28 @@ import { compareSync } from "bcrypt";
     `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
    */
- export const userLoginValidationsRules = () => {
-    return [
-        check("username").notEmpty().withMessage("Ingrese su  usuario"),//obligatorio
-        check("password").notEmpty().withMessage("ingrese su contraseña")
-        .isLength({ min: 6,  max: 12, }).withMessage("La contraseña debe tener un minimo de 6 caracteres y un maximo de 12"),
+export const userLoginValidationsRules = () => {
+  return [
+    check("username").notEmpty().withMessage("Ingrese su  usuario"), //obligatorio
+    check("password")
+      .notEmpty()
+      .withMessage("ingrese su contraseña")
+      .isLength({ max: 12 })
+      .withMessage(
+        "La contraseña debe tener un minimo de 6 caracteres y un maximo de 12"
+      ),
 
-        body("custom").custom(async (value, { req} ) =>{
-            
-            return getUserByEmail(req.body.email)
-            .then((user) =>{
-                if(!compareSync(req.body.password, user.dataValues.password)){
-                    return Promise.reject();
-                }
-            })
-            .catch(() => Promise.reject("Email o constraseña incorrecto"))
+    body("custom").custom(async (value, { req }) => {
+      return getUserByUsername(req.body.username)
+        .then((user) => {
+          if (!compareSync(req.body.password, user.dataValues.password)) {
+            return Promise.reject();
+          }
         })
-        /* promesa de services para obtener el usuario registrado */
-    ];
- };
- 
+        .catch(() => Promise.reject("Usuario o constraseña incorrecto"));
+    }),
+    /* promesa de services para obtener el usuario registrado */
+  ];
+};
+
 /*  export default userLoginValidationsRules; */

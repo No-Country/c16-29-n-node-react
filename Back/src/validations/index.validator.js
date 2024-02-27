@@ -16,14 +16,16 @@ import { validationResult } from "express-validator";
  */
 //consultar si dejarlo en el middlevare o como index.validator
 
-const validate = (req, res, next) => {//middelware q ejecuta pedido respuesta y siguiente
-  const errors = validationResult(req);//si no hay errores segui 
+const validate = (req, res, next) => {
+  //middelware q ejecuta pedido respuesta y siguiente
+  const errors = validationResult(req); //si no hay errores segui
   if (errors.isEmpty()) {
     return next();
   }
-  const extractedErrors = errors.mapped();//sino enevia los errores de validator result
+  const extractedErrors = errors.mapped(); //sino enevia los errores de validator result
 
-  return res.status(422).json({ //msj estado de error devuelve el objeto  con los errores
+  return res.status(422).json({
+    //msj estado de error devuelve el objeto  con los errores
     errors: extractedErrors,
   });
 };
