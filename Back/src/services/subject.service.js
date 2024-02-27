@@ -1,13 +1,22 @@
 
   import  Subject  from "../database/models/Subject.js";
 
+  /* CREATE TABLE `Subjects` (
+    `id` int(11) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    `grade` varchar(255) NOT NULL,
+    `divition` varchar(255) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+   */
   export const getSubject = async () => {/* GET /api/subjects [PRINCIPAL] */
     try {
         return await Subject.findAll({
-            include:[
+      /*       include:[
                 {association: "students" },
                 {association: "teachers" },
-            ]
+            ], */
+            attributes: [
+                'id', 'name', "grade", "divition"]
         })
     } catch (error) {
         console.error("Error while fetching subject:", error);
@@ -16,12 +25,12 @@
 };
  export const getSubjectId =  async (id) => {/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
     try {
-        return await Subject.findByPk(id , {
+        return await Subject.findByPk(id /* , {
             include: [
                 {association: "students"},
                 { association : 'teachers'} ,
             ]
-        });
+        } */);
     } catch (error) {
         console.error("Error while fetching subject:", error);
         throw new Error("Error fetching subject");

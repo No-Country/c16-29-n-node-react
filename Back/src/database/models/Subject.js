@@ -1,41 +1,34 @@
-/* CREATE TABLE `Subjects` (
-    `id` int(11) NOT NULL,
-    `name` varchar(255) NOT NULL,
-    `grade` varchar(255) NOT NULL,
-    `divition` varchar(255) NOT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-   */
-  export default ( sequelize, dataTypes )=> {
-    let alias ="Subject";
-    let cols = {
-        id: {  type:dataTypes.INTEGER(11), allowNull: false,  primaryKey: true },
-        name: {  type:dataTypes.STRING(255), allowNull: false},
-        grade: {  type:dataTypes.STRING(255), allowNull: false },
-        divition: {  type:dataTypes.STRING(255), allowNull: false, },
-    }
-    let config = {
-        nameTable : "Subjects",
-        timestamps: false
-    };
-    const Subject = sequelize.define( alias , cols, config);
+import db  from "../db.js";
 
-    Subject.associate = (models) =>{
-        // many-to-one association between models
-        Subject.belongsTo(models.User, { foreignKey: 'teacher_id' });
-        Subject.hasMany(models.Mark, { as:"marks"});
-        Subject.belogsToMany(models.User,
+import  { UsersModel } from "../models/UsersModel.js";
+import  { Mark } from "../models/Mark.js" ;
+import { DataTypes } from "sequelize"; 
+  
+  
+  export const Subject =  db.define( "Subject", {
+        id: {  type:DataTypes.INTEGER(11), allowNull: false,  primaryKey: true },
+        name: {  type:DataTypes.STRING(255), allowNull: false},
+        grade: {  type:DataTypes.STRING(255), allowNull: false },
+        divition: { type:DataTypes.STRING(255), allowNull: false, },
+    },{
+        timestamps: false
+    });
+     // many-to-one association between models
+        Subject.belongsTo(UsersModel, { foreignKey: 'teacher_id' });
+        Subject.hasMany( Mark , { foreignKey: "subject_id", as:"marks" });
+        Subject.belongsToMany(UsersModel,
              { as: "students",
             through: "StudentSubject",
             foreignKey:  "subject_id", 
             otherKey: "student_id"});
         
-            Subject.belogsToMany(models.User,
+            Subject.belongsToMany(UsersModel,
                  { as: "teachers",
                 through: "TeacherSubject",
                 foreignKey:  "subject_id", 
                 otherKey: "teacher_id"});
-    };
-    return Subject;
-};
+
+    export default Subject;
+
 
 

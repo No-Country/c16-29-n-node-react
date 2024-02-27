@@ -5,7 +5,7 @@ import { getMark, getMarkId, createMark, upMark, getMarkStudent } from "../contr
 const markRouter = Router()
 
 markRouter
-      .get("/", verifyToken  , getMark )
+      .get("/", getMark )
       .get("/:id", verifyToken , getMarkId )
       .get("/current", verifyToken , getMarkStudent )
       .post("/exams",  verifyToken ,createMark )

@@ -6,7 +6,7 @@ export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   try {                        
     return await Mark.findAll({
        attributes: [
-        'id', 'score', "note", "subject_id", "studen_id", "teacher_id", "created_at" , "update_at" ]
+        'id', 'score', "note", "subject_id", "student_id", "teacher_id", "created_at" , "updated_at" ]
     });//todos los usuarios
   } catch (error) {
     console.error("Error while fetching marks:", error);

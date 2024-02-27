@@ -1,8 +1,9 @@
 
 import  db  from "../db.js";
+import { Subject } from "../models/Subject.js";
+import { UsersModel } from "../models/UsersModel.js"
   //Importar Sequilize
-import { DataTypes } from "sequelize";
-import { Association } from "sequelize"; 
+import { DataTypes } from "sequelize"; 
 
   
 export const Mark = db.define( "Marks", {
@@ -16,12 +17,12 @@ export const Mark = db.define( "Marks", {
         updated_at: {type: DataTypes.DATE, allowNull: false},
 },{
     timestamps: true
- })
-Mark.associations = (models) =>{
-    Mark.belongsTo(models.Subject, {foreignKey:'subject_id', as:'subject'});
-    Mark.belongsTo(models.UserModel, { foreignKey: 'user_id', as: 'student' });
-    Mark.belongsTo(models.UserModel, { foreignKey: 'teacher_id', as: 'teacher' });
-}
+ });
+ Mark.belongsTo(Subject, {foreignKey:'subject_id', as:'subject'});
+ Mark.belongsTo(UsersModel, { foreignKey: 'user_id', as: 'student' });
+ Mark.belongsTo(UsersModel, { foreignKey: 'teacher_id', as: 'teacher' });
+ 
+ //Relaciones entre tablas
 export default Mark;
 
 
