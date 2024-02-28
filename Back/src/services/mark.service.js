@@ -1,4 +1,4 @@
-import { MarkModel } from "../database/models/index.js";
+import { MarkModel, UserModel, ExamModel } from "../database/models/index.js";
 import associations from "../database/models/associations.js"
 
 //sevicios pasa informacion de  la base de datos al controlador//
@@ -7,6 +7,10 @@ export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
     return await MarkModel.findAll({
       attributes: [
         "id", "score", "note", "student_id", "exam_id"
+      ],
+      include : [
+        { model: UserModel},
+        {model: ExamModel}
       ]
     });//todos los usuarios
   } catch (error) {
@@ -19,8 +23,8 @@ export const getMarkById = async (id) => {
   try { /* GET /api/exams/:id/marks [TEACHER] */
     return await MarkModel.findByPk(id, {
       include: [
-        { association: "Users"},
-        { association: "Subjects"}
+        { model: UserModel},
+        { model: ExamModel}
       ]
     });//usuario por id
   } catch (error) {
@@ -31,10 +35,14 @@ export const getMarkById = async (id) => {
 
 export const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
   try {
-    return await MarkModel.findOne({//busca un mark por id de estudiante
+    return await MarkModel.findAll({//busca un mark por id de estudiante
       where: {
         student_id,
       },
+      include: [
+        { model: UserModel},
+        { model: ExamModel}
+      ]
     });
   } catch (error) {
     console.error("Error while fetching mark:", error);

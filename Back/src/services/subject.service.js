@@ -1,4 +1,5 @@
 import { SubjectModel } from "../database/models/index.js";
+import { UserModel } from "../database/models/index.js"; 
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,

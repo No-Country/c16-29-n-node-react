@@ -52,7 +52,7 @@ export const login = async (req, res) => {
     const user = await validateUser(username);
 
     if (user && (await verified(password, user.passHash))) {
-      const token = jwt.sign({ role }, TOKEN_KEY, { expiresIn: "2h" });
+      const token = jwt.sign({ role: user.role , id: user.id }, TOKEN_KEY, { expiresIn: "2h" });
 
       res_user.role = user.role;
       res_user.token = token;

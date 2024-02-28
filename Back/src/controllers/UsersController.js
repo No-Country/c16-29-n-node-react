@@ -15,8 +15,6 @@ export const getAllUsers = async (req, res) => {
         "role",
         "email",
         "phone",
-        "created_at",
-        "updated_at",
       ],
     });
     res.json(users);
@@ -140,13 +138,14 @@ export const validateUser = async (username) => {
   let user = {};
   try {
     const resUser = await UserModel.findOne({
-      attributes: ["role", "password"],
+      attributes: ["role", "password" , "id"],
       where: { username: username },
     });
 
     if (resUser) {
       user.role = resUser.dataValues.role;
       user.passHash = resUser.dataValues.password;
+      user.id =  resUser.dataValues.id;
 
       return user;
     } else {

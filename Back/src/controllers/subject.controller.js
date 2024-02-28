@@ -21,7 +21,7 @@ export const getSubjects = async (req, res) => {
     const RESPONSE = {
       count: subjects.length,
       subjects,
-      detail: `/api/subjects/${subjects[0].id}`
+      /* detail: `/api/subjects/${subjects[0].id}` */
     };
     return res.status(200).json(RESPONSE);
   } catch (error) {
@@ -39,7 +39,7 @@ export const getSubjectById = async (req, res) => {
 };
 export const getSubjectsByTeacherId = async (req, res) => {
   try {
-    const TEACHER_ID = req.params.teacher_id;
+    const TEACHER_ID = req.user.id;
     console.log(TEACHER_ID);
     const subjects = await getSubjectsTeacherId(TEACHER_ID);
     return res.status(200).json(subjects);

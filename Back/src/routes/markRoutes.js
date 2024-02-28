@@ -12,8 +12,8 @@ const markRouter = Router();
 
 markRouter
   .get("/", getAllMarks) 
-  .get("/:id",  getMarkId)
   .get("/current", verifyToken, getMarkStudent)
+  .get("/:id",  getMarkId)
   .post("/exams", verifyToken, createMark)
   .put("/:id", verifyToken, upMark);
 
