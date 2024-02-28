@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosInstance } from "../../utils/axios";
 
 const roles = {
-  PRINCIPAL: "directivo"
+  PRINCIPAL: "directivo",
+  TEACHER: "profesor",
+  TUTOR: "tutor",
+  STUDENT: "alumno"
 }
 
 const initialState = {
