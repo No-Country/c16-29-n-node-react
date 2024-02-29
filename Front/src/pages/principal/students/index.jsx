@@ -1,95 +1,30 @@
-// import { useMemo, useState } from "react";
-// import { SimpleTable } from "../../../components/SimpleTabla";
-// import MOCK from "./mock";
-// import { useRoutes, Link } from "react-router-dom";
-// import StudentView from "./see-student/index";
-// import Button from "../../../components/ui/button";
-
-// const PrincipalStudentsView = () => {
-//   const routes = useRoutes([
-//     { path: "/" , element: <StudentsView />},
-//     { path: "/:id", element: <StudentView />}
-//   ])
-
-//   return routes;
-// };
-
-// const StudentsView = () => {
-//   const handleAction = (action) => (row) => {
-//     console.log(action, row);
-//   }
-
-//   const [active, setActive] = useState(0);
-//   const [data, setData] = useState(MOCK);
-
-//   const filterSomething = (e) => {
-//     setData(data.filter((subject) => e.currentTarget.value))
-//   }
-
-//   const columns = useMemo(() => {
-//     return [
-//       {
-//         Header: "Nombre Completo",
-//         accessorKey: "name",
-//         cell: ({ row: { original } }) => <Link to={`${original.name} ${original.grade}° ${original.divition}`}>{original.name}</Link>
-//       },
-//       {
-//         id: "tutors",
-//         Header: "Tutores Asociados",
-//         accessorKey: "tutors"
-//       },
-//       {
-//         Header: "Estado",
-//         accessorKey: "state",
-//       },
-//       {
-//         Header: "Acciones",
-//         id: "actions",
-//         cell: ({ row: { original } }) => (
-//           <div className="flex jutify-center gap-2">
-//             <button onClick={() => handleAction("edit")(original)}>
-//               <img src="/assets/edit.svg" alt="editar materia" />
-//             </button>
-//             <button onClick={() => handleAction("delete")(original)}>
-//               <img src="/assets/trash.svg" alt="eliminar materia" />
-//             </button>
-//           </div>
-//         ),
-//       },
-//     ];
-//   }, [])
-
-//   return (
-//     <div className="grow flex flex-col overflow-hidden">
-//       <p className="mx-0">{data.length} registros</p>
-//       <SimpleTable columns={columns} data={data} actions={<Button>Crear Alumno</Button>} />
-//     </div>
-//   );
-// }
-
-// export default PrincipalStudentsView;
-
 import { useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import MOCK from "./mock";
 import { useRoutes } from "react-router-dom";
-import CreateSubject from "../../../components/forms/create-subject";
-import EditSubject from "../../../components/forms/edit-subject";
+import CreateStudent from "../../../components/forms/create-student";
+import EditStudent from "../../../components/forms/edit-student";
 import Button from "../../../components/ui/button";
 import Offcanvas from "../../../components/ui/offcanvas";
 import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
+import { useSelector } from "react-redux";
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
-    { path: "/" , element: <StudentsView />}
+    { path: "/", element: <StudentsView /> }
   ])
 
   return routes;
 };
 
 const StudentsView = () => {
+
+  // Estados
+
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
+
   const [active, setActive] = useState({
     type: "",
     row: {}
@@ -98,13 +33,23 @@ const StudentsView = () => {
   const modal = useDisclosure();
   const [data, setData] = useState(MOCK);
 
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+
+  // Funciones 
+
   const resetState = (action) => () => {
     action();
     setActive({
       type: "",
       row: {}
     });
-  } 
+  }
+
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
 
   const handleConfirmCreateItem = () => {
     setActive({
@@ -122,36 +67,40 @@ const StudentsView = () => {
   }
 
   const handleEditItem = (row) => {
-    setData((data) => data.map((subject) => {
-      return subject.id === active.row.id 
-      ? (
-          {
-            ...row,
-            name: row.subject,
-            teachers: [{
-              id: row.teacher.value,
-              name: row.teacher.label,
-            }],
-            students: []
-          }
-        ) 
-      : (
-        subject
+    setData((data) =>
+      data.map((student) =>
+        student.id === active.row.id ? {
+          ...row,
+          name: row.name,
+          state: row.state,
+          tutors: selectedOptions.map(option => option.label),
+          email: row.email,
+          phonenumber: row.phonenumber,
+          password: row.password,
+          username: row.username
+        } : student
       )
-    })
-    )
-  }
+    );
+    offcanvas.handleClose();
+  };
 
   const handleCreateItem = (row) => {
-    setData((data) => data.concat({
-      ...row,
-      name: row.subject,
-      teachers: [{
-        id: row.teacher.value,
-        name: row.teacher.label,
-      }],
-      students: []
-    }))
+    setData((prevData) => {
+      const newId = Math.max(...prevData.map(item => item.id), 0) + 1;
+      const newItem = {
+        id: newId,
+        name: row.name,
+        lastname: row.lastname,
+        username: row.username,
+        password: row.password,
+        email: row.email,
+        phonenumber: row.phonenumber,
+        tutors: selectedOptions.map(option => option.label),
+        state: row.state,
+      }
+      return [...prevData, newItem];
+    });
+    offcanvas.handleClose();
   }
 
   const handleConfirmDeleteItem = (row) => {
@@ -163,8 +112,14 @@ const StudentsView = () => {
   }
 
   const handleDeleteItem = ({ id }) => {
-    setData((subjects) => subjects.filter((subject) => subject.id !== id))
+    setData((students) => students.filter((student) => student.id !== id))
   }
+
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+
+  // Columnas 
 
   const columns = useMemo(() => {
     return [
@@ -173,8 +128,14 @@ const StudentsView = () => {
         accessorKey: "name",
       },
       {
-        Header: "Tutores asociados",
-        accessorKey: "tutors",
+        Header: "Tutor asociado",
+        id: "tutors",
+        accessor: "tutors",
+        cell: ({ row: { original } }) => (
+          data ? (
+            <span>{original.tutors?.join(" / ")}</span>
+          ) : null
+        ),
       },
       {
         Header: "Estado",
@@ -197,52 +158,56 @@ const StudentsView = () => {
     ];
   }, [])
 
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+
   return (
     <div className="grow flex flex-col overflow-auto">
       <p>{data.length} Registros</p>
-      <SimpleTable 
-        columns={columns} 
+      <SimpleTable
+        columns={columns}
         data={data}
         actions={<Button onClick={handleConfirmCreateItem}>Crear Alumno</Button>}
       />
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
-        title={"Crear Materia"}
+        title={"Editar Alumno"}
       >
-        { active.type === "create" && (
-          <CreateSubject 
+        {active.type === "create" && (
+          <CreateStudent
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleCreateItem}
           />
-        ) }
-        { active.type === "edit" && (
-          <EditSubject 
+        )}
+        {active.type === "edit" && (
+          <EditStudent
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleEditItem}
             initialValues={{
-              subject: active.row.name,
-              grade: active.row.grade.toString(),
-              divition: active.row.divition,
-              teacher: {
-                value: active.row.teachers[0].id,
-                label: active.row.teachers[0].name
-              }
+              name: active.row.name,
+              lastname: active.row.lastname,
+              username: active.row.username,
+              password: active.row.password,
+              email: active.row.email,
+              phonenumber: active.row.phonenumber,
+              state: active.row.state,
             }}
           />
-        ) }
+        )}
       </Offcanvas>
       <Modal
         isOpen={modal.isOpen}
         onClose={modal.handleClose}
       >
-        { active.type === "delete" && (
-          <ConfirmDelete 
+        {active.type === "delete" && (
+          <ConfirmDelete
             text={`${active.row.name} ${active.row.grade}° ${active.row.divition}`}
             onClose={resetState(modal.handleClose)}
             onConfirm={() => handleDeleteItem(active.row)}
           />
-        ) }
+        )}
       </Modal>
     </div>
   );
