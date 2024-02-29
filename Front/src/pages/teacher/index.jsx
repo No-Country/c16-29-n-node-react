@@ -1,36 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tabs from "../../components/ui/tabs";
 import Subject from "./subject";
 import Exams from "./exams";
 import NonAssistances from "./nonassistances";
 import Banns from "./banns";
 import Notes from "./notes";
+import { useNavigate } from "react-router-dom";
 
 const tabs = [
   {
-    label: "Materia",
-    value: "subject"
+    label: "Materias",
+    value: "materias"
   },
   {
     label: "Evaluaciones",
-    value: "exams"
+    value: "evaluaciones"
   },
   {
     label: "Inasistencias",
-    value: "nonassistances"
+    value: "inasistencias"
   },
   {
     label: "Amonestaciones",
-    value: "banns"
+    value: "amonestaciones"
   },
   {
     label: "Anotaciones",
-    value: "notes"
+    value: "anotaciones"
   }
 ]
 
 const NotesView = () => {
-  const [tab, setTab] = useState("subject");
+  const [tab, setTab] = useState("materias");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate("/profesor/" + tab);
+  }, [tab, navigate]);
 
   return (
     <div className="grow flex flex-col">
@@ -39,11 +46,11 @@ const NotesView = () => {
         active={tab} 
         onChange={(tab) => setTab(tab.value)} 
       />
-      { tab === "subject" && <Subject /> }
-      { tab === "exams" && <Exams /> }
-      { tab === "nonassistances" && <NonAssistances /> }
-      { tab === "banns" && <Banns /> }
-      { tab === "notes" && <Notes /> }
+      { tab === "materias" && <Subject /> }
+      { tab === "examenes" && <Exams /> }
+      { tab === "inasistencias" && <NonAssistances /> }
+      { tab === "amonestaciones" && <Banns /> }
+      { tab === "anotaciones" && <Notes /> }
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MOCK from "../mock"
+import MOCK from "../../../principal/subjects/mock"
 import { SimpleTable } from "../../../../components/SimpleTabla";
 import usePromise from "../../../../hooks/usePromise";
 import Button from '../../../../components/ui/button';
@@ -62,7 +62,7 @@ const SubjectView = () => {
 
   return (
     <div
-      className='grow overflow-y-auto'
+      className='grow flex flex-col overflow-y-auto'
     >
       {
         isError && <p>Hubo un error buscando la materia...</p> 
