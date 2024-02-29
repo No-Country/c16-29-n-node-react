@@ -4,6 +4,7 @@ import {
   getSubjectsTeacherId,
   insertSubjects,
   modifySubject,
+  findSubjectByName
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
 import { hashSync } from "bcrypt";
@@ -49,12 +50,18 @@ export const getSubjectsByTeacherId = async (req, res) => {
 };
 export const createSubject = async (req, res) => {
   try {
+    const { name } = req.body;
+    const existingSubject = await findSubjectByName(name);
+    if(existingSubject){
+      return res.status(400).json({ error : `La materia "${name}" ya existe` });
+    }else{
     const result = await insertSubjects({
          ...req.body,
          password: hashSync(req.body.password, 12),
         }
     );
     return res.status(201).json(result, { msg: `Created subject` });
+    }
   } catch (error) {
     return res.status(500).json({ Error: error });
   }

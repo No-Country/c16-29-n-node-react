@@ -30,6 +30,15 @@ export const getSubjectId = async (id) => {
     throw new Error("Error fetching subject");
   }
 };
+export const findSubjectByName = async (name) =>{
+    try {
+      // Busca un sujeto por su título en la base de datos
+       return await SubjectModel.findOne({ name });
+       // Devuelve el sujeto si lo encuentra o null si no lo encuentra
+    } catch (error) {
+      throw new Error(`Error al buscar el sujeto por título: ${error.message}`);
+    }
+};
 export const getSubjectsTeacherId = async (teacherId) => {
   try {
     /* [
