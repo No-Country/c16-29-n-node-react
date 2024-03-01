@@ -15,7 +15,6 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
         register,
         handleSubmit,
         setValue,
-        watch,
         formState: { errors },
       } = useForm({
         resolver: zodResolver(schema),
@@ -36,9 +35,6 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
     useEffect(()=>{
         setValue("subjects", selectedOptions)
     },[selectedOptions])
-    console.log(watch())
-    console.log(selectedOptions)
-    console.log(subjects)
     return (
         <>
         <Offcanvas.Body>

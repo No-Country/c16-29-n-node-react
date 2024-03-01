@@ -95,9 +95,14 @@ const PrincipalTeachersView = () => {
   const columns = useMemo(() => {
     return [
       {
-        Header: "Nombre Completo",
+        Header: "Nombre",
         accessorKey: "name",
         id:"name"
+      },
+      {
+        Header: "Apellido",
+        accessorKey: "lastname",
+        id:"lastname"
       },
       {
         Header: "Correo Electronico",
@@ -127,7 +132,6 @@ const PrincipalTeachersView = () => {
     },
     ];
   }, [teachers])
-console.log(selectedTeacherId, "selectedTeacherId")
 return (
     <div className="grow flex flex-col overflow-auto">
      {alert.show && (
