@@ -5,6 +5,7 @@ import {
   getSubjectsByTeacherId,
   createSubject,
   updateSubject,
+  deleteSubject
 } from "../controllers/subject.controller.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { subjectValidatorRules } from "../validations/subject.validator.js";
@@ -23,6 +24,6 @@ subjectRouter
   .get("/:id", getSubjectById)
   .get("/current/:id",  getSubjectsByTeacherId)
   .post("/create", subjectValidatorRules(), validate, createSubject)
-/*    .delete("/:id", deleteSubject); */
+  .delete("/delete/:id", deleteSubject); 
 
 export default subjectRouter;

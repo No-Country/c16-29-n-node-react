@@ -79,3 +79,19 @@ export const updateSubject = async (req, res) => {
     return res.status(500).json({ Error: error });
   }
 };
+export const deleteSubject = async (req, res) =>{
+  try {
+    const destroySubject = req.params.id;
+    const  { id } = req.params;
+    const existingSubject = await getSubjectId(id);
+    if(!existingSubject){
+      return res.status(404).json({ error: "no se puede eliminar una materia inexistente"});
+    }else{
+      SubjectModel.destroy({
+       where: { id: destroySubject}})
+       return res.status(200).json({message: "materia eliminada"})
+     }
+  } catch (error) {
+    return res.status(500).json({Error: error})
+  }
+}
