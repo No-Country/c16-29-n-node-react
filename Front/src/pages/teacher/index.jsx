@@ -47,7 +47,7 @@ const NotesView = () => {
         onChange={(tab) => setTab(tab.value)} 
       />
       { tab === "materias" && <Subject /> }
-      { tab === "examenes" && <Exams /> }
+      { tab === "evaluaciones" && <Exams /> }
       { tab === "inasistencias" && <NonAssistances /> }
       { tab === "amonestaciones" && <Banns /> }
       { tab === "anotaciones" && <Notes /> }

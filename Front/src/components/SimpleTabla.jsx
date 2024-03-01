@@ -4,16 +4,17 @@ import {
   useReactTable,
   getPaginationRowModel, //paguinado
   getSortedRowModel, //ordenamiento
-  getFilteredRowModel, //fikter
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 // import data from "../assets/MOCK_DATA.json"; // aca viene la infomacion de ejemplo cambiar por la verdadera
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PaginatedButtons } from "./PaginatedButtons";
 import Input from "./Input";
 
-export const SimpleTable = ({ columns, data, actions }) => {
+export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
+  const [rowSelection, setRowSelection] = useState({});
 
   //en la propiedad Header va lo que se ven en la cabezera de la tabla
   // const columns = [
@@ -35,6 +36,10 @@ export const SimpleTable = ({ columns, data, actions }) => {
   //   },
   // ];
 
+  useEffect(() => {
+    onSelect?.(rowSelection)
+  }, [rowSelection])
+
   const table = useReactTable({
     columns,
     data,
@@ -42,7 +47,10 @@ export const SimpleTable = ({ columns, data, actions }) => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
+    getRowId: (row) => row.id,
     state: {
+      rowSelection,
       sorting: sorting,
       globalFilter: filtering,
       pagination: {
@@ -63,15 +71,16 @@ export const SimpleTable = ({ columns, data, actions }) => {
 
   return (
     <div className="grow flex flex-col items-start">
-      <div className="w-full my-4 flex justify-between gap-4">
-        <div>
+      <div className="w-full my-4 flex justify-between items-center gap-4">
+        <div className="flex gap-4">
           <Input
-            className="border-2"
+            className="border-2 rounded px-2 py-2"
             placeholder="Buscar"
             type="text"
             value={filtering}
             onChange={(e) => setFiltering(e.target.value)}
           />
+          {filters}
         </div>
         <div>
           {actions}

@@ -6,9 +6,18 @@ import usePromise from "../../../../hooks/usePromise";
 import Button from '../../../../components/ui/button';
 import Offcanvas from '../../../../components/ui/offcanvas';
 import useDisclosure from '../../../../hooks/useDisclosure';
-import AssignStudents from "../../../../components/forms/assign-students";
+import Checkbox from '../../../../components/ui/checkbox';
+import TeacherCreateNote from '../../../../components/forms/teacher-create-note';
+import TeacherCreateBann from '../../../../components/forms/teacher-create-bann';
+import TeacherCreateMark from '../../../../components/forms/teacher-create-mark';
+import TeacherCreateNonAttendance from '../../../../components/forms/teacher-create-nonattendance';
+import TeacherCreateExam from '../../../../components/forms/teacher-create-exam';
 
 const SubjectView = () => {
+  const [active, setActive] = useState({
+    type: "",
+    row: {}
+  });
   const { id } = useParams();
   const [promiseResult, isLoading, isError] = usePromise(() => {
     const [subject, grade, divition] = id.split("_");
@@ -24,24 +33,86 @@ const SubjectView = () => {
   })
   const [data, setData] = useState();
   const { handleClose, handleOpen, isOpen } = useDisclosure();
+  const [selecteds, setSelecteds] = useState({});
+  const hasSelecteds = Object.keys(selecteds).length === 0;
 
   useEffect(() => {
     setData(promiseResult);
   }, [promiseResult]);
 
-  const handleDeleteStudent = (id) => {
-    setData((data) => data.filter((student) => student.id !== id));
+  const resetState = (action) => () => {
+    action();
+    setTimeout(() => {
+      setActive({
+        type: "",
+        row: {}
+      });
+    }, 400)
   }
 
-  const handleAssignStudent = (selected) => {
-    setData((data) => data.concat(selected.map((student) => ({
-      id: student.value,
-      name: student.label
-    }))));
+  const handleRegisterNote = (row) => {
+    setActive(
+      {
+        type: "Registrar Anotacion",
+        row
+      }
+    );
+    handleOpen();
+  }
+  const handleRegisterBann = (row) => {
+    setActive(
+      {
+        type: "Registrar Amonestacion",
+        row
+      }
+    );
+    handleOpen();
+  }
+  const handleRegisterMark = (row) => {
+    setActive(
+      {
+        type: "Registrar Calificacion",
+        row
+      }
+    );
+    handleOpen();
+  }
+  const handleRegisterNonAttendance = () => {
+    setActive({
+      type: "Registrar Inasistencias",
+      row: {}
+    });
+    handleOpen();
+  }
+  const handleRegisterExam = () => {
+    setActive({
+      type: "Registrar Evaluacion",
+      row: {}
+    });
+    handleOpen();
   }
 
   const columns = useMemo(() => {
     return [
+      {
+        id: "cell-selected",
+        Header: ({ table }) => (
+          <Checkbox 
+            className='align-middle'
+            checked={table.getIsAllRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox 
+            className='align-middle'
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+        enableSorting: false
+      },
       {
         Header: "Alumno",
         accessorKey: "name"
@@ -51,8 +122,14 @@ const SubjectView = () => {
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex jutify-center gap-2">
-            <button onClick={() => handleDeleteStudent(original.id)}>
-              <img src="/assets/trash.svg" alt="eliminar materia" />
+            <button onClick={() => handleRegisterBann(original)} title='Registrar Amonestacion'>
+              <img src="/assets/bann-action.svg" alt="Registrar Amonestacion" />
+            </button>
+            <button onClick={() => handleRegisterMark(original)} title='Registrar Evaluacion'>
+              <img src="/assets/exam-action.svg" alt="Registrar Evaluacion" />
+            </button>
+            <button onClick={() => handleRegisterNote(original)} title='Registrar Nota'>
+              <img src="/assets/note-action.svg" alt="Registrar Nota" />
             </button>
           </div>
         ),
@@ -72,21 +149,56 @@ const SubjectView = () => {
           <SimpleTable 
             columns={columns}
             data={data ?? []}
-            actions={<Button onClick={handleOpen}>Asignar Alumnos</Button>}
+            filters={(
+              <button 
+                className={`flex gap-1 items-center ${!hasSelecteds ? "" : "text-gray-500"}`}
+                onClick={handleRegisterNonAttendance}
+                disabled={hasSelecteds}
+              >
+                <img className='inline-block w-4 h-4' src="/assets/non-attendance-action.svg" />
+                Inasistencia
+              </button>
+            )}
+            actions={<Button onClick={handleRegisterExam}>Crear Evaluacion</Button>}
+            onSelect={setSelecteds}
           />
         )
       }
       <Offcanvas
         isOpen={isOpen}
-        onClose={handleClose}
-        title={"Asignar Alumnos"}
+        onClose={resetState(handleClose)}
+        title={active.type}
       >
-        <AssignStudents
-          key={Math.random()}
-          onClose={handleClose} 
-          assigneds={data ?? []}
-          onSubmit={handleAssignStudent}
-        />
+        { active.type === "Registrar Anotacion" && (
+          <TeacherCreateNote 
+            onSubmit={() => console.log("Something")}
+            onClose={resetState(handleClose)}
+          />
+        )}
+        { active.type === "Registrar Amonestacion" && (
+          <TeacherCreateBann 
+            onSubmit={() => console.log("Something")}
+            onClose={resetState(handleClose)}
+          />
+        )}
+        { active.type === "Registrar Calificacion" && (
+          <TeacherCreateMark 
+            onSubmit={(data) => console.log(data)}
+            onClose={resetState(handleClose)}
+          />
+        )}
+        { active.type === "Registrar Inasistencias" && (
+          <TeacherCreateNonAttendance 
+            onSubmit={() => console.log("Something")}
+            onClose={resetState(handleClose)}
+          />
+        )}
+        { active.type === "Registrar Evaluacion" && (
+          <TeacherCreateExam 
+            onSubmit={() => console.log("Something")}
+            onClose={resetState(handleClose)}
+          />
+        )}
       </Offcanvas>
     </div>
   )
