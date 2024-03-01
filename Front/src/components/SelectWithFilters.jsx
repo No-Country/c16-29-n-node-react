@@ -1,7 +1,9 @@
+
 import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
+
 
 const animatedComponents = makeAnimated();
 
@@ -58,11 +60,16 @@ const colourStyles = {
   }),
 };
 
+
 const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 
   const handleSelectionChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
   };
+
+
+
+de49 (teacher-view)
 
   return (
     <Select
