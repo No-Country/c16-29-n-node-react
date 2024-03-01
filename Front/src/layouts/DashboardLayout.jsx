@@ -32,7 +32,7 @@ function DashboardLayout({ menues, children }) {
               onClick={() => navigate(-1)}
             />
           )}
-          {decodeURI(paths.join(" "))}</h1>
+          {decodeURI(paths.join(" ").replaceAll("_", " "))}</h1>
         {children}
       </div>
     </div>

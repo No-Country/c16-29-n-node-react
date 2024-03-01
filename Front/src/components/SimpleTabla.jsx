@@ -4,17 +4,18 @@ import {
   useReactTable,
   getPaginationRowModel, //paguinado
   getSortedRowModel, //ordenamiento
-  getFilteredRowModel, //fikter
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 // import data from "../assets/MOCK_DATA.json"; // aca viene la infomacion de ejemplo cambiar por la verdadera
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PaginatedButtons } from "./PaginatedButtons";
 import Input from "./Input";
 import searchIcon from '../../../UI-UX/Iconografía/search.svg';
 
-export const SimpleTable = ({ columns, data, actions }) => {
+export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
+  const [rowSelection, setRowSelection] = useState({});
 
   //en la propiedad Header va lo que se ven en la cabezera de la tabla
   // const columns = [
@@ -36,6 +37,10 @@ export const SimpleTable = ({ columns, data, actions }) => {
   //   },
   // ];
 
+  useEffect(() => {
+    onSelect?.(rowSelection)
+  }, [rowSelection])
+
   const table = useReactTable({
     columns,
     data,
@@ -43,7 +48,10 @@ export const SimpleTable = ({ columns, data, actions }) => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
+    getRowId: (row) => row.id,
     state: {
+      rowSelection,
       sorting: sorting,
       globalFilter: filtering
     },
@@ -60,16 +68,19 @@ export const SimpleTable = ({ columns, data, actions }) => {
 
   return (
     <div className="grow flex flex-col items-start">
-      <div className="w-full my-4 flex justify-between gap-4 align-items">
-        <div className="flex">
-          <Input
-            className="border-2 pl-2 rounded h-10.5"
-            placeholder="Buscar"
-            type="text"
-            value={filtering}
-            onChange={(e) => setFiltering(e.target.value)}
-          />
-          <img className="cursor-pointer relative right-8" src={searchIcon} alt="icono buscar" />
+      <div className="w-full my-4 flex justify-between items-center gap-4">
+        <div className="flex gap-4">
+          <div className="flex border-2 rounded py-2 px-2 has-[:focus]:border-1 has-[:focus]:border-black">
+            <Input
+              className="focus:outline-none"
+              placeholder="Buscar"
+              type="text"
+              value={filtering}
+              onChange={(e) => setFiltering(e.target.value)}
+            />
+            <img className="cursor-pointer" src={searchIcon} alt="icono buscar" />
+          </div>
+          {filters}
         </div>
         <div>
           {actions}
