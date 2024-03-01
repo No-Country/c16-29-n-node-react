@@ -83,12 +83,10 @@ export const insertSubjects = async (subjectData) => {
     throw new Error("Error insert subject");
   }
 };
-export const modifySubject = async (subjectData) => {
+export const modifySubject = async (id , subjectData) => {
   /* PUT /api/subjects/:id [PRINCIPAL] */
   try {
-    return await SubjectModel.update(subjectData, {
-      where: { id: subjectData.id },
-    });
+    return await SubjectModel.update( subjectData  , {where: { id }});
   } catch (error) {
     console.error("Error while update subject:", error);
     throw new Error("Error update subject");

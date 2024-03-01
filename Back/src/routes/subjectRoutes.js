@@ -19,10 +19,10 @@ const subjectRouter = Router();
 /* PUT /api/subjects/:id [PRINCIPAL] */
 subjectRouter
   .get("/", getSubjects)
+  .put("/update/:id", subjectValidatorRules(), validate ,  updateSubject)
   .get("/:id", getSubjectById)
   .get("/current/:id",  getSubjectsByTeacherId)
   .post("/create", subjectValidatorRules(), validate, createSubject)
-  .put("/update", subjectValidatorRules(), validate , verifyToken, updateSubject);
 /*    .delete("/:id", deleteSubject); */
 
 export default subjectRouter;

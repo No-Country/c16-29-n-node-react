@@ -8,6 +8,7 @@ import {
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
 import { hashSync } from "bcrypt";
+import { SubjectModel } from "../database/models/SubjectModel.js";
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,
@@ -67,9 +68,13 @@ export const createSubject = async (req, res) => {
 };
 export const updateSubject = async (req, res) => {
   try {
-    const NEW_DATA = req.body;
-    const result = await modifySubject(NEW_DATA);
-    return res.status(201).json(result);
+    const  { id } = req.params;
+    const existingSubject = await getSubjectId(id);
+    if (!existingSubject) {
+      return res.status(404).json({ error: "no hay materias para este id"});
+    }
+    await modifySubject(id, req.body);
+    return res.status(201).json({ message: "materia actualizada"});
   } catch (error) {
     return res.status(500).json({ Error: error });
   }
