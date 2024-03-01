@@ -20,11 +20,9 @@ const data = [
 ]
 
 const TeacherCreateBann = ({ onClose, onSubmit }) => {
-  const { formState: { errors }, register, handleSubmit, setValue, watch } = useForm({
+  const { formState: { errors }, register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(schema)
   })
-
-  console.log(watch())
 
   return (
     <>
@@ -35,6 +33,7 @@ const TeacherCreateBann = ({ onClose, onSubmit }) => {
               Fecha de amonestacion
             </label>
             <input
+              type="date"
               {...register("date")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.date ? 'border-red-500' : 'rounded'}`}
             />       
@@ -56,6 +55,7 @@ const TeacherCreateBann = ({ onClose, onSubmit }) => {
             </label>
             <Select
               id="type"
+              placeholder="Seleccionar..."
               onChange={(option) => setValue("type", option)}
               options={data}
             ></Select>
@@ -86,11 +86,13 @@ const TeacherCreateBann = ({ onClose, onSubmit }) => {
 export default TeacherCreateBann;
 
 const schema = z.object({
-  date: z.string().datetime(),
-  reason: z.string().min(1),
+  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
+  reason: z.string("Requerido").min(1, "Requerido"),
   type: z.object({
-    label: z.string(),
+    label: z.string().min(1),
     value: z.string()
+  }, {
+    required_error: "Requerido"
   }),
   note: z.string().optional()
 });

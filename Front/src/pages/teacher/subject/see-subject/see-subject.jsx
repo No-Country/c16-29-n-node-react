@@ -171,31 +171,31 @@ const SubjectView = () => {
       >
         { active.type === "Registrar Anotacion" && (
           <TeacherCreateNote 
-            onSubmit={() => console.log("Something")}
+            onSubmit={() => 1}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Amonestacion" && (
           <TeacherCreateBann 
-            onSubmit={() => console.log("Something")}
+            onSubmit={() => 1}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Calificacion" && (
           <TeacherCreateMark 
-            onSubmit={(data) => console.log(data)}
+            onSubmit={() => 1}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Inasistencias" && (
           <TeacherCreateNonAttendance 
-            onSubmit={() => console.log("Something")}
+            onSubmit={() => 1}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Evaluacion" && (
           <TeacherCreateExam 
-            onSubmit={() => console.log("Something")}
+            onSubmit={() => 1}
             onClose={resetState(handleClose)}
           />
         )}

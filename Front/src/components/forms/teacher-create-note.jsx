@@ -71,10 +71,12 @@ const TeacherCreateNote = ({ onClose, onSubmit }) => {
 export default TeacherCreateNote;
 
 const schema = z.object({
-  date: z.string().refine((date) => new Date(date).toISOString(), "Fecha invalida"),
-  note: z.string().min(1),
+  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
+  note: z.string().min(1, "Requerido"),
   isPublic: z.object({
     value: z.number().min(0).max(1),
     label: z.string()
+  }, {
+    required_error: "Requerido"
   })
 });

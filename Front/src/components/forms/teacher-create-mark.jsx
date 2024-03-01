@@ -107,8 +107,10 @@ const schema = z.object({
   exam: z.object({
     label: z.string(),
     value: z.number(),
+  }, {
+    required_error: "Requerido"
   }),
   score: z.coerce.number(),
-  date: z.string().refine((date) => new Date(date).toISOString()),
+  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
   note: z.string(),
 });

@@ -17,6 +17,7 @@ const TeacherCreateExam = ({ onSubmit, onClose }) => {
               Fecha de la evaluacion
             </label>
             <input
+              type="date"
               {...register("date")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.date ? 'border-red-500' : 'rounded'}`}
             />       
@@ -47,6 +48,6 @@ const TeacherCreateExam = ({ onSubmit, onClose }) => {
 export default TeacherCreateExam
 
 const schema = z.object({
-  date: z.string().datetime(),
-  title: z.string().min(1)
+  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
+  title: z.string().min(1, "Requerido")
 });

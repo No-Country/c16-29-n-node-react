@@ -71,10 +71,12 @@ const TeacherCreateNonAttendance = ({ onClose, onSubmit }) => {
 export default TeacherCreateNonAttendance;
 
 const schema = z.object({
-  date: z.string().datetime(),
+  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
   type: z.object({
     label: z.string(),
     value: z.string()
+  }, {
+    required_error: "Requerido"
   }),
-  note: z.string().min(1)
+  note: z.string().min(1, "Requerido")
 });
