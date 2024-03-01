@@ -1,35 +1,63 @@
 import { useCallback, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
-import Button from "../../../components/ui/button"
+import Button from "../../../components/ui/button";
 import OffCanvas from "../../../components/OffCanvas";
 import tutorFields from "../../../config/tutorFields";
 import { colourOptions } from "../../../utils/data";
-import { setSelectedOptions, clearSelectedOptions } from "../../../actions/actions";
+import {
+  setSelectedOptions,
+  clearSelectedOptions,
+} from "../../../actions/actions";
 import { useDispatch } from "react-redux";
-import MOCK from "./mock";
+import { tutor } from "./see-subject/mockTuto";
 import Alert from "../../../components/Alert";
+import useDisclosure from "../../../hooks/useDisclosure";
+import EditTutor from "../../../components/forms/edit-tutor";
+import Offcanvas from "../../../components/ui/offcanvas";
 
 export const DirectivoTutor = () => {
-  const [alert, setAlert] = useState({ message: "", type: "" }); // nose que hace.. 1/2
+  const [alert, setAlert] = useState({ message: "", type: "" });
+  const [data, setData] = useState(tutor);
 
-  const dispatch = useDispatch();
-
-  const [data, setData] = useState(MOCK);
-  const [showOffCanvas, setShowOffCanvas] = useState(false);
-  const [currentForm, setCurrentForm] = useState(null);
- 
   const [active, setActive] = useState({
     type: "",
-    row: {}
+    row: {},
   });
+
+  const dispatch = useDispatch();
+  const offcanvas = useDisclosure();
+
+  const resetState = (action) => () => {
+    action();
+    setActive({
+      type: "",
+      row: {},
+    });
+  };
 
   const handleConfirmCreateItem = () => {
     setActive({
-      type: "create"
+      type: "create",
     });
     offcanvas.handleOpen();
-  }
+  };
 
+  const handleConfirmEditItem = (row) => {
+    setActive({
+      type: "edit",
+      row,
+    });
+    offcanvas.handleOpen();
+  };
+
+  const handleEditItem = (updatedTutor) => {
+    setData((prevState) => {
+      const newState = [...prevState];
+      const index = newState.findIndex((tutor) => tutor.id === updatedTutor.id);
+      newState[index] = updatedTutor;
+      return newState;
+    });
+  };
 
   const columns = useMemo(() => {
     return [
@@ -53,28 +81,31 @@ export const DirectivoTutor = () => {
       {
         Header: "Acciones",
         id: "actions",
-        cell: ({ row: { original } }) => (
-          <div className="flex jutify-center gap-2">
-            <button onClick={() => console.log("edit")(original)}>
-              <img src="/assets/edit.svg" alt="editar materia" />
-            </button>
-            <button onClick={() => console.log("delete")(original)}>
-              <img src="/assets/trash.svg" alt="eliminar materia" />
-            </button>
-          </div>
-        ),
+        cell: ({ row: { original } }) => {
+          return (
+            <div className="flex jutify-center gap-2">
+              <button onClick={() => handleConfirmEditItem(original)}>
+                <img src="/assets/edit.svg" alt="editar materia" />
+              </button>
+              <button onClick={() => original}>
+                <img src="/assets/trash.svg" alt="eliminar materia" />
+              </button>
+            </div>
+          );
+        },
       },
     ];
   }, []);
 
+  const [showOffCanvas, setShowOffCanvas] = useState(false);
+  const [currentForm, setCurrentForm] = useState(null);
+
   const handleCreateTutor = () => {
-    dispatch(setSelectedOptions([]));
     setCurrentForm({
       actionType: "crearTutor",
       title: "Crear Tutor",
-      fields: tutorFields(colourOptions), //se cambia colourOptions por el const materiasOptions..... nose q hace 2/2
+      fields: tutorFields(colourOptions),
       onSubmit: (formData) => {
-        //dispatch
         setTimeout(() => {
           setAlert({
             message: "1 Tutor registrado con éxito.",
@@ -93,16 +124,14 @@ export const DirectivoTutor = () => {
 
   return (
     <div className="grow overflow-auto">
-      <div className="w-full"></div>
-            <div className="flex justify-between">
-        <p>{data.length} registros</p>
-        <div className="">
-          {/* <button
-            className="px-4 py-2 text-white bg-purple-600 hover:bg-purple-700 rounded transition duration-300 ease-in-out ml-4"
-            onClick={handleCreateTutor}
-          >
-            Crear Profesor
-          </button> */}
+      <div className="flex justify-between">
+        <div className="w-full">
+          <p>{data.length} registros</p>
+          <SimpleTable
+            columns={columns}
+            data={data}
+            actions={<Button onClick={handleCreateTutor}>Crear tutor</Button>}
+          />
         </div>
         {alert.message && (
           <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
@@ -124,8 +153,32 @@ export const DirectivoTutor = () => {
             handleCloseForm={handleCloseForm}
           />
         )}
+        <Offcanvas
+          isOpen={offcanvas.isOpen}
+          onClose={resetState(offcanvas.handleClose)}
+          title={"Crear Tutor"}
+        >
+          {active.type === "edit" && (
+            <EditTutor
+              onClose={resetState(offcanvas.handleClose)}
+              onSubmit={handleEditItem}
+              initialValues={{
+                id: active.row.id,
+                firstName: active.row.firstName,
+                lastName: active.row.lastName,
+                username: active.row.username,
+                password: active.row.password,
+                email: active.row.email,
+                phone: active.row.phone,
+                students: active.row.students.map((estudiante) => ({
+                  value: estudiante.id,
+                  label: `${estudiante.firstName} ${estudiante.lastName}`,
+                })),
+              }}
+            />
+          )}
+        </Offcanvas>
       </div>
-      <SimpleTable columns={columns} data={data} actions={<Button onClick={handleCreateTutor}>Crear Materia</Button>} />
     </div>
   );
 };
