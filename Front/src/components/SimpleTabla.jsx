@@ -70,14 +70,16 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
     <div className="grow flex flex-col items-start">
       <div className="w-full my-4 flex justify-between items-center gap-4">
         <div className="flex gap-4">
-          <Input
-            className="border-2 rounded px-2 py-2"
-            placeholder="Buscar"
-            type="text"
-            value={filtering}
-            onChange={(e) => setFiltering(e.target.value)}
-          />
-          <img className="cursor-pointer relative right-8" src={searchIcon} alt="icono buscar" />
+          <div className="flex border-2 rounded py-2 px-2 has-[:focus]:border-1 has-[:focus]:border-black">
+            <Input
+              className="focus:outline-none"
+              placeholder="Buscar"
+              type="text"
+              value={filtering}
+              onChange={(e) => setFiltering(e.target.value)}
+            />
+            <img className="cursor-pointer" src={searchIcon} alt="icono buscar" />
+          </div>
           {filters}
         </div>
         <div>
