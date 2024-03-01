@@ -21,7 +21,7 @@ subjectRouter
   .get("/", getSubjects)
   .get("/:id", getSubjectById)
   .get("/current/:id",  getSubjectsByTeacherId)
-  .post("/create", subjectValidatorRules(), validate, verifyToken, createSubject)
+  .post("/create", subjectValidatorRules(), validate, createSubject)
   .put("/update", subjectValidatorRules(), validate , verifyToken, updateSubject);
 /*    .delete("/:id", deleteSubject); */
 

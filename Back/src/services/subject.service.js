@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import { SubjectModel } from "../database/models/index.js";
 import { UserModel } from "../database/models/index.js"; 
 
@@ -33,10 +34,13 @@ export const getSubjectId = async (id) => {
 export const findSubjectByName = async (name) =>{
     try {
       // Busca un sujeto por su título en la base de datos
-       return await SubjectModel.findOne({ name });
-       // Devuelve el sujeto si lo encuentra o null si no lo encuentra
+       return await SubjectModel.findOne({
+        where:{
+          name 
+        }
+      });
     } catch (error) {
-      throw new Error(`Error al buscar el sujeto por título: ${error.message}`);
+      throw new Error(`Error al buscar la materia por nombre: ${error.message}`);
     }
 };
 export const getSubjectsTeacherId = async (teacherId) => {

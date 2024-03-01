@@ -53,14 +53,13 @@ export const createSubject = async (req, res) => {
     const { name } = req.body;
     const existingSubject = await findSubjectByName(name);
     if(existingSubject){
-      return res.status(400).json({ error : `La materia "${name}" ya existe` });
+      return res.status(400).json({ error : `La materia ${name} ya existe` });
     }else{
     const result = await insertSubjects({
          ...req.body,
-         password: hashSync(req.body.password, 12),
         }
     );
-    return res.status(201).json(result, { msg: `Created subject` });
+    return res.status(201).json({ msg: `Created subject` });
     }
   } catch (error) {
     return res.status(500).json({ Error: error });

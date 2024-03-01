@@ -10,7 +10,7 @@ export const subjectValidatorRules = (req, res, next) =>{
     return [
         check("name").notEmpty().isString().withMessage("el nombre es requerido"),
         check("grade").notEmpty().isLength({min: 1}).isString().withMessage("la grado es requerido"),
-        check("division").notEmpty().isString().isLength({min: 1 }).withMessage("La division es requerida")
+        check("divition").notEmpty().isString().isLength({min: 1 }).withMessage("La division es requerida")
         //check if the user is already in
     ]
 }
