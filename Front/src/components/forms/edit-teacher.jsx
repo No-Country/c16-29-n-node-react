@@ -30,22 +30,18 @@ const options = subjects.map(subject => ({
   
 
 
-  const { register, handleSubmit,formState: { errors } , watch, setValue } = useForm({
+  const { register, handleSubmit,formState: { errors } , setValue } = useForm({
     resolver: zodResolver(schema),
     defaultValues:initialValues
   });
 
   const handleFormSubmit = (formData) => {
-    console.log(formData.subjects, "formdata")
     onSubmit(formData);
   };
   useEffect(()=>{
     setValue("subjects", selectedOptions)
 },[selectedOptions, initialValues])
-
-console.log(watch())
 console.log(errors, "errores desde el edit teacher")
-console.log(options, "options")
 return (
     <>
         <Offcanvas.Body>

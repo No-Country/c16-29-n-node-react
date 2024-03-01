@@ -69,8 +69,6 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 
 
 
-de49 (teacher-view)
-
   return (
     <Select
       components={animatedComponents}
