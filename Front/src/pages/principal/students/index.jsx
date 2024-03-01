@@ -124,8 +124,20 @@ const StudentsView = () => {
   const columns = useMemo(() => {
     return [
       {
-        Header: "Nombre Completo",
+        Header: "Nombre",
         accessorKey: "name",
+      },
+      {
+        Header: "Apellido",
+        accessorKey: "lastname",
+      },
+      {
+        Header: "Correo Electrónico",
+        accessorKey: "email",
+      },
+      {
+        Header: "Celular",
+        accessorKey: "phonenumber",
       },
       {
         Header: "Tutor asociado",
@@ -136,10 +148,6 @@ const StudentsView = () => {
             <span>{original.tutors?.join(" / ")}</span>
           ) : null
         ),
-      },
-      {
-        Header: "Estado",
-        accessorKey: "state",
       },
       {
         Header: "Acciones",

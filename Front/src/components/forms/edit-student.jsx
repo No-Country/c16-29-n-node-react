@@ -129,16 +129,6 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
             />
             {errors?.phonenumber && <p className="text-red-500 text-xs">{errors?.phonenumber.message}</p>}
           </div>
-          <div className="flex flex-col">
-            <label htmlFor="state" className="text-base font-medium">
-              Estado
-            </label>
-            <input
-              {...register("state")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.state ? 'border-red-500' : 'rounded'}`}
-            />
-            {errors?.state && <p className="text-red-500 text-xs">{errors?.state.message}</p>}
-          </div>
           <div>
             <label htmlFor="tutors" className="text-base font-medium">
               Tutores Asociados
@@ -172,7 +162,7 @@ const schema = z.object({
   // password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Debe ser alfanumérico y contener al menos 1 letra minúscula, 1 letra mayúscula, 1 dígito, 1 carácter especial, y tener una longitud mínima de 8 caracteres"),
   email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
   phonenumber: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-  state: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  // state: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   tutors: z.array(
     z.object({
       id: z.number(),
