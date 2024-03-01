@@ -1,11 +1,9 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { setSelectedOptions } from '../actions/actions'
-import chroma from 'chroma-js'
-import makeAnimated from 'react-select/animated'
-import Select from 'react-select'
+import React from 'react';
+import makeAnimated from 'react-select/animated';
+import Select from 'react-select';
+import chroma from 'chroma-js';
 
-const animatedComponents = makeAnimated()
+const animatedComponents = makeAnimated();
 
 const colourStyles = {
   control: (styles) => ({ ...styles, backgroundColor: '#EEFAFF' }),
@@ -37,14 +35,14 @@ const colourStyles = {
             : color.alpha(0.3).css()
           : undefined,
       },
-    }
+    };
   },
   multiValue: (styles, { data }) => {
     const color = chroma(data.color);
     return {
       ...styles,
       backgroundColor: color.alpha(0.1).css(),
-    }
+    };
   },
   multiValueLabel: (styles, { data }) => ({
     ...styles,
@@ -58,34 +56,30 @@ const colourStyles = {
       color: 'white',
     },
   }),
-}
+};
 
-
-
-const SelectWithFilters = ({ data }) => {
-
-  const selectedOptionsFromRedux  = useSelector(state => state.selectedOptions)
-  const dispatch = useDispatch()
+const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 
   const handleSelectionChange = (selectedOptions) => {
-    dispatch(setSelectedOptions(selectedOptions))
-  }
+    setSelectedOptions(selectedOptions);
+  };
 
   return (
     <Select
       components={animatedComponents}
       closeMenuOnSelect={false}
-      defaultValue={[data[0], data[1]]}
       isMulti
       options={data}
       onChange={handleSelectionChange}
       styles={colourStyles}
-      value={selectedOptionsFromRedux}
+      value={selectedOptions}
     />
-  )
-}
+  );
+};
 
-export default SelectWithFilters
+export default SelectWithFilters;
+
+
 
 // Ejemplo de formato del array "data", lo que se deberia pasar por props:
 // [

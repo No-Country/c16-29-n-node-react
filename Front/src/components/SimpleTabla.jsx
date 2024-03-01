@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { PaginatedButtons } from "./PaginatedButtons";
 import Input from "./Input";
+import searchIcon from '../../../UI-UX/Iconografía/search.svg';
 
 export const SimpleTable = ({ columns, data, actions }) => {
   const [sorting, setSorting] = useState([]);
@@ -44,11 +45,7 @@ export const SimpleTable = ({ columns, data, actions }) => {
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting: sorting,
-      globalFilter: filtering,
-      pagination: {
-        pageIndex: 0,
-        pageSize: 25
-      }
+      globalFilter: filtering
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
@@ -63,15 +60,16 @@ export const SimpleTable = ({ columns, data, actions }) => {
 
   return (
     <div className="grow flex flex-col items-start">
-      <div className="w-full my-4 flex justify-between gap-4">
-        <div>
+      <div className="w-full my-4 flex justify-between gap-4 align-items">
+        <div className="flex">
           <Input
-            className="border-2"
+            className="border-2 pl-2 rounded h-10.5"
             placeholder="Buscar"
             type="text"
             value={filtering}
             onChange={(e) => setFiltering(e.target.value)}
           />
+          <img className="cursor-pointer relative right-8" src={searchIcon} alt="icono buscar" />
         </div>
         <div>
           {actions}
@@ -149,18 +147,18 @@ export const SimpleTable = ({ columns, data, actions }) => {
               )}
           </tbody>
            */}
-            {table.getRowModel().rows.length === 0 
-            ? (
-              <tr>
-                <td
-                  className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 bg-[#FFFFFD] whitespace-normal overflow-y-auto"
-                  colSpan={table.getVisibleFlatColumns().length}
-                >
-                  Sin datos
-                </td>
-              </tr>
-            ) 
-            : table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.length === 0
+              ? (
+                <tr>
+                  <td
+                    className="px-3 py-1 text-[#4D5862] text-center text-[16px] not-italic font-normal leading-6 bg-[#FFFFFD] whitespace-normal overflow-y-auto"
+                    colSpan={table.getVisibleFlatColumns().length}
+                  >
+                    Sin datos
+                  </td>
+                </tr>
+              )
+              : table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
                   className="border-b-[1px] border-solid border-[#ADADAD] h-2"
@@ -173,8 +171,8 @@ export const SimpleTable = ({ columns, data, actions }) => {
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
-              </tr>
-            ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -218,9 +216,9 @@ const SortingIcon = ({ icon }) => {
   }
 
   return (
-    icon === "asc" 
-  ? (
-    <svg
+    icon === "asc"
+      ? (
+        <svg
           width="8"
           height="6"
           viewBox="0 0 8 6"
@@ -233,9 +231,9 @@ const SortingIcon = ({ icon }) => {
             fill="#93939F"
           />
         </svg>
-  )
-  : (
-    <svg
+      )
+      : (
+        <svg
           width="8"
           height="5"
           viewBox="0 0 8 5"
@@ -248,6 +246,6 @@ const SortingIcon = ({ icon }) => {
             fill="#93939F"
           />
         </svg>
-  )
+      )
   )
 };
