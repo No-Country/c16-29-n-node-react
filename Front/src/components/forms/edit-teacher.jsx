@@ -19,11 +19,11 @@ const EditTeacher = ({onClose, onSubmit, initialValues}) =>{
     dispatch(setSelectedOptions(selectedOptions));
   };
 
-const options = subjects.map(subject => ({
-  value: subject.id,
-  label: subject.label,
-  color:subject.color,
-}));
+  const options = subjects.map(subject => ({
+    value: subject.id,
+    label: subject.label,
+    color:subject.color,
+  }));
 
   
 

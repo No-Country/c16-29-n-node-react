@@ -37,7 +37,7 @@ const PrincipalTeachersView = () => {
       row: {}
     });
   } 
-      const handleConfirmCreateTeacher = () =>{
+  const handleConfirmCreateTeacher = () =>{
         dispatch(getSubjects())
         setActive({
           type:"create",
@@ -49,8 +49,6 @@ const PrincipalTeachersView = () => {
        dispatch(createTeacher(teacherData))
       resetState(offcanvas.handleClose)();
   }
-  
-
   
   const handleConfirmEditTeacher = (row)=>{
     dispatch(getSubjects())
@@ -93,8 +91,6 @@ const PrincipalTeachersView = () => {
       }
   }}
 
-
- 
   const columns = useMemo(() => {
     return [
       {
