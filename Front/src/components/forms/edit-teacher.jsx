@@ -2,7 +2,7 @@ import Offcanvas from "../ui/offcanvas";
 import { useForm,  } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod";
-import { isValidPassword, isAlphabetic, isAlphaNumeric, isValidPhone} from "../../utils/validation";
+import { isValidPassword, isAlphabetic, isAlphaNumeric, isValidPhone, isValidEmail} from "../../utils/validation";
 import { useEffect } from "react";
 import SelectWithFilters from "../SelectWithFilters";
 import { setSelectedOptions } from "../../actions/actions";
@@ -18,8 +18,6 @@ const EditTeacher = ({onClose, onSubmit, initialValues}) =>{
   const handleSelectChange = (selectedOptions) => {
     dispatch(setSelectedOptions(selectedOptions));
   };
-
-
 
 const options = subjects.map(subject => ({
   value: subject.id,
@@ -85,11 +83,15 @@ return (
 
           <div className="flex flex-col">
             <label htmlFor="subjects">Materias Asociadas</label>
+            {isMateriasLoaded ? (
               <SelectWithFilters
                 data={options}
                 selectedOptions={selectedOptions}
                 setSelectedOptions={handleSelectChange}
                 />
+                ) : ( 
+            <p>Cargando materias ....</p>
+          )}
                 {errors.subjects && <p className="text-red-500 text-xs">{errors.subjects.message}</p>}
            </div>
           </div>
@@ -107,10 +109,10 @@ export default EditTeacher;
 const schema = z.object({
     name: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
     lastname: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético"),
-    email: z.string().email("Debe ser un correo válido"),
+    email: z.string().optional().refine(isValidEmail,"Debe ser un correo válido"),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
     password: z.string().min(6, "La contraseña es obligatoria").refine(isValidPassword, "La contraseña no es válida"),
-    phone: z.string().min(9, "El celular debe tener 9 dígitos").refine(isValidPhone, "El celular no es válido").optional(),
+    phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
     subjects: z.array(z.object({
       label: z.string(),
       value: z.number(),

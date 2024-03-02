@@ -67,10 +67,10 @@ const PrincipalTeachersView = () => {
   const handleEditTeacher = async (teacherData) =>{
     if (selectedTeacherId) {
       const res = await dispatch(updateTeacher({ id: selectedTeacherId, teacherData: teacherData })).unwrap();
+      dispatch(fetchTeacher())
       setTimeout(() => {
         resetState(offcanvas.handleClose)();
       }, 100)
-
     } else {
       console.error("No se ha seleccionado ningún profesor para actualizar");
     }
@@ -92,6 +92,9 @@ const PrincipalTeachersView = () => {
         console.error(error);
       }
   }}
+
+
+ 
   const columns = useMemo(() => {
     return [
       {
@@ -113,6 +116,14 @@ const PrincipalTeachersView = () => {
         Header: "Celular",
         accessorKey: "phone",
         id:"phone"
+      },
+      {
+        Header: "Materias",
+        accessorKey: "subjects",
+        id:"subjects",
+        cell: ({ row: { original } }) => (
+            <span>{original.subjects?.map((subject) => subject.label)?.join(" / ") ?? ""}</span>
+        ),
       },
       {
         Header: "Acciones",
@@ -168,7 +179,7 @@ return (
       >
       {active.type === "delete" && (
         <ConfirmDelete 
-          text={`${active.row.name}`}
+          text={`${active.row.name} ${active.row.lastname}`}
           onClose={resetState(modal.handleClose)}
           onConfirm={()=>handleDeleteTeacher(active.row)}
         />
