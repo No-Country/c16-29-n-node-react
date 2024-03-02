@@ -1,13 +1,12 @@
-import Mark from "../database/models/Mark.js";
-
+import { MarkModel } from "../database/models/index.js";
+import associations from "../database/models/associations.js"
 
 //sevicios pasa informacion de  la base de datos al controlador//
 export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
-  try {                        
-    return await Mark.findAll({
-      include: [
-        { association: "Users"},
-        { association: "Subjects"}
+  try {                   
+    return await MarkModel.findAll({
+      attributes: [
+        "id", "score", "note", "student_id", "exam_id"
       ]
     });//todos los usuarios
   } catch (error) {
@@ -18,7 +17,7 @@ export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
 
 export const getMarkById = async (id) => {  
   try { /* GET /api/exams/:id/marks [TEACHER] */
-    return await Mark.findByPk(id, {
+    return await MarkModel.findByPk(id, {
       include: [
         { association: "Users"},
         { association: "Subjects"}
@@ -32,7 +31,7 @@ export const getMarkById = async (id) => {
 
 export const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
   try {
-    return await Mark.findOne({//busca un mark por id de estudiante
+    return await MarkModel.findOne({//busca un mark por id de estudiante
       where: {
         student_id,
       },
@@ -45,7 +44,7 @@ export const getMarkByStudent = async (student_id) => { //GET /api/marks/current
 
 export const insertMark = async (markData) => {//agrega una mark // create
   try {
-    return await Mark.create(markData);
+    return await MarkModel.create(markData);
   } catch (error) {
     console.error("Error while insert Mark:", error);
     throw new Error("Error insert Mark");
@@ -53,7 +52,7 @@ export const insertMark = async (markData) => {//agrega una mark // create
 };
  export const updateMark = async (scoreData) => {
   try {
-    return await Mark.update(scoreData, { where: { id: student_id } });
+    return await MarkModel.update(scoreData, { where: { id: student_id } });
   } catch (error) {
     console.error("Error while update mark:", error);
     throw new Error("Error update mark");
@@ -62,7 +61,7 @@ export const insertMark = async (markData) => {//agrega una mark // create
 
  export const deleteMark = async (studentId) => { /* PUT /api/marks/:id [TEACHER] */
   try {
-    return await Mark.destroy({ where: { id: studentId.id } });
+    return await MarkModel.destroy({ where: { id: studentId.id } });
   } catch (error) {
     console.error("Error while delete mark:", error);
     throw new Error("Error delete mark");
