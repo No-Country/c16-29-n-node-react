@@ -134,20 +134,20 @@ INSERT INTO `StudentsTutors` (`student_id`, `tutor_id`, `id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `StundetSubjects`
+-- Estructura de tabla para la tabla `StundentSubjects`
 --
 
-CREATE TABLE `StundetSubjects` (
+CREATE TABLE `StundentSubjects` (
   `id` int(11) NOT NULL,
   `subject_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `StundetSubjects`
+-- Volcado de datos para la tabla `StundentSubjects`
 --
 
-INSERT INTO `StundetSubjects` (`id`, `subject_id`, `student_id`) VALUES
+INSERT INTO `StundentSubjects` (`id`, `subject_id`, `student_id`) VALUES
 (1, 1, 2);
 
 -- --------------------------------------------------------
@@ -250,9 +250,9 @@ ALTER TABLE `StudentsTutors`
   ADD KEY `tutor_id` (`tutor_id`);
 
 --
--- Indices de la tabla `StundetSubjects`
+-- Indices de la tabla `StundentSubjects`
 --
-ALTER TABLE `StundetSubjects`
+ALTER TABLE `StundentSubjects`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -298,9 +298,9 @@ ALTER TABLE `Notes`
 ALTER TABLE `StudentsTutors`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
--- AUTO_INCREMENT de la tabla `StundetSubjects`
+-- AUTO_INCREMENT de la tabla `StundentSubjects`
 --
-ALTER TABLE `StundetSubjects`
+ALTER TABLE `StundentSubjects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `Subjects`

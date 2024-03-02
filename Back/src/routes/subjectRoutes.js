@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getSubjects,
   getSubjectById,
-  getSubjectsByTeacherId,
+  getStudentsCountBySubject,
   createSubject,
   updateSubject,
   deleteSubject
@@ -12,17 +12,12 @@ import { subjectValidatorRules } from "../validations/subject.validator.js";
 import validate from "../validations/index.validator.js"
 
 const subjectRouter = Router();
-/*   GET /api/subjects/current [TEACHER] */
-/* GET /api/subjects/:id [PRINCIPAL, TEACHER] */
-/* GET /api/subjects [PRINCIPAL] */
-/* DELETE /api/subjects/:id [PRINCIPAL] */ //no hay delete//
-/* POST /api/subjects [PRINCIPAL] */
-/* PUT /api/subjects/:id [PRINCIPAL] */
+
 subjectRouter
-  .get("/", getSubjects)
+  .get("/", getSubjects) // todas las materias
+  .get("/current/:id",  getStudentsCountBySubject)//estudiantes por maateria
+  .get("/:id", getSubjectById) // materia por id
   .put("/update/:id", subjectValidatorRules(), validate ,  updateSubject)
-  .get("/:id", getSubjectById)
-  .get("/current/:id",  getSubjectsByTeacherId)
   .post("/create", subjectValidatorRules(), validate, createSubject)
   .delete("/delete/:id", deleteSubject); 
 

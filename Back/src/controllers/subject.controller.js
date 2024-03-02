@@ -4,11 +4,14 @@ import {
   getSubjectsTeacherId,
   insertSubjects,
   modifySubject,
-  findSubjectByName
+  findSubjectByName,
+  getStudentsCountBySubjectId
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
 import { hashSync } from "bcrypt";
-import { SubjectModel } from "../database/models/SubjectModel.js";
+import { SubjectModel, UserModel } from "../database/models/index.js";
+
+
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,
@@ -38,15 +41,15 @@ export const getSubjectById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ Error: error });
   }
-};
-export const getSubjectsByTeacherId = async (req, res) => {
+};//estudiantes por materia
+export const getStudentsCountBySubject = async (req, res) => {
   try {
-    const TEACHER_ID = req.user.id;
-    console.log(TEACHER_ID);
-    const subjects = await getSubjectsTeacherId(TEACHER_ID);
-    return res.status(200).json(subjects);
+    const { id } = req.params;
+    console.log('subjectId:', id);
+    const studentsCount = await getStudentsCountBySubjectId(id);
+    return res.status(200).json({ studentsCount });
   } catch (error) {
-    res.status(500).json({ Error: error });
+    return res.status(500).json({ error: error.message });
   }
 };
 export const createSubject = async (req, res) => {

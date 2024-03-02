@@ -62,7 +62,8 @@ SubjectModel.hasMany(NoteModel, {
 });
 SubjectModel.hasMany(NonAttendanceModel, { foreignKey: "subject_id" });
 SubjectModel.hasMany(ExamModel, { foreignKey: "subject_id" });
-SubjectModel.belongsToMany(UserModel, { through: "UserSubject" });
+SubjectModel.belongsToMany(UserModel,
+   { through: "UserSubject" });
 
 // Notes Associations
 NoteModel.belongsTo(UserModel, {

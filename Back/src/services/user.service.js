@@ -1,5 +1,6 @@
 import { UserModel } from "../database/models/index.js";
 
+
 export const getUserByUsername = async (username) => {
   // usuario por username
   try {
@@ -14,3 +15,4 @@ export const getUserByUsername = async (username) => {
     throw new Error("Error fetching user");
   }
 };
+

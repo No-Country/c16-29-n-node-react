@@ -1,6 +1,7 @@
 import { where } from "sequelize";
-import { SubjectModel } from "../database/models/index.js";
-import { UserModel } from "../database/models/index.js"; 
+import { SubjectModel, StudentSubject } from "../database/models/index.js";
+
+
 
 /* CREATE TABLE `Subjects` (
     `id` int(11) NOT NULL,
@@ -92,6 +93,26 @@ export const modifySubject = async (id , subjectData) => {
     throw new Error("Error update subject");
   }
 };
+export const getStudentsCountBySubjectId = async (subjectId) => {
+  try {
+    // Busca en la tabla pivot para obtener los registros que corresponden a la materia
+    const studentSubjectRecords = await StudentSubject.findAll({
+      where: { subject_id: subjectId }
+    });
+
+    // Verifica si hay registros en la tabla pivot
+    if (!studentSubjectRecords || studentSubjectRecords.length === 0) {
+      return "no hay estudiantes asignados a esta materia"; // Retorna 0 si no hay registros
+    }
+
+    // Calcula la cantidad de estudiantes contando los registros de la tabla pivot
+    const studentsCount = studentSubjectRecords.length;
+    return studentsCount;
+  } catch (error) {
+    throw new Error(`Error al obtener la cantidad de estudiantes: ${error.message}`);
+  }
+};
+
 
 /* export default {
     getSubject,
