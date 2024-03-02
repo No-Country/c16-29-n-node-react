@@ -24,10 +24,20 @@ UsersRouter.get("/role", getAllUsersxRole);
 UsersRouter.get("/grade", getAllUsersxGrade);
 UsersRouter.get("/note", getAllUsersxNote);
 UsersRouter.get("/username", getUsers);
-UsersRouter.post("/create", createUsers);
+UsersRouter.post(
+  "/create",
+  userRegisterValidationRules(),
+  validate,
+  createUsers
+);
+UsersRouter.put(
+  "/update",
+  userRegisterValidationRules(),
+  validate,
+  updateUsers
+);
 UsersRouter.post("/createusersubject", createUsersSubject);
 UsersRouter.post("/createusersubjecttutor", createUsersSubjectTutor);
-UsersRouter.put("/update", updateUsers);
 UsersRouter.put( "/updateusersubject", updateUsers);
 UsersRouter.delete("/:id", deleteUsers);
 

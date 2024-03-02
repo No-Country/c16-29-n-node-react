@@ -1,11 +1,11 @@
 import { Router  } from "express";
 import { verifyToken } from "../middlewares/auth.js";
-import { getMark, getMarkId, createMark, upMark, getMarkStudent } from "../controllers/mark.controller.js";
+import { getAllMarks, getMarkId, createMark, upMark, getMarkStudent } from "../controllers/mark.controller.js";
 
 const router = Router()
 
 router
-      .get("/", verifyToken  , getMark )
+      .get("/", verifyToken  , getAllMarks )
       .get("/:id", verifyToken , getMarkId )
       .get("/current", verifyToken , getMarkStudent )
       .post("/exams",  verifyToken ,createMark )
