@@ -3,6 +3,8 @@ import {
   getSubjects,
   getSubjectById,
   getStudentsCountBySubject,
+  getTeacherCountBySubject,
+  getAllSubjectsAndStudentsAndTeachers,
   createSubject,
   updateSubject,
   deleteSubject
@@ -15,7 +17,9 @@ const subjectRouter = Router();
 
 subjectRouter
   .get("/", getSubjects) // todas las materias
-  .get("/current/:id",  getStudentsCountBySubject)//estudiantes por maateria
+  .get("/principal/:id", getAllSubjectsAndStudentsAndTeachers) // todas las materias con alumnos y maestros
+  .get("/currentTeacher/:id",  getTeacherCountBySubject)//estudiantes por materia
+  .get("/currentStudent/:id",  getStudentsCountBySubject)//estudiantes por materia
   .get("/:id", getSubjectById) // materia por id
   .put("/update/:id", subjectValidatorRules(), validate ,  updateSubject)
   .post("/create", subjectValidatorRules(), validate, createSubject)

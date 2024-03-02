@@ -1,15 +1,17 @@
 import {
   getSubject,
   getSubjectId,
-  getSubjectsTeacherId,
   insertSubjects,
   modifySubject,
   findSubjectByName,
-  getStudentsCountBySubjectId
+  getStudentsCountBySubjectId,
+  getTeacherCountBySubjectId ,
+  getUsersByRoleAndSubjectId,
+
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
 import { hashSync } from "bcrypt";
-import { SubjectModel, UserModel } from "../database/models/index.js";
+import { SubjectModel,} from "../database/models/index.js";
 
 
 
@@ -45,11 +47,43 @@ export const getSubjectById = async (req, res) => {
 export const getStudentsCountBySubject = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('subjectId:', id);
+    /* console.log('subjectId:', id); */
     const studentsCount = await getStudentsCountBySubjectId(id);
     return res.status(200).json({ studentsCount });
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+};
+export const getTeacherCountBySubject = async (req,res) =>{
+  try { //maestros por materia
+    const {id} = req.params;
+    console.log("subjectId:" , id );
+    const teacherCount = await getTeacherCountBySubjectId(id);
+    return res.status(200).json({ teacherCount});
+  } catch (error) {
+    return res.status(500).json({error: error.message});
+  }
+};
+export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
+  try {
+    const subjects = await getSubject();
+
+    const subjectsWithCounts = await Promise.all(
+      subjects.map(async (subject) => {
+        const teachersCount = await getTeacherCountBySubject( subject.id, "TEACHER" );
+        const studentsCount = await getStudentsCountBySubject( subject.id, "STUDENT");
+
+        return{
+          id: subject.id,
+          name: subject.name,
+          teachersCount,
+          studentsCount
+        };
+      })
+    );
+    return res.status(200).json({ subjectsWithCounts})
+  } catch (error) {
+    return res.status(500).json({error: error.message});
   }
 };
 export const createSubject = async (req, res) => {
@@ -97,4 +131,4 @@ export const deleteSubject = async (req, res) =>{
   } catch (error) {
     return res.status(500).json({Error: error})
   }
-}
+};

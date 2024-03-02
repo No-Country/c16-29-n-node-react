@@ -1,6 +1,5 @@
 import { where } from "sequelize";
-import { SubjectModel, StudentSubject } from "../database/models/index.js";
-
+import { UserModel, SubjectModel, StudentSubject, TeacherSubject } from "../database/models/index.js";
 
 
 /* CREATE TABLE `Subjects` (
@@ -44,37 +43,6 @@ export const findSubjectByName = async (name) =>{
       throw new Error(`Error al buscar la materia por nombre: ${error.message}`);
     }
 };
-export const getSubjectsTeacherId = async (teacherId) => {
-  try {
-    /* [
-    {
-        "subject": "Nombre de la materia",
-        "grade": "Grado de la materia",
-        "divition": "Division de la materia",
-        "students": [{
-          "id": "Id del estudiante",
-          "name": "Nombre y apellido del estudiante"
-        }],
-        "teachers": [{
-          "id": "Id del profesor",
-          "name": "Nombre y apellido del profesor"
-        }]
-    }
-] */
-    return await SubjectModel.findOne(teacherId, {
-          where: {
-            teacherId, 
-          }
-        },
-    );
-  } catch (error) {
-    console.error(
-      "Error al obtener la informacion de las asignaturas del profesor",
-      error
-    );
-    throw new Error(" error al buscar la materia");
-  }
-};
 export const insertSubjects = async (subjectData) => {
   /* POST /api/subjects [PRINCIPAL] */
   try {
@@ -110,6 +78,30 @@ export const getStudentsCountBySubjectId = async (subjectId) => {
     return studentsCount;
   } catch (error) {
     throw new Error(`Error al obtener la cantidad de estudiantes: ${error.message}`);
+  }
+};
+export const  getTeacherCountBySubjectId = async(subjectId) =>{
+  try {
+    const teacherSubjectRecords = await TeacherSubject.findAll({
+      where:{ subject_id: subjectId }
+    })
+    if (!teacherSubjectRecords || teacherSubjectRecords == 0 ){
+      return "no hay maestros asignados a esta materia";
+    }
+    const teachersCount = teacherSubjectRecords.length;
+    return teachersCount;
+  } catch (error) {
+    throw new Error(`Error al contener la cantidad de estudiantes: ${error.message}`)
+  }
+};
+export const getUsersByRoleAndSubjectId = async (subjectId, role) => {
+  try {
+    const users = await UserModel.findAll({
+      where: { subject_id: subjectId, role: role }
+    });
+    return users;
+  } catch (error) {
+    throw new Error(`Error al obtener usuarios para la materia y el rol especificados: ${error.message}`);
   }
 };
 

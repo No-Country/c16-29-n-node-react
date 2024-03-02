@@ -6,3 +6,4 @@ export { NoteModel } from "./NoteModel.js";
 export { SubjectModel } from "./SubjectModel.js";
 export { UserModel } from "./UserModel.js";
 export { StudentSubject } from "./StudentSubject.js";
+export { TeacherSubject } from "./TeacherSubject.js"
