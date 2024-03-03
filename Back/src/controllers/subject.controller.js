@@ -70,8 +70,8 @@ export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
 
     const subjectsWithCounts = await Promise.all(
       subjects.map(async (subject) => {
-        const teachersCount = await getTeacherCountBySubject( subject.id, "TEACHER" );
-        const studentsCount = await getStudentsCountBySubject( subject.id, "STUDENT");
+        const teachersCount = await getTeacherCountBySubjectId( subject.id, "TEACHER" );
+        const studentsCount = await getStudentsCountBySubjectId( subject.id, "STUDENT");
 
         return{
           id: subject.id,
