@@ -1,13 +1,21 @@
-import { MarkModel, UserModel, ExamModel } from "../database/models/index.js";
+import { MarkModel, UserModel, ExamModel, SubjectModel } from "../database/models/index.js";
 import associations from "../database/models/associations.js"
 
+/* "Marks",
+  id: { type: DataTypes.INTEGER(11), primaryKey: true, autoIncrement: true },
+  score: { type: DataTypes.INTEGER(11), allowNull: false },
+  note: { type: DataTypes.STRING(250), allowNull: false },
+  student_id: { type: DataTypes.INTEGER },
+  exam_id: { type: DataTypes.INTEGER },
+ */
 //sevicios pasa informacion de  la base de datos al controlador//
+
 export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
   try {                   
     return await MarkModel.findAll({
-      attributes: [
+     /*  attributes: [
         "id", "score", "note", "student_id", "exam_id"
-      ],
+      ], */
       include : [
         { model: UserModel},
         {model: ExamModel}
@@ -33,11 +41,11 @@ export const getMarkById = async (id) => {
   }
 };
 
-export const getMarkByStudent = async (student_id) => { //GET /api/marks/current [TUTOR, STUDENT]
+export const getMarkByStudent = async (studentId) => { //GET /api/marks/current [TUTOR, STUDENT]
   try {
-    return await MarkModel.findAll({//busca un mark por id de estudiante
+    return await MarkModel.findOne({//busca un mark por id de estudiante
       where: {
-        student_id,
+        student_id: studentId,
       },
       include: [
         { model: UserModel},

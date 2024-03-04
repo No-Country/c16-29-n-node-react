@@ -21,19 +21,21 @@ export const getAllMarks = async (req, res) => {
 };
 export const getMarkId = async (req, res) => {
   try {
-    const MARK_ID = req.params.id;
-    const { id, score, note, student_id, exam_id} = await getMarkById(MARK_ID);
-    const RESPONSE = { id, score, note, student_id, exam_id };
-    return res.status(200).json(RESPONSE);
+    const MARK_ID = req.params;
+    const mark = await getMarkById(MARK_ID);
+    if(!mark || mark.length == 0){
+      return res.status(404).json({Error: "no hay marks registradas"})
+    }
+    return res.status(200).json(mark);
   } catch (error) {
     return res.status(500).json({ Error: "Mark inexitente" });
   }
 };
 export const getMarkStudent = async (req, res) => {
   try {
-    const MARK_STUDENT = req.user.id;
+    const MARK_STUDENT = req.params;
     const student = await getMarkByStudent(MARK_STUDENT);
-    if(student.length == 0 ){
+    if( !student || student.length == 0 ){
       return res.status(404).json("No hay registros de este estudiante");
       }else{
         const RESPONSE = {
@@ -47,6 +49,7 @@ export const getMarkStudent = async (req, res) => {
   }
 
 };
+
 export const createMark = async (req, res) => {
   try {
     const result = await insertMark({ ...req.body });

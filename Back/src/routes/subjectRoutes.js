@@ -18,11 +18,11 @@ const subjectRouter = Router();
 subjectRouter
   .get("/", getSubjects) // todas las materias
   .get("/principal/:id", getAllSubjectsAndStudentsAndTeachers) // todas las materias con alumnos y maestros
-  .get("/currentTeacher/:id",  getTeacherCountBySubject)//estudiantes por materia
+  .get("/currentTeacher/:id",  getTeacherCountBySubject)//maestros por materia
   .get("/currentStudent/:id",  getStudentsCountBySubject)//estudiantes por materia
   .get("/:id", getSubjectById) // materia por id
-  .put("/update/:id", subjectValidatorRules(), validate ,  updateSubject)
-  .post("/create", subjectValidatorRules(), validate, createSubject)
-  .delete("/delete/:id", deleteSubject); 
+  .put("/update/:id", subjectValidatorRules(), validate ,  updateSubject)//modificar materia por id
+  .post("/create", subjectValidatorRules(), validate, createSubject)//crear una materia
+  .delete("/delete/:id", deleteSubject); //borrar una materia
 
 export default subjectRouter;

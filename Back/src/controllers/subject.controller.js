@@ -76,6 +76,8 @@ export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
         return{
           id: subject.id,
           name: subject.name,
+          grade: subject.grade,
+          divition: subject.divition,
           teachersCount,
           studentsCount
         };

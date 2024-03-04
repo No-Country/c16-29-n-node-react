@@ -7,14 +7,23 @@ import {
   upMark,
   getMarkStudent,
 } from "../controllers/mark.controller.js";
+import { getExams, createExam } from "../controllers/exam.controller.js";
+
 
 const markRouter = Router();
-
+/* id: { type: DataTypes.INTEGER(11), primaryKey: true, autoIncrement: true },
+    score: { type: DataTypes.INTEGER(11), allowNull: false },
+    note: { type: DataTypes.STRING(250), allowNull: false },
+    student_id: { type: DataTypes.INTEGER, allowNull: false },
+    exam_id: { type: DataTypes.INTEGER },
+ */
 markRouter
+  .get("/exams", getExams) 
+  .post("/exams/insert" , createExam)
   .get("/", getAllMarks) 
-  .get("/current", verifyToken, getMarkStudent)
   .get("/:id",  getMarkId)
-  .post("/exams", verifyToken, createMark)
+  .get("/current/:id", getMarkStudent)
+  .post("/exams/create", /* verifyToken, */ createMark)
   .put("/:id", verifyToken, upMark);
 
 export default markRouter;
