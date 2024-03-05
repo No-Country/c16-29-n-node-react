@@ -260,3 +260,4 @@ const SortingIcon = ({ icon }) => {
       )
   )
 };
+export default SimpleTable;

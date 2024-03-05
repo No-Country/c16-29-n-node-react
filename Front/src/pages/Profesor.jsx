@@ -14,5 +14,7 @@ export const Profesor = () => {
     { path: "configuración", element: <div>configuración</div> },
   ]);
 
+
   return routes;
+
 };
