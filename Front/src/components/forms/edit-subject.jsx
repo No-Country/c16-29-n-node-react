@@ -5,6 +5,7 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
+import { isAlphaNumeric } from "../../utils/validation";
 
 const EditSubject = ({ onClose, onSubmit, initialValues }) => {
   const [data, setData] = useState(() => teachers.map((student) => ({
@@ -79,7 +80,7 @@ export default EditSubject;
 const schema = z.object({
   subject: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
   grade: z.string().regex(/^\d{1}$/, "Debe ser un numero"),
-  divition: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  divition: z.string().refine(isAlphaNumeric, "Debe ser alfanumerico"),
   teacher: z.object({
     label: z.string(),
     value: z.number()
