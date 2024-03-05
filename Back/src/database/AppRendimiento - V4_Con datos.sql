@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.7.1
--- https://www.phpmyadmin.net/
---
--- Servidor: sql10.freemysqlhosting.net
--- Tiempo de generación: 23-02-2024 a las 07:16:03
--- Versión del servidor: 5.5.62-0ubuntu0.14.04.1
--- Versión de PHP: 7.0.33-0ubuntu0.16.04.16
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -196,7 +187,7 @@ INSERT INTO `TeacherSubjects` (`id`, `subject_id`, `teacher_id`) VALUES
 --
 
 CREATE TABLE `Users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `username` varchar(255) NOT NULL COMMENT 'DNI',
   `password` varchar(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
@@ -219,9 +210,7 @@ INSERT INTO `Users` (`id`, `username`, `password`, `first_name`, `last_name`, `r
 (3, 'tutor1', '$2b$05$K1mHa/vN6efW6ozS44ThjumoDcCOic4SdaNgNtyBuzvvWRaHfCmjm', 'tutor1', 'tutorap', 'TUTOR', 'tuto1@gmail.com', '00000000', NULL, '2024-02-23 07:05:33', '2024-02-19 00:09:01'),
 (4, 'student1', '$2b$05$YCl6DfIprXNm45ryZRVRXeyNIL1S8F7UBVzBOqUP9Vnjl/b5tn3Ai', 'student1', 'studentap', 'STUDENT', 'stu1@gmail.com', '00000000', NULL, '2024-02-23 07:05:03', '2024-02-19 00:09:01');
 
---
--- Índices para tablas volcadas
---
+-- --------------------------------------------------------
 
 --
 -- Indices de la tabla `Banns`
@@ -317,11 +306,219 @@ ALTER TABLE `TeacherSubjects`
 --
 
 --
--- Filtros para la tabla `StudentsTutors`
+-- Volcado de datos para la tabla `Subjects`
 --
-ALTER TABLE `StudentsTutors`
-  ADD CONSTRAINT `StudentsTutors_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `Users` (`id`),
-  ADD CONSTRAINT `StudentsTutors_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `Users` (`id`);
+
+INSERT INTO `Subjects` (`id`, `name`, `grade`, `divition`) VALUES
+(1, 'Biologia', '9', 'b1');
+
+
+-- --------------------------------------------------------
+
+
+--
+-- Estructura de tabla para la tabla `Banns`
+--
+
+CREATE TABLE `Banns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `score` enum('EXPELLED','SUSPENDED','WARNING') NOT NULL,
+  `note` varchar(255) NOT NULL,
+  `subject_id` int(11) DEFAULT NULL,
+  `student_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id),
+  FOREIGN KEY(teacher_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `Banns`
+--
+
+INSERT INTO `Banns` (`id`, `score`, `note`, `subject_id`, `student_id`, `teacher_id`) VALUES
+(1, 'EXPELLED', 'No trajo el libro de practica', 1, 4, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Marks`
+--
+
+CREATE TABLE `Marks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `score` int(11) NOT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `subject_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id),
+  FOREIGN KEY(teacher_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `Marks`
+--
+
+INSERT INTO `Marks` (`id`, `score`, `note`, `subject_id`, `student_id`, `teacher_id`, `created_at`, `updated_at`) VALUES
+(1, 90, 'Examen 1T', 1, 4, 2, '2024-02-18 21:00:00', '2024-02-18 21:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `NonAttendances`
+--
+
+CREATE TABLE `NonAttendances` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `type` enum('NON_ATTENDANCE','DELAYED') DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `teacher_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id),
+  FOREIGN KEY(teacher_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `NonAttendances`
+--
+
+INSERT INTO `NonAttendances` (`id`, `type`, `date`, `teacher_id`, `student_id`, `subject_id`) VALUES
+(1, 'DELAYED', '2024-02-18 13:15:00', 4, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Notes`
+--
+
+CREATE TABLE `Notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `note` varchar(255) NOT NULL,
+  `is_public` tinyint(1) NOT NULL DEFAULT '0',
+  `teacher_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `subject_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id),
+  FOREIGN KEY(teacher_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `Notes`
+--
+
+INSERT INTO `Notes` (`id`, `note`, `is_public`, `teacher_id`, `student_id`, `subject_id`) VALUES
+(1, 'Excelente participacion en clase', 1, 2, 4, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `StudentsTutors`
+--
+
+CREATE TABLE `StudentsTutors` (
+  `student_id` int(11) DEFAULT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id),
+  FOREIGN KEY(tutor_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `StudentsTutors`
+--
+
+INSERT INTO `StudentsTutors` (`student_id`, `tutor_id`, `id`) VALUES
+(4, 3, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `StundetSubjects`
+--
+
+CREATE TABLE `StudentSubjects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `subject_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(student_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `StundetSubjects`
+--
+
+INSERT INTO `StudentSubjects` (`id`, `subject_id`, `student_id`) VALUES
+(1, 1, 2);
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `TeacherSubjects`
+--
+
+CREATE TABLE `TeacherSubjects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `subject_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  FOREIGN KEY(subject_id) 
+   REFERENCES Subjects(id),
+  FOREIGN KEY(teacher_id) 
+   REFERENCES Users(id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `TeacherSubjects`
+--
+
+INSERT INTO `TeacherSubjects` (`id`, `subject_id`, `teacher_id`) VALUES
+(1, 1, 4);
+
+-- --------------------------------------------------------
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -6,8 +6,11 @@ import {
   getAllUsers,
   getAllUsersxRole,
   getAllUsersxGrade,
+  getAllUsersxNote,
   getUsers,
   updateUsers,
+  createUsersSubject,
+  createUsersSubjectTutor,
 } from "../controllers/UsersController.js";
 import validate from "../validations/index.validator.js";
 import { userRegisterValidationRules } from "../validations/register.validator.js";
@@ -18,6 +21,7 @@ const UsersRouter = Router();
 UsersRouter.get("/", getAllUsers);
 UsersRouter.get("/role", getAllUsersxRole);
 UsersRouter.get("/grade", getAllUsersxGrade);
+UsersRouter.get("/note", getAllUsersxNote);
 UsersRouter.get("/username", getUsers);
 UsersRouter.post(
   "/create",
@@ -31,6 +35,9 @@ UsersRouter.put(
   validate,
   updateUsers
 );
+UsersRouter.post("/createusersubject", createUsersSubject);
+UsersRouter.post("/createusersubjecttutor", createUsersSubjectTutor);
+UsersRouter.put( "/updateusersubject", updateUsers);
 UsersRouter.delete("/:id", deleteUsers);
 
 export default UsersRouter;

@@ -1,4 +1,5 @@
-import { UserModel } from "../database/models/index.js";
+import { UserModel, NoteModel, SubjectModel, BannModel, ExamModel, MarkModel, NonAttendanceModel } from "../database/models/index.js";
+import {StudentTutorModel} from "../database/models/associations.js"
 import { encrypt, verified } from "../middlewares/encrypt.js";
 import { compare } from "bcrypt";
 
@@ -27,6 +28,7 @@ export const getAllUsers = async (req, res) => {
 export const getAllUsersxRole = async (req, res) => {
   try {
     let attributes = [];
+    let include = [];
     if (req.body.role === "STUDENT") {
       attributes = [
         "username",
@@ -36,9 +38,8 @@ export const getAllUsersxRole = async (req, res) => {
         "email",
         "phone",
         "grade",
-        "created_at",
-        "updated_at",
       ];
+      include = [NoteModel, SubjectModel, BannModel, ExamModel, MarkModel, NonAttendanceModel]
     } else {
       attributes = [
         "username",
@@ -47,13 +48,49 @@ export const getAllUsersxRole = async (req, res) => {
         "role",
         "email",
         "phone",
-        "created_at",
-        "updated_at",
       ];
     }
     const users = await UserModel.findAll({
       attributes: attributes,
       where: { role: req.body.role },
+      include: include,
+    });
+    res.json(users);
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+//Mostrar todos los registros por role
+export const getAllUsersxNote = async (req, res) => {
+  try {
+    let attributes = [];
+    let include = [];
+    if (req.body.role === "STUDENT") {
+      attributes = [
+        "username",
+        "first_name",
+        "last_name",
+        "role",
+        "email",
+        "phone",
+        "grade",
+      ];
+      include = NoteModel
+    } else {
+      attributes = [
+        "username",
+        "first_name",
+        "last_name",
+        "role",
+        "email",
+        "phone",
+      ];
+    }
+    const users = await UserModel.findAll({
+      attributes: attributes,
+      where: { role: req.body.role },
+      include: include,
     });
     res.json(users);
   } catch (error) {
@@ -92,7 +129,47 @@ export const createUsers = async (req, res) => {
     let pass = req.body.password;
     let hpass = await encrypt(pass);
     req.body.password = hpass;
-    await UserModel.create(req.body);
+    await UserModel.create(req.body,);
+    res.json({
+      message: "Registro creado correctamente",
+    });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+//Crear un registro por subject
+export const createUsersSubject = async (req, res) => {
+  console.log(req.body);
+  try {    
+    let pass = req.body.password;
+    if(pass){      
+      let hpass = await encrypt(pass);
+      req.body.password = hpass;
+    }
+    await UserModel.create(req.body, {
+      include: SubjectModel
+    });
+    res.json({
+      message: "Registro creado correctamente",
+    });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+//Crear un registro por subject y Tutor
+export const createUsersSubjectTutor = async (req, res) => {
+  console.log(req.body);
+  try {    
+    let pass = req.body.password;
+    if(pass){      
+      let hpass = await encrypt(pass);
+      req.body.password = hpass;
+    }
+    await UserModel.create(req.body, {
+      include: [SubjectModel, StudentTutorModel]
+    });
     res.json({
       message: "Registro creado correctamente",
     });
@@ -123,6 +200,29 @@ export const updateUsers = async (req, res) => {
   }
 };
 
+//Actualizar user con subject
+export const updateUsersSubject = async (req, res) => {
+  try {
+    let pass = req.body.password;
+    if (pass) {
+      let pass = req.body.password;
+      let hpass = await encrypt(pass);
+      req.body.password = hpass;
+    }
+
+    await UserModel.update(req.body, {
+      where: { username: req.body.username },
+      include: SubjectModel,
+    });
+
+    res.json({
+      message: "Registro actualizado correctamente",
+    });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
 //Eliminar
 export const deleteUsers = async (req, res) => {
   try {
@@ -134,6 +234,8 @@ export const deleteUsers = async (req, res) => {
   }
 };
 
+
+//Validacion de usuario
 export const validateUser = async (username) => {
   let user = {};
   try {

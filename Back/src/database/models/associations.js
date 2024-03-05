@@ -8,7 +8,7 @@ import { NoteModel } from "./NoteModel.js";
 import { SubjectModel } from "./SubjectModel.js";
 import { UserModel } from "./UserModel.js";
 
-const StudentTutorModel = db.define(
+export const StudentTutorModel = db.define(
   "StudentTutor",
   {
     student_id: { type: DataTypes.INTEGER },
@@ -62,8 +62,7 @@ SubjectModel.hasMany(NoteModel, {
 });
 SubjectModel.hasMany(NonAttendanceModel, { foreignKey: "subject_id" });
 SubjectModel.hasMany(ExamModel, { foreignKey: "subject_id" });
-SubjectModel.belongsToMany(UserModel,
-   { through: "UserSubject" });
+SubjectModel.belongsToMany(UserModel, { through: "UserSubject" });
 
 // Notes Associations
 NoteModel.belongsTo(UserModel, {

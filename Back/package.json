@@ -2,8 +2,12 @@
   "name": "back",
   "version": "1.0.0",
   "description": "",
+<<<<<<< HEAD
   "main": "src/app.js",
   "exports": "./src/app.js",
+=======
+  "main": "./src/app.js",
+>>>>>>> 6e322595fcdcf186a457d4aadb4564415cb85f2c
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/app.js",
