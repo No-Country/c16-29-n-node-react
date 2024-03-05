@@ -1,11 +1,11 @@
 import {
   getSubject,
-  /* getSubjectId, */
+   getSubjectId, 
   insertSubjects,
   modifySubject,
   findSubjectByName,
-  getStudentsCountBySubjectName,
-  getTeacherCountBySubjectName ,
+  getStudentsCountBySubjectId,
+  getTeacherCountBySubjectId ,
   getUsersByRoleAndSubjectName,
 
 } from "../services/subject.service.js";
@@ -63,24 +63,40 @@ export const getSubjectByName = async (req, res) => {
     res.status(500).json({ Error: error });
   }
 }; *///estudiantes por materia
-export const getStudentsCountBySubject = async (req, res) => {
-  try {
-    const { name } = req.params;
-    /* console.log('subjectId:', id); */
-    const studentsCount = await getStudentsCountBySubjectName(name);
-    return res.status(200).json({ studentsCount });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
 export const getTeacherCountBySubject = async (req,res) =>{
   try { //maestros por materia
-    const { name } = req.params;
-    console.log("subjectName:" , name );
-    const teacherCount = await getTeacherCountBySubjectName(name);
-    return res.status(200).json({ teacherCount});
+    
+     const subjects =  await getSubject();
+
+     const subjectWithTeacher = await Promise.all(
+      subjects.map(async( subject ) => {
+        const  teachersCount = await getTeacherCountBySubjectId( subject.id , "TEACHER");
+        return {
+          subject,
+          teachersCount};
+      })
+     );
+    return res.status(200).json(subjectWithTeacher);
   } catch (error) {
     return res.status(500).json({error: error.message});
+  }
+};
+export const getStudentsCountBySubject = async (req, res) => {
+  try {
+    const subjects = await getSubject();
+
+    const subjectWithStudent = await Promise.all(
+      subjects.map( async (subject) => {
+        const  studentCount = await getStudentsCountBySubjectId(subject.id, "STUDENT" );
+        return { 
+          subject ,
+          studentCount };
+      }
+    ) 
+    )
+    return res.status(200).json(subjectWithStudent);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
@@ -109,12 +125,12 @@ export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
 };
 export const createSubject = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name } = req.body; //si el nombre ya esta registrado nose puede crear la materia duplicada 
     const existingSubject = await findSubjectByName(name);
     if(existingSubject){
       return res.status(400).json({ error : `La materia ${name} ya existe` });
     }else{
-    const result = await insertSubjects({
+     await insertSubjects({
          ...req.body,
         }
     );

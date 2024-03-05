@@ -20,10 +20,10 @@ export const getSubject = async () => {
     throw new Error("Error fetching subject");
   }
 };
-/* export const getSubjectId = async (id) => {
+ export const getSubjectId = async (id) => {
   try {
     return await SubjectModel.findByPk(
-      id ,{
+      id , {
         attributes: ["id", "name", "grade", "divition"],
       }
     );
@@ -31,7 +31,7 @@ export const getSubject = async () => {
     console.error("Error while fetching subject:", error);
     throw new Error("Error fetching subject");
   }
-}; */
+}; 
 export const findSubjectByName = async (name) =>{
     try {
       // Busca un sujeto por su título en la base de datos
@@ -64,11 +64,11 @@ export const modifySubject = async (id , subjectData) => {
     throw new Error("Error update subject");
   }
 };
-export const getStudentsCountBySubjectName = async (subjectName) => {
+export const getStudentsCountBySubjectId = async (subjectId) => {
   try {
     // Busca en la tabla pivot para obtener los registros que corresponden a la materia
-    const studentSubjectRecords = await s.findAll({
-      where: { name: subjectName }
+    const studentSubjectRecords = await StudentSubject.findAll({
+      where: { subject_id: subjectId }
     });
     // Verifica si hay registros en la tabla pivot
     if (!studentSubjectRecords || studentSubjectRecords.length === 0) {
@@ -81,7 +81,7 @@ export const getStudentsCountBySubjectName = async (subjectName) => {
     throw new Error(`Error al obtener la cantidad de estudiantes: ${error.message}`);
   }
 };
-export const  getTeacherCountBySubjectName = async(subjectName) =>{
+export const  getTeacherCountBySubjectId = async(subjectId) =>{
   try {
     const teacherSubjectRecords = await TeacherSubject.findAll({
       where:{ subject_id: subjectId }
