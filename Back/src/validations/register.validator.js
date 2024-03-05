@@ -40,7 +40,59 @@ export const userRegisterValidationRules = () => {
         return Promise.reject("Este correo ya se encuentra registrado");
       }
     }),
-    check("role").isInt().withMessage("rol invalido"),
+    check("role")
+      .custom((value) => 
+        ["PRINCIPAL", "TEACHER", "TUTOR", "STUDENT"]
+        .includes(value)
+      )
+      .withMessage("rol invalido"),
+  ];
+};
+
+export const userUpdateValidationRules = () => {
+  return [
+    check("username")
+      .optional()
+      .notEmpty()
+      .withMessage("el nombre de usuario es requerido"),
+    check("password")
+      .optional()
+      .notEmpty()
+      .isLength({ min: 6, max: 12 })
+      .withMessage(
+        "la contraseña debe tener un minimo de 6 caracteres y maximo de 12"
+      ),
+    check("first_name")
+      .optional()
+      .notEmpty()
+      .withMessage("el nombre es requerido"),
+    check("last_name")
+      .optional()
+      .notEmpty()
+      .withMessage("El apellido es requerido"),
+    check("email")
+      .optional()
+      .notEmpty()
+      .withMessage("el email es requerido")
+      .isEmail()
+      .withMessage("ingresar un email valido"),
+    body("email")
+      .optional()
+      .custom(async (value) => {
+        // caso de que el email ya este registrado
+        const user = await getUserByUsername(value);
+        if (user) {
+          //rechaza la promesa y manda el mensjae de error
+          return Promise.reject("Este correo ya se encuentra registrado");
+        }
+      }),
+    check("role")
+      .optional()
+      .custom((value) => 
+        ["PRINCIPAL", "TEACHER", "TUTOR", "STUDENT"]
+        .includes(value)
+      )
+      .withMessage("rol invalido")
   ];
 };
 /* export default{ userRegisterValidationRules}; */

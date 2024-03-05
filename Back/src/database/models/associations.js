@@ -41,16 +41,19 @@ UserModel.hasMany(ExamModel, {
 UserModel.hasMany(MarkModel, {
   foreignKey: "student_id",
 });
-UserModel.belongsToMany(SubjectModel, { through: "UserSubject" });
-UserModel.belongsToMany(UserModel, {
-  as: "tutor_id",
-  through: StudentTutorModel,
-  foreignKey: "tutor_id",
+UserModel.belongsToMany(SubjectModel, {
+  as: "Subject",
+  through: "UserSubject" 
 });
 UserModel.belongsToMany(UserModel, {
-  as: "student_id",
+  as: "Tutor",
   through: StudentTutorModel,
   foreignKey: "student_id",
+});
+UserModel.belongsToMany(UserModel, {
+  as: "Student",
+  through: StudentTutorModel,
+  foreignKey: "tutor_id",
 });
 
 // Subject Associations
@@ -62,7 +65,10 @@ SubjectModel.hasMany(NoteModel, {
 });
 SubjectModel.hasMany(NonAttendanceModel, { foreignKey: "subject_id" });
 SubjectModel.hasMany(ExamModel, { foreignKey: "subject_id" });
-SubjectModel.belongsToMany(UserModel, { through: "UserSubject" });
+SubjectModel.belongsToMany(UserModel, {
+  as: "User",
+  through: "UserSubject" 
+});
 
 // Notes Associations
 NoteModel.belongsTo(UserModel, {

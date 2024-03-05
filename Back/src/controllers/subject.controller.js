@@ -118,6 +118,40 @@ export const updateSubject = async (req, res) => {
     return res.status(500).json({ Error: error });
   }
 };
+export const assignSubjectToUsers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const students = req.body;
+    if(!id) throw new Error("Se debe enviar el id de la materia");
+    if(!students || !Array.isArray(students)) throw new Error("Se debe enviar los id's de los alumnos a asignar");
+
+    const subject = await SubjectModel.findByPk(id);
+
+    await subject.addUser(students);
+
+    return res.status(201).json({ message: "materia actualizada"});
+  } catch (error) {
+    console.log(error) 
+    return res.status(500).json({ Error: error });
+  }
+};
+
+export const deassignUserFromSubject = async (req, res) => {
+  try {
+    const { subjectId, userId } = req.params;
+    if(!subjectId) throw new Error("Se debe enviar el id de la materia");
+    if(!userId) throw new Error("Se debe enviar el id del alumno a desasignar");
+
+    const subject = await SubjectModel.findByPk(subjectId);
+
+    await subject.removeUser(userId);
+
+    return res.status(201).json({ message: "materia actualizada"});
+  } catch (error) {
+    return res.status(500).json({ Error: error });
+  }
+};
+
 export const deleteSubject = async (req, res) =>{
   try {
     const destroySubject = req.params.id;

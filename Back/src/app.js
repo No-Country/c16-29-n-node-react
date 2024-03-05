@@ -10,7 +10,7 @@ import notesRouter from './routes/NotesRoutes.js'
 import LoginRouter  from "./routes/LoginRoutes.js"
 import UsersRouter  from "./routes/UsersRoutes.js"
 import markRouter from "./routes/markRoutes.js"
-import subjectRouter from "./routes/UsersRoutes.js"
+import subjectRouter from "./routes/subjectRoutes.js"
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use("/api/nonattendances", nonAttendancesRouter);
 app.use("/api/banns", bannsRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/login", LoginRouter);
-app.use("/api/user", UsersRouter);
+app.use("/api/users", UsersRouter);
 app.use(`/api/marks`, markRouter);
 app.use(`/api/subjects`, subjectRouter);
 app.use((err, req, res, next) => {
@@ -30,10 +30,12 @@ app.use((err, req, res, next) => {
 });
 
 try {
-    await db.authenticate()
-    console.log('Conexion exitosa a la DB')
+    await db.authenticate();
+    await db.sync();
+    await import("./database/seeders/index.js")
+    console.log('Conexion exitosa a la DB');
 } catch (error) {
-    console.log('Error de conexion a la DB =', error)
+    console.log('Error de conexion a la DB =', error);
 }
 
 app.listen(PORT, () => {

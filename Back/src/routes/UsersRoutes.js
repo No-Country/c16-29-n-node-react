@@ -11,33 +11,28 @@ import {
   updateUsers,
   createUsersSubject,
   createUsersSubjectTutor,
+  updateUsersSubject,
 } from "../controllers/UsersController.js";
 import validate from "../validations/index.validator.js";
-import { userRegisterValidationRules } from "../validations/register.validator.js";
+import { userRegisterValidationRules, userUpdateValidationRules } from "../validations/register.validator.js";
 import { userLoginValidationsRules } from "../validations/login.validator.js";
 
 const UsersRouter = Router();
 
 UsersRouter.get("/", getAllUsers);
-UsersRouter.get("/role", getAllUsersxRole);
-UsersRouter.get("/grade", getAllUsersxGrade);
-UsersRouter.get("/note", getAllUsersxNote);
-UsersRouter.get("/username", getUsers);
+UsersRouter.post("/role", getAllUsersxRole);
 UsersRouter.post(
-  "/create",
+  "/",
   userRegisterValidationRules(),
   validate,
   createUsers
 );
 UsersRouter.put(
-  "/update",
-  userRegisterValidationRules(),
+  "/:id",
+  userUpdateValidationRules(),
   validate,
-  updateUsers
+  updateUsersSubject
 );
-UsersRouter.post("/createusersubject", createUsersSubject);
-UsersRouter.post("/createusersubjecttutor", createUsersSubjectTutor);
-UsersRouter.put( "/updateusersubject", updateUsers);
 UsersRouter.delete("/:id", deleteUsers);
 
 export default UsersRouter;

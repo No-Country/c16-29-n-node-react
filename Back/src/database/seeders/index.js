@@ -1,4 +1,4 @@
-import { SubjectModel, UserModel } from "../models/index.js";
+import { SubjectModel, UserModel, NoteModel } from "../models/index.js";
 
 if ((await UserModel.count()) === 0) {
   await UserModel.bulkCreate([
