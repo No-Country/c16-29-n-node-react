@@ -6,6 +6,7 @@ import Alert from "./Alert";
 import validateInput from "../utils/validateInput";
 import SelectWithFilters from "./SelectWithFilters";
 import { setSelectedOptions, clearSelectedOptions } from "../actions/actions";
+import { defaultArgs } from "../utils/data";
 export const OffCanvas = ({
   title,
   actionType,
@@ -102,10 +103,10 @@ export const OffCanvas = ({
   );
   return (
     <div
-      className={`fixed z-40 w-80 top-0 -right-80 h-screen overflow-y-auto bg-white border-l transition-transform duration-300 -translate-x-80`}
+      className={`fixed z-40 w-80 h-screen top-0 duration-100 right-0 ease-in-out border-l `}
     >
       {formAlert.message && (
-        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="fixed top-0 left-1/2  -translate-x-1/2 z-50 ">
           <div className=" p-4 rounded w-auto ">
             <Alert
               type={formAlert.type}
@@ -116,9 +117,9 @@ export const OffCanvas = ({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className=" flex flex-col h-full">
-        <div className="bg-gradient-to-br from-blue-400 to-purple-600 py-2 px-3 flex justify-between items-center">
-          <h3 className="text-lg font-bold text-blue-950">{title}</h3>
+      <form onSubmit={handleSubmit} className=" flex flex-col h-full bg-white">
+        <div className="bg-gradient-to-r from-Blue-400 to-purple-400 py-2 px-3 flex justify-between items-center">
+          <h3 className="text-lg font-bold text-[#123259]">{title}</h3>
           <button className="cursor-pointer" onClick={handleCloseForm}>
             <img src="/assets/Close.png" alt="btn-close" />
           </button>
@@ -139,6 +140,7 @@ export const OffCanvas = ({
                     selectedOptions={formData[field.name]}
                     isMulti={field.isMulti}
                     styles={field.styles}
+                    {...defaultArgs}
                   />
                 </div>
               ) : (
@@ -153,6 +155,7 @@ export const OffCanvas = ({
                     validations={field.validations}
                     validateInputConfig={field.validations}
                     error={fieldErrors[field.name]}
+                    {...defaultArgs}
                   />
                 </div>
               )
