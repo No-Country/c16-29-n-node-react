@@ -1,12 +1,12 @@
 import {
   getSubject,
-  getSubjectId,
+  /* getSubjectId, */
   insertSubjects,
   modifySubject,
   findSubjectByName,
-  getStudentsCountBySubjectId,
-  getTeacherCountBySubjectId ,
-  getUsersByRoleAndSubjectId,
+  getStudentsCountBySubjectName,
+  getTeacherCountBySubjectName ,
+  getUsersByRoleAndSubjectName,
 
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
@@ -35,7 +35,26 @@ export const getSubjects = async (req, res) => {
     res.status(500).json({ Error: error });
   }
 };
-export const getSubjectById = async (req, res) => {
+export const getSubjectByName = async (req, res) => {
+  try {
+    // Extraer el nombre de la asignatura del cuerpo de la solicitud o de los parámetros de la ruta
+    const { name } = req.params; 
+    // Buscar la asignatura por su nombre utilizando la función findSubjectByName
+    const subject = await findSubjectByName(name);
+    // Verificar si se encontró la asignatura
+    if (!subject ) {
+      return res.status(404).json({ error: 'no existe asignatura con ese nombre' });
+    }
+    // Si se encontró la asignatura, enviarla como respuesta
+    return res.status(200).json(subject);
+  } catch (error) {
+    // Manejar cualquier error que ocurra durante el proceso
+    console.error('Error al buscar la asignatura:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+/* export const getSubjectById = async (req, res) => {
   try {
     const SUBJECT_ID = req.params.id;
     const subject = await getSubjectId(SUBJECT_ID);
@@ -43,12 +62,12 @@ export const getSubjectById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ Error: error });
   }
-};//estudiantes por materia
+}; *///estudiantes por materia
 export const getStudentsCountBySubject = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { name } = req.params;
     /* console.log('subjectId:', id); */
-    const studentsCount = await getStudentsCountBySubjectId(id);
+    const studentsCount = await getStudentsCountBySubjectName(name);
     return res.status(200).json({ studentsCount });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -56,9 +75,9 @@ export const getStudentsCountBySubject = async (req, res) => {
 };
 export const getTeacherCountBySubject = async (req,res) =>{
   try { //maestros por materia
-    const {id} = req.params;
-    console.log("subjectId:" , id );
-    const teacherCount = await getTeacherCountBySubjectId(id);
+    const { name } = req.params;
+    console.log("subjectName:" , name );
+    const teacherCount = await getTeacherCountBySubjectName(name);
     return res.status(200).json({ teacherCount});
   } catch (error) {
     return res.status(500).json({error: error.message});

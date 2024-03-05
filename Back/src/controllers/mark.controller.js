@@ -21,10 +21,15 @@ export const getAllMarks = async (req, res) => {
 };
 export const getMarkId = async (req, res) => {
   try {
-    const MARK_ID = req.params;
-    const mark = await getMarkById(MARK_ID);
-    if(!mark || mark.length == 0){
-      return res.status(404).json({Error: "no hay marks registradas"})
+    const { id } = req.params;
+    const mark = await getMarkById(id);
+    console.log( mark )
+    if( mark == null ){
+      return res.status(404).json({Error: "no hay marks registradas con este id"})
+    }else if(!mark || mark.length == 0){
+      return res.status(404).json({Error: ""})
+    }else{
+      
     }
     return res.status(200).json(mark);
   } catch (error) {
