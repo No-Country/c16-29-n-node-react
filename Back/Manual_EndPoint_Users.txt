@@ -1,0 +1,107 @@
+EndPoint Tabla Users:
+
+1- Lista total de Usuarios
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user
+method: GET
+
+datos a enviar:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2ODMyNTUsImV4cCI6MTcwODY5MDQ1NX0.sHnEPmiA_iUOXl-pi--2NL7TdO9VR_xcYKfh8e55GVA"
+}
+
+2- Lista total de Usuarios solicitado por rol
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/role
+method: POST
+
+datos a enviar:
+{
+  "role":"TUTOR"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2ODMyNTUsImV4cCI6MTcwODY5MDQ1NX0.sHnEPmiA_iUOXl-pi--2NL7TdO9VR_xcYKfh8e55GVA"
+}
+
+3- Datos de Usuario por username
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/role/username
+method: GET
+
+datos a enviar:
+{
+  "username":"username"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2ODMyNTUsImV4cCI6MTcwODY5MDQ1NX0.sHnEPmiA_iUOXl-pi--2NL7TdO9VR_xcYKfh8e55GVA"
+}
+
+3- Creacion de Usuario
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/create
+method: POST
+
+datos a enviar:
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2ODMyNTUsImV4cCI6MTcwODY5MDQ1NX0.sHnEPmiA_iUOXl-pi--2NL7TdO9VR_xcYKfh8e55GVA"
+    "id":"",
+    "username": "student4",
+    "password": "09876",
+    "first_name": "student4",
+    "last_name": "student4",
+    "role": "STUDENT",
+    "email": "student4@prueba.com",
+    "phone": "123456789",
+    "grade":"6b",
+    "created_at": "2024-02-21T02:00:39.000Z",
+    "updated_at": "2024-02-18T23:36:37.000Z"
+}
+
+4- Modificar de Usuario
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/user/update
+method: PUT
+
+datos a enviar:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2ODMyNTUsImV4cCI6MTcwODY5MDQ1NX0.sHnEPmiA_iUOXl-pi--2NL7TdO9VR_xcYKfh8e55GVA"
+    "username": "student4",
+    "password": "09876",
+    "first_name": "student4",
+    "last_name": "student4",
+    "role": "STUDENT",
+    "email": "student4@prueba.com",
+    "phone": "123456789",
+    "grade":"6b",
+    "updated_at": "2024-02-18T23:36:37.000Z"
+
+}
+
+para utilizar Axios:
+import axios from "axios";
+
+let headersList = {
+ "Accept": "*/*",
+ "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+ "Content-Type": "application/json" 
+}
+
+let bodyContent = JSON.stringify({
+    "username": "student4",
+    "password": "13265",
+    "first_name": "student4",
+    "last_name": "student4",
+    "role": "STUDENT",
+    "email": "student4@prueba.com",
+    "phone": "123456789",
+    "grade":"6b",
+    "updated_at": "2024-02-18T23:36:37.000Z"
+});
+
+let reqOptions = {
+  url: "https://nocontrybackend.4.us-1.fl0.io/api/user/update",
+  method: "PUT",
+  headers: headersList,
+  data: bodyContent,
+}
+
+let response = await axios.request(reqOptions);
+console.log(response.data);
+
+

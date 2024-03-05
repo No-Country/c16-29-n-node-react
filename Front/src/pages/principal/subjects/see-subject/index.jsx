@@ -11,7 +11,7 @@ import AssignStudents from "../../../../components/forms/assign-students";
 const SubjectView = () => {
   const { id } = useParams();
   const [promiseResult, isLoading, isError] = usePromise(() => {
-    const [subject, grade, divition] = id.split(" ");
+    const [subject, grade, divition] = id.split("_");
     const parsedGrade = parseInt(grade.charAt(0))
     const foundedSubject = MOCK.find((current) => 
       current.name === subject && current.grade === parsedGrade && current.divition === divition

@@ -104,7 +104,7 @@ const SubjectsView = () => {
         accessorKey: "name",
         cell: ({ row: { original } }) => (
           <Link 
-            to={`${original.name} ${original.grade}° ${original.divition}`}
+            to={`${original.name}_${original.grade}°_${original.divition}`}
             className="underline text-[#1368CE]"
           >
             {original.name}

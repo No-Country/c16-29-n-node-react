@@ -47,7 +47,7 @@ Offcanvas.Body = function ({ children }){
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="grow p-2"
+      className="grow p-2 overflow-y-auto"
     >
       { children }
     </div>

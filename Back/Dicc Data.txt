@@ -1,0 +1,105 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Users {
+  id integer [primary key, note: "DNI"]
+  username varchar [not null]
+  password varchar [not null]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  email varchar
+  phone varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Principals {
+  dni integer [ref: < Users.id, not null] 
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Students {
+  dni integer [ref: < Users.id, not null] 
+  tutor_id integer [ref: < Tutors.dni, not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Tutors {
+  dni integer [ref: < Users.id, not null] 
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Teachers {
+  dni integer [ref: < Users.id, not null] 
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table TeacherSubjects {
+  id integer [primary key]
+  subject_id integer [ref: < Subjects.id, not null]
+  teacher_id integer [ref: < Teachers.dni, not null]
+}
+
+Table StundetSubjects {
+  id integer [primary key]
+  subject_id integer [ref: < Subjects.id, not null]
+  student_id integer [ref: < Students.dni, not null]
+}
+
+Table Subjects {
+  // Revisar de utilizar una clave compuesta para las materias
+  id integer [primary key]
+  name varchar [not null]
+  grade varchar [not null]
+  divition varchar [not null]
+}
+
+Table Marks {
+  id integer [primary key]
+  score integer [not null]
+  note varchar
+  subject_id integer [ref: - Subjects.id, not null]
+  student_id integer [ref: - Students.dni, not null]
+  teacher_id integer [ref: - Teachers.dni, not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Enum Gravity {
+  EXPELLED
+  SUSPENDED
+  WARNING
+}
+
+Table Banns {
+  id integer [primary key]
+  score Gravity [not null]
+  note varchar [not null]
+  subject_id integer [ref: - Subjects.id]
+  student_id integer [ref: - Students.dni, not null]
+  teacher_id integer [ref: - Teachers.dni, not null]
+}
+
+Table AttendanceList {
+  id integer [primary key]
+  subject_id integer [ref: - Subjects.id, not null]
+}
+
+Table Attendances {
+  id integer [primary key]
+  attendance_list_id integer [ref: < AttendanceList.id, not null]
+  student_id integer [ref: < Students.dni, not null]
+}
+
+Table Notes {
+  id integer [primary key]
+  note varchar [not null]
+  is_public boolean [not null]
+  teacher_id integer [ref: < Teachers.dni, not null]
+  student_id integer [ref: < Students.dni, not null]
+  subject_id integer [ref: < Subjects.id]
+}
