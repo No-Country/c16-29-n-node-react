@@ -1,4 +1,3 @@
-
 import { useRoutes, BrowserRouter } from "react-router-dom";
 import { Login } from "./components/Login";
 import { Directivo } from "./pages/Directivo"; 
@@ -14,7 +13,7 @@ const AppRoutes = () => {
     { path: "/directivo/*", element: <DashboardLayout menues={PrincipalMenues}><Directivo /></DashboardLayout> },
     { path: "/profesor/*", element: <DashboardLayout menues={TeacherMenues}><Profesor/></DashboardLayout> },
     { path: "/tutor/*", element: <DashboardLayout menues={TutorMenues}><Tutor /></DashboardLayout> },
-    { path: "/alumno/*", element: <DashboardLayout menues={StudentMenues}><Alumno /></DashboardLayout> },    
+    { path: "/alumno/*", element: <DashboardLayout menues={StudentMenues}><Alumno /></DashboardLayout> }
   ]);
   return routes;
 };
@@ -25,8 +24,6 @@ function App() {
       <AppRoutes />
     </BrowserRouter>
   );
-
-
 }
 
 export default App;
