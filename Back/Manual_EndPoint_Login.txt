@@ -1,0 +1,109 @@
+EndPoint:
+
+1- Login
+
+ruta: https://nocontrybackend.4.us-1.fl0.io/api/login
+method: POST
+
+datos a enviar:
+{
+  "username":"principal",
+  "password":"1234"
+}
+
+datos que resive:
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiUFJJTkNJUEFMIiwiaWF0IjoxNzA4NjczNDgxLCJleHAiOjE3MDg2ODA2ODF9.I2vrYCK-dbPL3J4j0wDWmF9QDIzf3EXe5efYQiCrPsA",
+  "role": "PRINCIPAL"
+}
+
+codigo para usar fetch puro:
+
+let headersList = {
+ "Accept": "*/*",
+ "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+ "Content-Type": "application/json"
+}
+
+let bodyContent = JSON.stringify({
+  "username":"principal",
+  "password":"1234"
+});
+
+let response = await fetch("localhost:5002/api/login/", { 
+  method: "POST",
+  body: bodyContent,
+  headers: headersList
+});
+
+let data = await response.text();
+console.log(data);
+
+codigo para usar axios:
+
+import axios from "axios";
+
+let headersList = {
+ "Accept": "*/*",
+ "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+ "Content-Type": "application/json" 
+}
+
+let bodyContent = JSON.stringify({
+  "username":"principal",
+  "password":"1234"
+});
+
+let reqOptions = {
+  url: "https://nocontrybackend.4.us-1.fl0.io/api/login",
+  method: "POST",
+  headers: headersList,
+  data: bodyContent,
+}
+
+let response = await axios.request(reqOptions);
+console.log(response.data);
+
+codigo para usar jquery:
+
+const settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "https://nocontrybackend.4.us-1.fl0.io/api/login",
+  "method": "POST",
+  "headers": {
+    "Accept": "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json"
+  },
+  "processData": false,
+  "data": "{\n  \"username\":\"principal\",\n  \"password\":\"1234\"\n}"
+};
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+});
+
+const data = JSON.stringify({
+  "username": "principal",
+  "password": "1234"
+});
+
+
+codigo para usar XMLHttpRequest:
+const xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener("readystatechange", function () {
+  if (this.readyState === this.DONE) {
+    console.log(this.responseText);
+  }
+});
+
+xhr.open("POST", "https://nocontrybackend.4.us-1.fl0.io/api/login");
+xhr.setRequestHeader("Accept", "*/*");
+xhr.setRequestHeader("User-Agent", "Thunder Client (https://www.thunderclient.com)");
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.send(data);

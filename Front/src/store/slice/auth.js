@@ -6,6 +6,7 @@ const roles = {
   TEACHER: "profesor",
   TUTOR: "tutor",
   STUDENT: "alumno"
+
 }
 
 const initialState = {
@@ -39,7 +40,6 @@ const authSlice = createSlice({
       });
   }
 });
-
 export const login = createAsyncThunk("auth/login", async ({ username, password }) => {
   const response = await AxiosInstance.post("login", {
     username, password
