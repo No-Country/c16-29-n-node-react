@@ -1,7 +1,58 @@
-import { useMemo } from "react"
+import {useState, useMemo } from "react"
 import { SimpleTable } from "../../components/SimpleTabla";
 import Offcanvas from "../../components/ui/offcanvas";
+import useDisclosure from "../../hooks/useDisclosure";
+import EditNonAssistances from "../../components/forms/teacher-edit-nonassistances";
+import { nonAttendances, students, subjects } from "../../utils/data";
+
 const NonAssistances = () => {
+  const [selectedId, setSelectedId] = useState(null);
+  const [ active, setActive] = useState({
+    type:"",
+    row:{}
+  })
+  const resetState = (action) => () => {
+    setSelectedId(null);
+    action();
+    setActive({
+      type: "",
+      row: {}
+    });
+  } 
+
+  const getStudentNameById = (studentId) => {
+    const student = students.find(s => s.id === studentId);
+    return student ? student.name : 'Desconocido';
+  }
+
+  // Encuentra el nombre de la materia por ID
+  const getSubjectNameById = (subjectId) => {
+    const subject = subjects.find(s => s.id === subjectId);
+    return subject ? subject.name : 'Desconocida';
+  }
+  const handleConfirmEditNonAssistances = (row)=>{
+    setSelectedId(row.id);
+    setActive({
+      type: "edit",
+      row,
+    });
+    offcanvas.handleOpen();
+    console.log("Editando inasistencias desde el index:", row);
+
+      };
+
+  const handleEditNonAssistances = async (nonassistancesData) =>{
+    if (selectedId) {
+      const res = await dispatch(updateNonAssistances({ id: selectedId, nonassistancesData: nonassistancesData })).unwrap();
+      dispatch(getNonAssistances())
+      setTimeout(() => {
+        resetState(offcanvas.handleClose)();
+      }, 100)
+    } else {
+      console.error("No se ha seleccionado ningún tipo de inasistencia");
+    }
+
+  }
  const columns = useMemo(()=>{
   return [
     {
@@ -10,19 +61,21 @@ const NonAssistances = () => {
     },
     {
       Header: "Alumno",
-      accessorKey: "student",
+      accessorFn: row => getStudentNameById(row.student_id),
+      accessorKey: "student_id"
     },
     {
       Header:"Materias",
-      accessorKey: "subjects"
+      accessorFn: row => getSubjectNameById(row.subject_id),
+      accessorKey: "subject_id"
     },
     {
       Header:"Tipo de Inasistencia",
-      accessorKey:"typeOnAssistances"
+      accessorKey:"type"
     },
     {
       Header: "Observación",
-      accessorKey: "observation",
+      accessorKey: "note",
     },
     {
       Header: "Acciones",
@@ -39,19 +92,19 @@ const NonAssistances = () => {
       ),
     },
  ]
- }, [])
- 
+ }, [students, subjects])
+ const offcanvas= useDisclosure();
   return (
-    <div>NonAssistances
+    <div>
       <SimpleTable
        columns={columns}
-        data={data}/>
+        data={nonAttendances}/>
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
         title={"Editar Inasistencia"}
         >
-        <EditStudent
+        <EditNonAssistances
                   onClose={resetState(offcanvas.handleClose)}
                   onSubmit={handleEditNonAssistances}
                   initialValues={active.row}
