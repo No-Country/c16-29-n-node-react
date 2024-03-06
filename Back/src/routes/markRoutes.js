@@ -19,11 +19,11 @@ const markRouter = Router();
  */
 markRouter
   .get("/exams", getExams) 
-  .post("/exams/insert" , createExam)
+  .post("/exams" , createExam)
   .get("/", getAllMarks) 
   .get("/:id",  getMarkId)
   .get("/current/:id", getMarkStudent)
-  .post("/exams/create", /* verifyToken, */ createMark)
+  .post("/", /* verifyToken, */ createMark)
   .put("/:id", verifyToken, upMark);
 
 export default markRouter;
