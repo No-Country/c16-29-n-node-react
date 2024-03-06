@@ -3,7 +3,7 @@ import { verifyToken } from "../middlewares/auth.js";
 import {
   createNonAttendances,
   deleteNonAttendances,
-  getAllNonAttendances,
+  getCurrentNonAttendances,
   getNonAttendances,
   updateNonAttendances,
 } from "../controllers/NonAttendancesController.js";
@@ -11,7 +11,7 @@ import {
 const NonAttendancesRouter = Router();
 
 NonAttendancesRouter.get("/:id", verifyToken, getNonAttendances);
-NonAttendancesRouter.get("/", verifyToken, getAllNonAttendances);
+NonAttendancesRouter.get("/current", verifyToken, getCurrentNonAttendances);
 NonAttendancesRouter.post("/", verifyToken, createNonAttendances);
 NonAttendancesRouter.put("/:id", verifyToken, updateNonAttendances);
 NonAttendancesRouter.delete("/:id", verifyToken, deleteNonAttendances);

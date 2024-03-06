@@ -54,6 +54,38 @@ export const getStudentsCountBySubject = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+// Materia con estudiantes por fullName
+export const getStudentsBySubjectFullName = async (req, res) => {
+  try {
+    const { name, grade, divition } = req.params;
+    
+    const subject = await SubjectModel.findOne({
+      where: {
+        name,
+        grade,
+        divition
+      }
+    });
+
+    if(!subject) throw new Error("La materia no ha sido encontrada");
+    
+    const users = await subject.getUser({
+      attributes: [
+        "id",
+        "first_name",
+        "last_name",
+        "fullName",
+        "grade",
+        "role"
+      ]
+    });
+    const students = users.filter((user) => user.role === "STUDENT");
+
+    return res.status(200).json(students);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 export const getTeacherCountBySubject = async (req,res) =>{
   try { //maestros por materia
     const {id} = req.params;
@@ -126,6 +158,12 @@ export const assignSubjectToUsers = async (req, res) => {
     if(!students || !Array.isArray(students)) throw new Error("Se debe enviar los id's de los alumnos a asignar");
 
     const subject = await SubjectModel.findByPk(id);
+
+    const users = await subject.getUser();
+    const studentsInSubject = users.filter((user) => {
+      return user.role === "STUDENT"
+    })
+    if(studentsInSubject.length + students.length > 30) throw new Error("No pueden haber mas de 30 estudiantes en una materia");
 
     await subject.addUser(students);
 

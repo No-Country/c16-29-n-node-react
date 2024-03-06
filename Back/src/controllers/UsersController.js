@@ -10,6 +10,7 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.findAll({
       attributes: [
+        "id",
         "username",
         "first_name",
         "last_name",
@@ -23,6 +24,33 @@ export const getAllUsers = async (req, res) => {
     res.json({ message: error.message });
   }
 };
+
+export const getAllStudentsByGrade = async (req, res) => {
+  try {
+    const grade = req.params.grade;
+
+    const users = await UserModel.findAll({
+      where: {
+        grade,
+        role: "STUDENT"
+      },
+      attributes: [
+        "id",
+        "grade",
+        "username",
+        "fullName",
+        "first_name",
+        "last_name",
+        "role",
+        "email",
+        "phone",
+      ],
+    });
+    res.json(users);
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+}
 
 //Mostrar todos los registros por role
 export const getAllUsersxRole = async (req, res) => {

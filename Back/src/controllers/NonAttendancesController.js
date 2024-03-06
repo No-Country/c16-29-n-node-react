@@ -2,7 +2,7 @@ import { NonAttendanceModel } from "../database/models/index.js";
 //Metodos CRUD
 
 //Mostrar todos los registros
-export const getAllNonAttendances = async (req, res) => {
+export const getCurrentNonAttendances = async (req, res) => {
   try {
     const nonAttendances = await NonAttendanceModel.findAll();
     res.json(attendances);

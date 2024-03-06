@@ -5,12 +5,7 @@ import {
   deleteUsers,
   getAllUsers,
   getAllUsersxRole,
-  getAllUsersxGrade,
-  getAllUsersxNote,
-  getUsers,
-  updateUsers,
-  createUsersSubject,
-  createUsersSubjectTutor,
+  getAllStudentsByGrade,
   updateUsersSubject,
 } from "../controllers/UsersController.js";
 import validate from "../validations/index.validator.js";
@@ -20,6 +15,7 @@ import { userLoginValidationsRules } from "../validations/login.validator.js";
 const UsersRouter = Router();
 
 UsersRouter.get("/", getAllUsers);
+UsersRouter.get("/grade/:grade", getAllStudentsByGrade);
 UsersRouter.post("/role", getAllUsersxRole);
 UsersRouter.post(
   "/",
