@@ -18,12 +18,12 @@ const markRouter = Router();
     exam_id: { type: DataTypes.INTEGER },
  */
 markRouter
-  .get("/exams", getExams) 
-  .post("/exams" , createExam)
-  .get("/", getAllMarks) 
-  .get("/:id",  getMarkId)
-  .get("/current/:id", getMarkStudent)
-  .post("/", /* verifyToken, */ createMark)
+  .get("/exams", verifyToken, getExams) 
+  .post("/exams/insert", verifyToken, createExam)
+  .get("/", verifyToken, getAllMarks) 
+  .get("/:id", verifyToken, getMarkId)
+  .get("/current/:id", verifyToken, getMarkStudent)
+  .post("/exams/create", verifyToken, createMark)
   .put("/:id", verifyToken, upMark);
 
 export default markRouter;
