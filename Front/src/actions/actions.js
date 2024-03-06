@@ -9,5 +9,3 @@ export const setSelectedOptions = (selectedOptions) => ({
 export const clearSelectedOptions = () => ({
   type: CLEAR_SELECTED_OPTIONS,
 })
-
-

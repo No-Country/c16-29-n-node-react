@@ -8,7 +8,8 @@ export const createTeacher = createAsyncThunk(
   'profesor/createTeacher',
   async (teacherData, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.post('/profesores', teacherData);
+      const dataWithRole = { ...teacherData, role: "TEACHER" };
+      const response = await AxiosInstance.post('/api/users', dataWithRole);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.toString());
@@ -20,7 +21,7 @@ export const updateTeacher = createAsyncThunk(
   'profesor/updateTeacher',
   async ({id, teacherData},thunkAPI) => {
     try {
-      const response = await AxiosInstance.put(`/profesores/${id}`, teacherData);
+      const response = await AxiosInstance.put(`/api/users/${id}`, teacherData);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -33,7 +34,7 @@ export const deleteTeacher =createAsyncThunk(
   'profesor/deleteTeacher',
   async(teacherId, {rejectWithValue})=>{
     try{
-      await AxiosInstance.delete(`profesores/${teacherId}`);
+      await AxiosInstance.delete(`/api/users/${teacherId}`);
       return teacherId;
 
     }catch (error){
@@ -48,7 +49,7 @@ export const fetchTeacher =createAsyncThunk(
   async (_, { rejectWithValue }) =>{
     try {
       const [teachersResponse] = await Promise.all([
-        AxiosInstance.get('/profesores'),
+        AxiosInstance.get('/api/users/role/TEACHER/'),
     //    AxiosInstance.get('subjects'),
       ])
       return {

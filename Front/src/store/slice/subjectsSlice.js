@@ -6,7 +6,7 @@ export const getSubjects = createAsyncThunk(
   'subjects/getSubjects',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.get('/subjects');
+      const response = await AxiosInstance.get('/api/subjects');
       return response.data; 
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -33,7 +33,7 @@ const subjectsSlice = createSlice({
       })
       .addCase(getSubjects.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.subjects = action.payload;
+        state.subjects = action.payload.subjects;
       })
       .addCase(getSubjects.rejected, (state, action) => {
         state.isLoading = false;

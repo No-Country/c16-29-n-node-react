@@ -95,13 +95,13 @@ const PrincipalTeachersView = () => {
     return [
       {
         Header: "Nombre",
-        accessorKey: "name",
-        id:"name"
+        accessorKey: "first_name",
+        id:"first_name"
       },
       {
         Header: "Apellido",
-        accessorKey: "lastname",
-        id:"lastname"
+        accessorKey: "last_name",
+        id:"last_name"
       },
       {
         Header: "Correo Electronico",
@@ -175,7 +175,7 @@ return (
       >
       {active.type === "delete" && (
         <ConfirmDelete 
-          text={`${active.row.name} ${active.row.lastname}`}
+          text={`${active.row.firstname} ${active.row.lastname}`}
           onClose={resetState(modal.handleClose)}
           onConfirm={()=>handleDeleteTeacher(active.row)}
         />

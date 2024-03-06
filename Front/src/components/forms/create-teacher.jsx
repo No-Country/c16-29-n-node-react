@@ -24,7 +24,7 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
         }
       });
       const dispatch = useDispatch();
-      
+      console.log(subjects)
       
     
       const handleSelectChange = (selectedOptions) => {
@@ -32,8 +32,7 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
       };
       const options = subjects.map(subject => ({
         value: subject.id,
-        label: subject.label,
-        color:subject.color,
+        label: subject.name,
       }));
 
     useEffect(()=>{
@@ -44,10 +43,10 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
         <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-base font-medium">Nombre</label>
-            <input id="name" {...register("name")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.name ? 'border-red-500' : 'rounded'}`}
+            <label htmlFor="firstname" className="text-base font-medium">Nombre</label>
+            <input id="firstname" {...register("firstname")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.firstname ? 'border-red-500' : 'rounded'}`}
             />  
-          {errors?.name && <p className="text-red-500 text-xs">{errors?.name.message}</p>} 
+          {errors?.firstname && <p className="text-red-500 text-xs">{errors?.firstname.message}</p>} 
           </div>
 
           <div className="flex flex-col">
@@ -88,6 +87,7 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
                   data={options}
                   selectedOptions={selectedOptions}
                   setSelectedOptions={handleSelectChange}
+
                 />
           ) : ( 
             <p>Cargando materias ....</p>
@@ -110,15 +110,14 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
 export default CreateTeacherForm;
 
 const schema = z.object({
-    name: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
+    firstname: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
     lastname: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético"),
     email: z.string().optional().refine(isValidEmail,"Debe ser un correo válido"),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
     password: z.string().min(6, "La contraseña es obligatoria").refine(isValidPassword, "La contraseña no es válida"),
     phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
     subjects: z.array(z.object({
-      label: z.string(),
+      name: z.string(),
       value: z.number(),
-      color: z.string()
     })).optional(),
   });

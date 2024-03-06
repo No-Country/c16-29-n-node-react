@@ -16,7 +16,6 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
     defaultValues: initialValues
   })
 
-
   return (
     <>
       <Offcanvas.Body>

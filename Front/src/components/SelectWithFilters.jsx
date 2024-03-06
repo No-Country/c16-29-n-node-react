@@ -1,16 +1,14 @@
-
 import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
-
 
 const animatedComponents = makeAnimated();
 
 const colourStyles = {
   control: (styles) => ({ ...styles, backgroundColor: '#EEFAFF' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = chroma(data.color);
+    const color = chroma(data.color || '#999999');
     return {
       ...styles,
       backgroundColor: isDisabled
@@ -40,7 +38,7 @@ const colourStyles = {
     };
   },
   multiValue: (styles, { data }) => {
-    const color = chroma(data.color);
+    const color = chroma(data.color || '#999999');
     return {
       ...styles,
       backgroundColor: color.alpha(0.1).css(),
@@ -60,14 +58,11 @@ const colourStyles = {
   }),
 };
 
-
 const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 
   const handleSelectionChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
   };
-
-
 
   return (
     <Select
