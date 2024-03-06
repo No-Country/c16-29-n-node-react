@@ -9,7 +9,10 @@ export default {
       colors: {
         "purple": "#6202B6",
         "purple-600": "#9312FF",
+        "purple-400":"#AF72FF",
+        "Blue-400":"#53CAFF",
         "custom-menu": "#4D5862", 
+        
         "light-white": "rgba(255,255,255,0.17)",
       },
       fontFamily: {

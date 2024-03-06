@@ -21,95 +21,133 @@ export const StudentTutorModel = db.define(
 
 // User Associations
 UserModel.hasMany(BannModel, {
+  as: "my_banns",
   foreignKey: "teacher_id",
 });
 UserModel.hasMany(BannModel, {
+  as: "banns",
   foreignKey: "student_id",
 });
 UserModel.hasMany(NoteModel, {
+  as: "notes",
   foreignKey: "student_id",
 });
 UserModel.hasMany(NoteModel, {
+  as: "my_notes",
   foreignKey: "teacher_id",
 });
 UserModel.hasMany(NonAttendanceModel, {
+  as: "nonattendances",
   foreignKey: "student_id",
 });
 UserModel.hasMany(ExamModel, {
+  as: "exams",
   foreignKey: "teacher_id",
 });
 UserModel.hasMany(MarkModel, {
+  as: "marks",
   foreignKey: "student_id",
 });
 UserModel.belongsToMany(SubjectModel, {
-  as: "Subject",
+  as: "subjects",
   through: "UserSubject" 
 });
 UserModel.belongsToMany(UserModel, {
-  as: "Tutor",
+  as: "tutors",
   through: StudentTutorModel,
   foreignKey: "student_id",
 });
 UserModel.belongsToMany(UserModel, {
-  as: "Student",
+  as: "students",
   through: StudentTutorModel,
   foreignKey: "tutor_id",
 });
 
 // Subject Associations
 SubjectModel.hasMany(BannModel, {
+  as: "banns",
   foreignKey: "subject_id",
 });
 SubjectModel.hasMany(NoteModel, {
+  as: "notes",
   foreignKey: "subject_id",
 });
-SubjectModel.hasMany(NonAttendanceModel, { foreignKey: "subject_id" });
-SubjectModel.hasMany(ExamModel, { foreignKey: "subject_id" });
+SubjectModel.hasMany(NonAttendanceModel, { 
+  as: "nonattendances",
+  foreignKey: "subject_id" 
+});
+SubjectModel.hasMany(ExamModel, { 
+  as: "exams",
+  foreignKey: "subject_id" 
+});
 SubjectModel.belongsToMany(UserModel, {
-  as: "User",
+  as: "users",
   through: "UserSubject" 
 });
 
 // Notes Associations
 NoteModel.belongsTo(UserModel, {
+  as: "teacher",
+  foreignKey: "teacher_id",
+});
+NoteModel.belongsTo(UserModel, {
+  as: "student",
   foreignKey: "student_id",
 });
 NoteModel.belongsTo(SubjectModel, {
+  as: "subject",
   foreignKey: "subject_id",
 });
 
 // NonAttendances Associations
 NonAttendanceModel.belongsTo(SubjectModel, {
+  as: "subject",
   foreignKey: "subject_id",
 });
 NonAttendanceModel.belongsTo(UserModel, {
+  as: "student",
   foreignKey: "student_id",
+});
+NonAttendanceModel.belongsTo(UserModel, {
+  as: "teacher",
+  foreignKey: "teacher_id",
 });
 
 // Marks Associations
 MarkModel.belongsTo(ExamModel, {
+  as: "exam",
   foreignKey: "exam_id",
 });
 MarkModel.belongsTo(UserModel, {
+  as: "student",
   foreignKey: "user_id",
 });
 
 // Exams Associations
-ExamModel.hasOne(MarkModel, {
+ExamModel.hasMany(MarkModel, {
+  as: "mark",
   foreignKey: "exam_id",
 });
 ExamModel.belongsTo(SubjectModel, {
+  as: "subject",
   foreignKey: "subject_id",
 });
 ExamModel.belongsTo(UserModel, {
+  as: "teacher",
   foreignKey: "teacher_id",
 });
 
 // Banns Associations
 BannModel.belongsTo(UserModel, {
+  as: "teacher",
+  foreignKey: "teacher_id",
+});
+BannModel.belongsTo(UserModel, {
+  as: "student",
   foreignKey: "student_id",
 });
 BannModel.belongsTo(SubjectModel, {
+  as: "subject",
   foreignKey: "subject_id",
 });
 
