@@ -1,4 +1,4 @@
-import { check, body } from "express-validator";
+import { check, param } from "express-validator";
 import { compareSync } from "bcrypt";
 import { getUserByUsername } from "../services/user.service.js";
 
