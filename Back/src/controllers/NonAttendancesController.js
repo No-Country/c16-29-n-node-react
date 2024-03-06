@@ -1,11 +1,33 @@
-import { NonAttendanceModel } from "../database/models/index.js";
+import { NonAttendanceModel, SubjectModel, UserModel } from "../database/models/index.js";
 //Metodos CRUD
 
 //Mostrar todos los registros
 export const getCurrentNonAttendances = async (req, res) => {
   try {
-    const nonAttendances = await NonAttendanceModel.findAll();
-    res.json(attendances);
+    const id = req.user.id;
+
+    const nonAttendances = await NonAttendanceModel.findAll({
+      attributes: [
+        "id",
+        "date",
+        "type",
+        "note"
+      ],
+      where: {
+        teacher_id: id
+      },
+      include: {
+        as: "student",
+        model: UserModel,
+        attributes: [
+          "id",
+          "first_name",
+          "last_name",
+          "fullName"
+        ]
+      }
+    });
+    res.json(nonAttendances);
   } catch (error) {
     res.json({ message: error.message });
   }
@@ -25,11 +47,48 @@ export const getNonAttendances = async (req, res) => {
 
 //Crear un registro
 export const createNonAttendances = async (req, res) => {
-  console.log(req.body);
   try {
-    await attendancesModel.create(req.body);
+    const id = req.user.id;
+    const students = req.body.students;
+
+    const subject = await SubjectModel.findOne({
+        where: {
+          id: req.body.subject_id
+        },
+        include: [
+          {
+            as: "users",
+            model: UserModel,
+            attributes: ["id"]
+          }
+        ]
+      }
+    );
+
+    if(!subject) throw new Error("La materia no existe");
+    const { isTeacher, studentsIn } = subject.users.reduce((acc, { id: currentId }) => {
+      if(currentId == id){
+        acc.isTeacher = true;
+      } else if(students.includes(currentId)){
+        acc.studentsIn.push(currentId);
+      }
+      return acc;
+    },{
+      isTeacher: false,
+      studentsIn: []
+    })
+
+    if(!isTeacher) throw new Error("El profesor no pertenece a la materia");
+    if(studentsIn.length !== students.length) throw new Error("Un estudiante ingresado no pertenece a la materia");
+
+    await NonAttendanceModel.bulkCreate(studentsIn.map((student_id) => ({
+      ...req.body,
+      teacher_id: id,
+      student_id
+    })));
+
     res.json({
-      message: "Registro creado correctamente",
+      message: "Registros creados correctamente",
     });
   } catch (error) {
     res.json({ message: error.message });
