@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import MOCK from "./mock";
 import { useRoutes } from "react-router-dom";
@@ -10,6 +10,7 @@ import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
 import { useSelector } from "react-redux";
+import Alert from "../../../components/Alert";
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
@@ -29,6 +30,7 @@ const StudentsView = () => {
     type: "",
     row: {}
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
   const [data, setData] = useState(MOCK);
@@ -47,9 +49,22 @@ const StudentsView = () => {
     });
   }
 
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
+
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ message: "", type: "" });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert.message]);
 
   const handleConfirmCreateItem = () => {
     setActive({
@@ -81,6 +96,7 @@ const StudentsView = () => {
         } : student
       )
     );
+    showAlert("Alumno editado exitosamente", "success");
     offcanvas.handleClose();
   };
 
@@ -100,6 +116,7 @@ const StudentsView = () => {
       }
       return [...prevData, newItem];
     });
+    showAlert("Alumno creado exitosamente", "success");
     offcanvas.handleClose();
   }
 
@@ -113,6 +130,7 @@ const StudentsView = () => {
 
   const handleDeleteItem = ({ id }) => {
     setData((students) => students.filter((student) => student.id !== id))
+    showAlert("Alumno eliminado exitosamente", "error");
   }
 
   // ------------------------------------------------------------------------------ //
@@ -172,6 +190,13 @@ const StudentsView = () => {
 
   return (
     <div className="grow flex flex-col overflow-auto">
+      {alert.message && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onDismiss={() => setAlert({ message: "", type: "" })}
+        />
+      )}
       <p>{data.length} Registros</p>
       <SimpleTable
         columns={columns}

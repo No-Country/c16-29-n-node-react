@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Button from "../../components/ui/button";
 import { SimpleTable } from "../../components/SimpleTabla"
 import Offcanvas from "../../components/ui/offcanvas";
@@ -7,16 +7,31 @@ import Modal from "../../components/ui/modal";
 import TeacherCreateBann from "../../components/forms/teacher-create-bann";
 import TeacherEditBann from "../../components/forms/teacher-edit-bann";
 import ConfirmDelete from "../../components/modals/confirm-delete";
+import Alert from "../../components/Alert";
 
 const Banns = () => {
 
   const [data, setData] = useState([])
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
     type: "",
     row: {}
   });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
+
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ message: "", type: "" });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert.message]);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
 
   const resetState = (action) => () => {
     action();
@@ -63,6 +78,7 @@ const Banns = () => {
       }
       return [...prevData, newItem];
     });
+    showAlert("Amonestación creada exitosamente", "success");
     offcanvas.handleClose();
   }
 
@@ -81,11 +97,13 @@ const Banns = () => {
         } : bann
       )
     );
+    showAlert("Amonestación editada exitosamente", "success");
     offcanvas.handleClose();
   };
 
   const handleDeleteItem = ({ id }) => {
     setData((data) => data.filter((bann) => bann.id !== id))
+    showAlert("Amonestación eliminada exitosamente", "error")
   }
 
   const columns = useMemo(() => {
@@ -148,6 +166,13 @@ const Banns = () => {
 
   return (
     <div>
+      {alert.message && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onDismiss={() => setAlert({ message: "", type: "" })}
+        />
+      )}
       <SimpleTable
         actions={<Button onClick={handleConfirmCreateItem}>Crear Amonestación</Button>}
         columns={columns}
