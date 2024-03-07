@@ -12,10 +12,12 @@ import {
   createTutor,
   deleteTutor,
   fetchTutor,
+  hideAlert,
   updateTutor,
 } from "./../../../store/slice/tutorSlice";
 import Modal from "../../../components/ui/modal";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
+import { setSelectedOptions } from "../../../actions/actions";
 
 export const DirectivoTutor = () => {
   const dispatch = useDispatch();
@@ -23,6 +25,9 @@ export const DirectivoTutor = () => {
   const stateCreating = useSelector((state) => state.tutor.stateCreating);
   const stateUpdating = useSelector((state) => state.tutor.stateUpdating);
   const stateDeleting = useSelector((state) => state.tutor.stateDeleting);
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
+  const stateAlertMessage = useSelector((state) => state.tutor.stateAlertMessage);
+  const alertType = useSelector((state) => state.tutor.alertType);
   // const stateMessage = useSelector((state) => state.tutor.alertMessage);
 
   const offcanvas = useDisclosure();
@@ -35,12 +40,35 @@ export const DirectivoTutor = () => {
     row: {},
   });
 
-
   useEffect(() => {
-    if (!stateCreating || !stateUpdating || !stateDeleting) {
+    if (!stateCreating.isLoading && !stateUpdating.isLoading && !stateDeleting.isLoading) {
+      const status = [stateCreating, stateUpdating, stateDeleting]
+      if(status.some(({ status }) => status === "rejected")){
+        setAlert({
+          message: stateAlertMessage,
+          type: alertType
+        })
+        dispatch(hideAlert());
+      } else if(status.some(({ status }) => status === "completed")) {
+        setAlert({
+          message: stateAlertMessage,
+          type: alertType
+        })
+        dispatch(hideAlert());
+        resetState();
+        modal.handleClose();
+        offcanvas.handleClose();
+      }
       dispatch(fetchTutor());
+      dispatch(setSelectedOptions([]))
     }
   }, [dispatch, stateCreating, stateUpdating, stateDeleting]);
+
+  useEffect(() => {
+    if(alert.message === ""){
+      dispatch(hideAlert())
+    }
+  }, [dispatch, alert]);
 
   const resetState = (action) => () => {
     action();
@@ -48,6 +76,7 @@ export const DirectivoTutor = () => {
       type: "",
       row: {},
     });
+    dispatch(setSelectedOptions([]))
   };
 
   const handleConfirmCreateItem = () => {
@@ -75,17 +104,6 @@ export const DirectivoTutor = () => {
 
   const handleDeleteItem = ({ id }) => {
     dispatch(deleteTutor(id));
-    if(!id) {
-      setAlert({
-        message : "el tutor fue eliminado con exito!", 
-        type: "success"   
-      }) 
-    } else {
-      setAlert({
-        message : "el tutor no se pudo elminar!", 
-        type: "error"   
-      }) 
-    }
   };
 
   const handleCreateItem = (row) => {
@@ -105,12 +123,6 @@ export const DirectivoTutor = () => {
       students: parsedStudents,
     };
     dispatch(createTutor(newItem));
-    offcanvas.handleClose();
-    if(newItem)
-    setAlert({
-    message : "El tutor fue creado con exito!", 
-    type: "success"   
-  }) 
   };
 
   const handleEditItem = (updatedTutor) => {
@@ -127,17 +139,12 @@ export const DirectivoTutor = () => {
               : updatedTutor.email,
           password: updatedTutor.password,
           phone: updatedTutor.phone,
-          students: updatedTutor.students.map(({ value }) => ({
+          students: selectedOptions.map(({ value }) => ({
             id: value,
           })),
         },
       })
     );
-    offcanvas.handleClose();
-    setAlert({
-      message : "el tutor fue editado con exito!", 
-      type: "success"   
-    }) 
   };
 
 

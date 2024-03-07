@@ -15,13 +15,14 @@ const EditTutor = ({ onClose, onSubmit, initialValues }) => {
   const selectedOptions = useSelector((state) => state.select.selectedOptions); 
   const dispatch = useDispatch();
 
-  const {formState: { errors }, register, handleSubmit, setValue, } = useForm({
+  const {formState: { errors }, register, handleSubmit } = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
 });
 
 useEffect(()=> {
   dispatch(getStudents())
+  dispatch(setSelectedOptions(initialValues.students))
 },[])
 
 const handleSelectChange = (selectedOptions) => {
@@ -85,6 +86,7 @@ const options = students.map(students => ({
               Contraseña
             </label>
             <input
+              type="password"
               {...register("password")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.password ? "border-red-500" : "rounded"
@@ -163,7 +165,7 @@ export default EditTutor;
 
 const studentSchema = z.object({
   value: z.number(),
-  label: z.string().min(2).max(20),  
+  label: z.string(),  
 });
 
 const schema = z.object({
@@ -172,7 +174,7 @@ const schema = z.object({
   lastName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   username: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
   // password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
+  email: z.string().regex(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
   phone: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
   students: z.array(studentSchema), 
 });

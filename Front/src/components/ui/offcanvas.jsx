@@ -1,42 +1,35 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useId } from "react"
 
 const Offcanvas = ({ isOpen, onClose, children, title }) => {
-  const offcanvasRef = useRef();
+  const id = useId();
 
-  const handleClick = useCallback((e) => {
-    if(isOpen && !offcanvasRef.current.contains(e.target)) {
+  const handleClick = (e) => {
+    if(isOpen && e.target.id === id) {
       onClose();
-    }
-  }, []);
-
-  useEffect(() => {
-    if(isOpen){
-      setTimeout(() => {
-        window.addEventListener("click", handleClick);
-      }, 100);
-  
-      return () => {
-        window.removeEventListener("click", handleClick);
-      }
-    }
-  }, [isOpen, onClose])
+    }    
+  };
 
   return (
     <div
-      ref={offcanvasRef}
-      className={`fixed w-80 h-screen top-0 right-0 ${isOpen ? "" : "translate-x-full"} duration-500 ease-in-out border-l`}
+      id={id}
+      onClick={handleClick}
+      className={`fixed w-screen h-screen top-0 right-0 ${isOpen ? "" : "translate-x-full"} duration-500 ease-in-out flex justify-end`}
     >
       <div
-        className="w-full h-full flex flex-col bg-white"
+        className={`w-80 border-l overflow-hidden`}
       >
-        <div className="bg-gradient-to-br from-blue-400 to-purple-400 py-2 px-3 flex justify-between items-center">
-          <h3 className="text-lg font-bold text-blue-950">{title}</h3>
-          <button className="cursor-pointer" onClick={onClose}>
-            <img src="/assets/Close.png" alt="btn-close" />
-          </button>
-        </div>
-        <div className="grow flex flex-col">
-          {children}
+        <div
+          className="w-full h-full flex flex-col bg-white overflow-hidden"
+        >
+          <div className="bg-gradient-to-br from-blue-400 to-purple-400 py-2 px-3 flex justify-between items-center">
+            <h3 className="text-lg font-bold text-blue-950">{title}</h3>
+            <button className="cursor-pointer" onClick={onClose}>
+              <img src="/assets/Close.png" alt="btn-close" />
+            </button>
+          </div>
+          <div className="grow flex flex-col overflow-hidden">
+            {children}
+          </div>
         </div>
       </div>
     </div>
