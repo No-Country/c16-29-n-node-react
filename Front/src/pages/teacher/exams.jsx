@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../components/SimpleTabla";
-import useDisclosure from "../../hooks/useDisclosure";
 import Alert from "../../components/Alert";
 import MOCK from "./examsMock/mock";
-import EYE from "../../../../UI-UX/Iconografía/eye.png";
-import EDIT from "../../../../UI-UX/Iconografía/edit.png";
 
 const Exams = () => {
 
@@ -138,7 +135,7 @@ const Exams = () => {
         cell: ({ row: { original } }) => (
           <div className="flex justify-end gap-2">
             <button onClick={() => handleActionClick("view", original)}>
-              <img src={EYE} alt="ver alumno" />
+              <img src={"/assets/eye.svg"} alt="ver alumno" />
             </button>
           </div>
         ),
@@ -166,7 +163,7 @@ const Exams = () => {
         cell: ({ row: { original } }) => (
           <div className="flex justify-end gap-2">
             <button onClick={() => handleEditButtonClick(original.name)}>
-              <img src={EDIT} alt="ver alumno" />
+              <img src={"/assets/edit-action.svg"} alt="ver alumno" />
             </button>
           </div>
         ),
