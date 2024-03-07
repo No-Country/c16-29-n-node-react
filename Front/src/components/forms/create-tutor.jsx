@@ -124,6 +124,7 @@ const CreateTutor = ({ onClose, onSubmit }) => {
               Contraseña
             </label>
             <input
+              type="password"
               {...register("password", {
                 required: "El passoword es requerido",
               })}
@@ -230,7 +231,7 @@ const schema = z.object({
     .array(
       z.object({        
         value: z.number(),
-        label: z.string(), })
+        label: z.string()
+      })
     )
-    .nonempty("Debe seleccionar al menos un Alumno"),
 });
