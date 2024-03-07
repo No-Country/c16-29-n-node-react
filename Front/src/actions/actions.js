@@ -1,5 +1,5 @@
-import axios from "axios"
 import { getAccessToken } from "../utils/accessToken"
+import { AxiosInstance } from "../utils/axios"
 export const SET_SELECTED_OPTIONS = 'SET_SELECTED_OPTIONS'
 export const SET_TUTORS_SELECTED_OPTIONS = 'SET_TUTORS_SELECTED_OPTIONS'
 export const CLEAR_TUTORS_SELECTED_OPTIONS = 'CLEAR_TUTORS_SELECTED_OPTIONS'
@@ -27,7 +27,7 @@ export const clearSelectedOptions = () => ({
 export function getStudents() {
   return async function (dispatch) {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role`,
+    const json = await AxiosInstance.post(`users/role`,
       { role: "STUDENT" },
       { headers: { "x-access-token": token } }
     );
@@ -41,7 +41,7 @@ export function getStudents() {
 export function createStudent(data) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/`,
+    const json = await AxiosInstance.post(`users/`,
        data,
       { headers: { "x-access-token": token } }
     );
@@ -52,7 +52,7 @@ export function createStudent(data) {
 export function editStudent(data, id) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.put(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+    const json = await AxiosInstance.put(`users/${id}`,
        data,
       { headers: { "x-access-token": token } }
     );
@@ -63,7 +63,7 @@ export function editStudent(data, id) {
 export function deleteStudent(id) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.delete(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+    const json = await AxiosInstance.delete(`users/${id}`,
       { headers: { "x-access-token": token } }
     );
     return json
@@ -73,7 +73,7 @@ export function deleteStudent(id) {
 export function getTutorsOptions() {
   return async function (dispatch) {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role`,
+    const json = await AxiosInstance.post(`users/role`,
       { role: "TUTOR" },
       { headers: { "x-access-token": token } }
     );
