@@ -113,8 +113,6 @@ export const updateBanns = async (req, res) => {
     const id = req.params.id
     const teacherId = req.user.id;
 
-    console.log(id);
-
     if(!id) throw new Error("Se debe enviar el id de la amonestacion a modificar");
 
     const bann = await BannModel.findByPk(id, {
@@ -143,12 +141,32 @@ export const updateBanns = async (req, res) => {
 
 //Eliminar
 export const deleteBanns = async (req, res) => {
-  console.log(req.params.id);
   try {
-    BannModel.destroy({
-      where: { id_number: req.params.id },
+    const id = req.params.id
+    const teacherId = req.user.id;
+
+    if(!id) throw new Error("Se debe enviar el id de la amonestacion a modificar");
+
+    const bann = await BannModel.findByPk(id, {
+      include: {
+        as: "teacher",
+        model: UserModel,
+        where: {
+          id: teacherId
+        }
+      }
+    })
+
+    if(!bann) throw new Error("El profesor no pertenece a la materia de la amonestacion");
+    await BannModel.destroy({
+      where: { 
+        id 
+      }
+    });
+    res.json({
+      message: "Amonestacion eliminada correctamente",
     });
   } catch (error) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

@@ -98,24 +98,56 @@ export const createNonAttendances = async (req, res) => {
 //Actualizar
 export const updateNonAttendances = async (req, res) => {
   try {
-    attendancesModel.update(req.body, {
-      where: { id: req.params.id },
+    const teacherId = req.user.id;
+
+    const note = await NonAttendanceModel.findByPk(req.params.id, {
+      include: {
+        as: "teacher",
+        model: UserModel,
+        where: {
+          id: teacherId
+        }
+      }
+    })
+
+    if(!note) throw new Error("El profesor no pertenece a la materia de la inasistencia");
+    await NonAttendanceModel.update(req.body, {
+      where: { id: req.params.id }
     });
-  } catch (error) {
     res.json({
       message: "Registro actualizado correctamente",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
     });
   }
 };
 
 //Eliminar
 export const deleteNonAttendances = async (req, res) => {
-  console.log(req.params.id);
   try {
-    NonAttendanceModel.destroy({
-      where: { id_number: req.params.id },
+    const id = req.params.id;
+    const teacherId = req.user.id;
+
+    const note = await NonAttendanceModel.findByPk(id, {
+      include: {
+        as: "teacher",
+        model: UserModel,
+        where: {
+          id: teacherId
+        }
+      }
+    })
+
+    if(!note) throw new Error("El profesor no pertenece a la materia de la inasistencia");
+    await NonAttendanceModel.destroy({
+      where: { id }
+    });
+    res.json({
+      message: "Inasistencia eliminada correctamente",
     });
   } catch (error) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

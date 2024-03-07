@@ -7,7 +7,9 @@ import {
   upMark,
   getMarkStudent,
 } from "../controllers/mark.controller.js";
-import { getExams, createExam } from "../controllers/exam.controller.js";
+import { getExams, createExam, updateExam } from "../controllers/exam.controller.js";
+import { createExamValidationRules, updateExamValidationRules } from "../validations/exam.validator.js";
+import validate from "../validations/index.validator.js";
 
 
 const markRouter = Router();
@@ -19,7 +21,8 @@ const markRouter = Router();
  */
 markRouter
   .get("/exams", verifyToken, getExams) 
-  .post("/exams/insert", verifyToken, createExam)
+  .post("/exams", verifyToken, createExamValidationRules(), validate, createExam)
+  .put("/exams/:id", verifyToken, updateExamValidationRules(), validate, updateExam)
   .get("/", verifyToken, getAllMarks) 
   .get("/:id", verifyToken, getMarkId)
   .get("/current/:id", verifyToken, getMarkStudent)
