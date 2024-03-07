@@ -139,10 +139,26 @@ export const updateNotes = async (req, res) => {
 export const deleteNotes = async (req, res) => {
   console.log(req.params.id);
   try {
-    NoteModel.destroy({
-      where: { id_number: req.params.id },
+    const teacherId = req.user.id;
+
+    const note = await NoteModel.findByPk(req.params.id, {
+      include: {
+        as: "teacher",
+        model: UserModel,
+        where: {
+          id: teacherId
+        }
+      }
+    })
+
+    if(!note) throw new Error("El profesor no pertenece a la materia de la nota");
+    await NoteModel.destroy({
+      where: { id: req.params.id }
+    });
+    res.json({
+      message: "Nota eliminada correctamente",
     });
   } catch (error) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

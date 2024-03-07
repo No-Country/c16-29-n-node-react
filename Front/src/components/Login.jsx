@@ -45,8 +45,8 @@ export const Login = () => {
   //Falta detallar medidas y animacion de los Input(buscar en shadcn)
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className="w-1/3 flex flex-col justify-center items-center px-8 py-8 rounded-lg border-4 border-neutral-700 gap-8">
-        <div className="h-18 mx-auto">
+      <div className="flex flex-col justify-center items-center px-8 py-8 rounded-lg border-4 border-neutral-700 gap-8">
+        <div className="mx-auto">
           <img src="/assets/logo.png" alt="logo" />
         </div>
         <div className="w-full flex flex-col items-center gap-y-4 relative ">

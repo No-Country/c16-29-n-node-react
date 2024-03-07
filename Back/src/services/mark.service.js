@@ -17,8 +17,14 @@ export const getMarks = async () => { /* POST /api/exams/marks [TEACHER] */
         "id", "score", "note", "student_id", "exam_id"
       ], */
       include : [
-        { model: UserModel},
-        {model: ExamModel}
+        { 
+          as: "student",
+          model: UserModel
+        },
+        {
+          as: "exam",
+          model: ExamModel
+        }
       ]
     });//todos los usuarios
   } catch (error) {
