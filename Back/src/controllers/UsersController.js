@@ -144,6 +144,7 @@ export const getAllUsersxRole = async (req, res) => {
       where: { role: req.body.role },
       include: include,
     });
+    console.log(users);
     res.json(users);
   } catch (error) {
     res.json({ message: error.message });

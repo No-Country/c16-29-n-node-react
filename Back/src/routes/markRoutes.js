@@ -2,12 +2,15 @@ import { Router } from "express";
 import { verifyToken } from "../middlewares/auth.js";
 import {
   getAllMarks,
-  getMarkId,
   createMark,
   upMark,
-  getMarkStudent,
+  getMarkByExamId,
+  deleteMark,
 } from "../controllers/mark.controller.js";
-import { getExams, createExam } from "../controllers/exam.controller.js";
+import { getExams, createExam, updateExam, getCurrentExams, deleteExam } from "../controllers/exam.controller.js";
+import { createExamValidationRules, updateExamValidationRules } from "../validations/exam.validator.js";
+import { createMarkValidationRules, updateMarkValidationRules } from "../validations/mark.validator.js";
+import validate from "../validations/index.validator.js";
 
 
 const markRouter = Router();
@@ -18,13 +21,16 @@ const markRouter = Router();
     exam_id: { type: DataTypes.INTEGER },
  */
 markRouter
-  .get("/exams", getExams) 
-  .post("/exams" , createExam)
-  .get("/", getAllMarks) 
-  .get("/:id",  getMarkId)
-  .get("/current/:id", getMarkStudent)
-  .post("/", /* verifyToken, */ createMark)
-  .put("/:id", verifyToken, upMark);
+  .get("/exams", verifyToken, getExams) 
+  .get("/exams/current", verifyToken, getCurrentExams)
+  .post("/exams", verifyToken, createExamValidationRules(), validate, createExam)
+  .put("/exams/:id", verifyToken, updateExamValidationRules(), validate, updateExam)
+  .delete("/exams/:id", verifyToken, deleteExam)
+  .get("/", verifyToken, getAllMarks) 
+  .get("/exams/:id", verifyToken, getMarkByExamId)
+  .post("/", verifyToken, createMarkValidationRules(), validate, createMark)
+  .put("/:id", verifyToken, updateMarkValidationRules(), validate, upMark)
+  .delete("/:id", verifyToken, deleteMark);
 
 export default markRouter;
 /*   POST /api/exams [TEACHER]
