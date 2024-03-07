@@ -17,6 +17,7 @@ import {
 } from "redux-persist";
 import principalSubjectsSlice from "./slice/principal-subjects-slice";
 import principalSubjectSlice from "./slice/principal-subject-slice";
+import teacherSubjectsSlice from "./slice/teacher-subjects-slice";
 
 const persisConfig =  {
   key: "auth",
@@ -33,6 +34,7 @@ const store = configureStore({
     select: selectReducer,
     principalSubjects: principalSubjectsSlice,
     principalSubject: principalSubjectSlice,
+    teacherSubjects: teacherSubjectsSlice,
     tutor: tutorReducer,
     subjects: subjectsReducer,
     students: selectReducer,

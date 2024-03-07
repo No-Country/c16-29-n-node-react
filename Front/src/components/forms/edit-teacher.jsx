@@ -8,7 +8,6 @@ import SelectWithFilters from "../SelectWithFilters";
 import { setSelectedOptions } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
 const EditTeacher = ({onClose, onSubmit, initialValues}) =>{
-console.log(initialValues, "initialvalues")
   const selectedOptions = useSelector((state) => state.select.selectedOptions);
   const dispatch = useDispatch();
   const subjects = useSelector(state=>state.subjects.subjects || []);

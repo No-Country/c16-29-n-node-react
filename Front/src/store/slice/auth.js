@@ -10,9 +10,9 @@ const roles = {
 }
 
 const initialState = {
-  role: "profesor",
-  accessToken: "fakeToken",
-  status: "authenticated"
+  role: "",
+  accessToken: "",
+  status: "idle"
 }
 
 const authSlice = createSlice({
