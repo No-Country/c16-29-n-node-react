@@ -6,6 +6,8 @@ export const CLEAR_TUTORS_SELECTED_OPTIONS = 'CLEAR_TUTORS_SELECTED_OPTIONS'
 export const GET_STUDENTS = 'GET_STUDENTS'
 export const GET_TUTORS_OPTIONS = 'GET_TUTORS_OPTIONS'
 export const CREATE_STUDENT = 'CREATE_STUDENT'
+export const GET_BANNS = 'GET_BANNS'
+
 
 
 
@@ -20,14 +22,26 @@ export const setSelectedOptions = (selectedOptions) => ({
 })
 
 export const clearSelectedOptions = () => ({
-
   type: CLEAR_TUTORS_SELECTED_OPTIONS,
 })
+
+export function getBanns() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await axios.get(`https://no-country-backend-dev-dkar.1.us-1.fl0.io/api/users/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_BANNS,
+      payload: json.data
+    });
+  };
+}
 
 export function getStudents() {
   return async function (dispatch) {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role`,
+    const json = await axios.post(`https://no-country-backend-dev-dkar.1.us-1.fl0.io/api/users/role`,
       { role: "STUDENT" },
       { headers: { "x-access-token": token } }
     );
@@ -41,7 +55,7 @@ export function getStudents() {
 export function createStudent(data) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/`,
+    const json = await axios.post(`https://no-country-backend-dev-dkar.1.us-1.fl0.io/api/users/`,
        data,
       { headers: { "x-access-token": token } }
     );
@@ -52,7 +66,7 @@ export function createStudent(data) {
 export function editStudent(data, id) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.put(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+    const json = await axios.put(`https://no-country-backend-dev-dkar.1.us-1.fl0.io/api/users/${id}`,
        data,
       { headers: { "x-access-token": token } }
     );
@@ -63,7 +77,7 @@ export function editStudent(data, id) {
 export function deleteStudent(id) {
   return async function () {
     const token = getAccessToken()
-    const json = await axios.delete(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+    const json = await axios.delete(`https://no-country-backend-dev-dkar.1.us-1.fl0.io/api/users/${id}`,
       { headers: { "x-access-token": token } }
     );
     return json

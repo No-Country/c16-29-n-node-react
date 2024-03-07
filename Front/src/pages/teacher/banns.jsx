@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
-import Button from "../../components/ui/button";
+// import Button from "../../components/ui/button";
 import { SimpleTable } from "../../components/SimpleTabla"
 import Offcanvas from "../../components/ui/offcanvas";
 import useDisclosure from "../../hooks/useDisclosure";
 import Modal from "../../components/ui/modal";
-import TeacherCreateBann from "../../components/forms/teacher-create-bann";
+// import TeacherCreateBann from "../../components/forms/teacher-create-bann";
 import TeacherEditBann from "../../components/forms/teacher-edit-bann";
 import ConfirmDelete from "../../components/modals/confirm-delete";
 import Alert from "../../components/Alert";
@@ -41,12 +41,12 @@ const Banns = () => {
     });
   }
 
-  const handleConfirmCreateItem = () => {
-    setActive({
-      type: "create"
-    });
-    offcanvas.handleOpen();
-  }
+  // const handleConfirmCreateItem = () => {
+  //   setActive({
+  //     type: "create"
+  //   });
+  //   offcanvas.handleOpen();
+  // }
 
   const handleConfirmEditItem = (row) => {
     setActive({
@@ -64,23 +64,23 @@ const Banns = () => {
     modal.handleOpen();
   }
 
-  const handleCreateItem = (row) => {
-    setData((prevData) => {
-      const newId = Math.max(...prevData.map(item => item.id), 0) + 1;
-      const newItem = {
-        id: newId,
-        date: row.date,
-        reason: row.reason,
-        gravity: row.gravity,
-        student: row.student,
-        subject: row.subject,
-        note: row.note,
-      }
-      return [...prevData, newItem];
-    });
-    showAlert("Amonestación creada exitosamente", "success");
-    offcanvas.handleClose();
-  }
+  // const handleCreateItem = (row) => {
+  //   setData((prevData) => {
+  //     const newId = Math.max(...prevData.map(item => item.id), 0) + 1;
+  //     const newItem = {
+  //       id: newId,
+  //       date: row.date,
+  //       reason: row.reason,
+  //       gravity: row.gravity,
+  //       student: row.student,
+  //       subject: row.subject,
+  //       note: row.note,
+  //     }
+  //     return [...prevData, newItem];
+  //   });
+  //   showAlert("Amonestación creada exitosamente", "success");
+  //   offcanvas.handleClose();
+  // }
 
 
   const handleEditItem = (row) => {
@@ -174,7 +174,7 @@ const Banns = () => {
         />
       )}
       <SimpleTable
-        actions={<Button onClick={handleConfirmCreateItem}>Crear Amonestación</Button>}
+        // actions={<Button onClick={handleConfirmCreateItem}>Crear Amonestación</Button>}
         columns={columns}
         data={data}
       />
@@ -183,12 +183,12 @@ const Banns = () => {
         onClose={resetState(offcanvas.handleClose)}
         title={"Editar Alumno"}
       >
-        {active.type === "create" && (
+        {/* {active.type === "create" && (
           <TeacherCreateBann
             onClose={resetState(offcanvas.handleClose)}
             onAddBan={handleCreateItem}
           />
-        )}
+        )} */}
         {active.type === "edit" && (
           <TeacherEditBann
             onClose={resetState(offcanvas.handleClose)}

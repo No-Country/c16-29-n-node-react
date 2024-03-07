@@ -39,6 +39,7 @@ const store = configureStore({
     subjects: subjectsReducer,
     students: selectReducer,
     tutorsOptions: selectReducer,
+    banns: selectReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
