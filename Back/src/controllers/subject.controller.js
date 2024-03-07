@@ -1,16 +1,10 @@
 import {
   getSubject,
   getSubjectId,
-  insertSubjects,
   modifySubject,
-  findSubjectByName,
   getStudentsCountBySubjectId,
   getTeacherCountBySubjectId ,
-  getUsersByRoleAndSubjectId,
-
 } from "../services/subject.service.js";
-import { encrypt } from "../middlewares/encrypt.js";
-import { hashSync } from "bcrypt";
 import { BannModel, NonAttendanceModel, NoteModel, SubjectModel, UserModel,} from "../database/models/index.js";
 
 
@@ -24,34 +18,92 @@ import { BannModel, NonAttendanceModel, NoteModel, SubjectModel, UserModel,} fro
    */
 export const getSubjects = async (req, res) => {
   try {
-    const subjects = await getSubject();
-    const RESPONSE = {
-      count: subjects.length,
-      subjects,
-      /* detail: `/api/subjects/${subjects[0].id}` */
-    };
-    return res.status(200).json(RESPONSE);
+    const subjects = await SubjectModel.findAll({
+      attributes: [
+        "id",
+        "name",
+        "grade",
+        "divition"
+      ],
+      include: {
+        as: "users",
+        model: UserModel,
+        attributes: [
+          "id",
+          "first_name",
+          "last_name",
+          "fullName",
+          "role"
+        ]
+      }
+    });
+
+    const parsed = subjects.map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+      grade: subject.grade,
+      divition: subject.divition,
+      teachers: subject.users.filter((user) => user.role === "TEACHER"),
+      students: subject.users.filter((user) => user.role === "STUDENT"),
+    }))
+    return res.status(200).json(parsed);
   } catch (error) {
     res.status(500).json({ Error: error });
   }
 };
+
+export const getCurrentSubjects = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const subjects = await SubjectModel.findAll({
+      attributes: [
+        "id",
+        "name",
+        "grade",
+        "divition"
+      ],
+      include: {
+        as: "users",
+        model: UserModel,
+        attributes: [
+          "id",
+          "first_name",
+          "last_name",
+          "fullName",
+          "role"
+        ],
+        where: {
+          id
+        }
+      }
+    });
+
+    const parsed = subjects.map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+      grade: subject.grade,
+      divition: subject.divition,
+      teachers: subject.users.filter((user) => user.role === "TEACHER"),
+      students: subject.users.filter((user) => user.role === "STUDENT"),
+    }))
+    return res.status(200).json(parsed);
+  } catch (error) {
+    res.status(500).json({ Error: error });
+  }
+};
+
 export const getSubjectById = async (req, res) => {
   try {
     const SUBJECT_ID = req.params.id;
     const subject = await SubjectModel.findByPk(SUBJECT_ID, {
+      attributes: [
+        "id",
+        "name",
+        "grade",
+        "divition"
+      ],
       include: [
-        {
-          attributes: [
-            "id",
-            "first_name",
-            "last_name",
-            "fullName",
-            "role",
-            "grade"
-          ],
-          as: "users",
-          model: UserModel
-        },
         {
           attributes: [
             "id",
@@ -85,9 +137,31 @@ export const getSubjectById = async (req, res) => {
         }
       ]
     });
-    return res.status(200).json(subject);
+
+    if(!subject) throw new Error("La materia no fue encontrada");
+
+    const users = await subject.getUsers({
+      attributes: [
+        "id",
+        "first_name",
+        "last_name",
+        "grade",
+        "role"
+      ]
+    });
+
+    const RESPONSE = {
+      id: subject.id,
+      name: subject.name,
+      grade: subject.grade,
+      divition: subject.divition,
+      teachers: users.filter((user) => user.role === "TEACHER"),
+      students: users.filter((user) => user.role === "STUDENT"),
+    }
+    return res.status(200).json(RESPONSE);
   } catch (error) {
-    res.status(500).json({ message: error });
+    console.log(error)
+    res.status(500).json({ message: error.message });
   }
 };//estudiantes por materia
 export const getStudentsCountBySubject = async (req, res) => {
@@ -127,7 +201,15 @@ export const getStudentsBySubjectFullName = async (req, res) => {
     });
     const students = users.filter((user) => user.role === "STUDENT");
 
-    return res.status(200).json(students);
+    const RESPONSE = {
+      id: subject.id,
+      name: subject.name,
+      grade: subject.grade,
+      divition: subject.divition,
+      students
+    }
+
+    return res.status(200).json(RESPONSE);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -168,32 +250,77 @@ export const getAllSubjectsAndStudentsAndTeachers = async(req ,res)=>{
 };
 export const createSubject = async (req, res) => {
   try {
-    const { name } = req.body;
-    const existingSubject = await findSubjectByName(name);
-    if(existingSubject){
-      return res.status(400).json({ error : `La materia ${name} ya existe` });
-    }else{
-    const result = await insertSubjects({
-         ...req.body,
+    if(req.body.teachers){
+      const teachers = await UserModel.findAll({
+        where: {
+          id: req.body.teachers,
+          role: "TEACHER"
         }
-    );
-    return res.status(201).json({ msg: `Created subject` });
+      });
+  
+      if(teachers.length !== req.body.teachers.length) throw new Error("Un profesor no se encontro");
     }
+    const founded = await SubjectModel.findOne({
+      where: {
+        name: req.body.name,
+        grade: req.body.grade,
+        divition: req.body.divition
+      }
+    })
+
+    if(founded) throw new Error("La materia ya existe");
+
+    const subject = await SubjectModel.create(req.body);
+
+    if(req.body.teachers) await subject.addUsers(req.body.teachers);
+
+    return res.status(201).json({ message: "La materia ha sido creada correctamente" });
   } catch (error) {
-    return res.status(500).json({ Error: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 export const updateSubject = async (req, res) => {
   try {
-    const  { id } = req.params;
-    const existingSubject = await getSubjectId(id);
-    if (!existingSubject) {
-      return res.status(404).json({ error: "no hay materias para este id"});
+    const id = req.params.id;
+
+    if(req.body.teachers){
+      const teachers = await UserModel.findAll({
+        where: {
+          id: req.body.teachers,
+          role: "TEACHER"
+        }
+      });
+  
+      if(teachers.length !== req.body.teachers.length) throw new Error("Un profesor no se encontro");
     }
-    await modifySubject(id, req.body);
-    return res.status(201).json({ message: "materia actualizada"});
+    const founded = await SubjectModel.findByPk(id, {
+      include: {
+        as: "users",
+        model: UserModel
+      }
+    })
+
+    if(!founded) throw new Error("La materia no existe");
+
+    await SubjectModel.update(req.body, {
+      where: {
+        id
+      }
+    });
+
+    if(req.body.teachers) {
+      const teachers = founded.users
+        .filter((user) => user.role === "TEACHER")  
+        .map((user) => user.id);
+      
+      await founded.removeUsers(teachers);
+      await founded.addUsers(req.body.teachers);
+    }
+
+    return res.status(201).json({ message: "La materia ha sido actualizada correctamente" });
   } catch (error) {
-    return res.status(500).json({ Error: error });
+    console.log(error)
+    return res.status(500).json({ message: error.message });
   }
 };
 export const assignSubjectToUsers = async (req, res) => {
@@ -237,17 +364,21 @@ export const deassignUserFromSubject = async (req, res) => {
 
 export const deleteSubject = async (req, res) =>{
   try {
-    const destroySubject = req.params.id;
-    const  { id } = req.params;
-    const existingSubject = await getSubjectId(id);
+    const id = req.params.id;
+    const existingSubject = await SubjectModel.findByPk(id, {
+      include: {
+        as: "users",
+        model: UserModel
+      }
+    });
     if(!existingSubject){
-      return res.status(404).json({ error: "no se puede eliminar una materia inexistente"});
-    }else{
-      SubjectModel.destroy({
-       where: { id: destroySubject}})
-       return res.status(200).json({message: "materia eliminada"})
-     }
+      throw new Error("La materia no existe");
+    }
+    if(existingSubject.users.length > 0) throw new Error("No se puede eliminar una materia con profesores o alumnos");
+    await SubjectModel.destroy({
+      where: { id }})
+      return res.status(200).json({message: "materia eliminada"})
   } catch (error) {
-    return res.status(500).json({Error: error})
+    return res.status(500).json({message: error.message})
   }
 };

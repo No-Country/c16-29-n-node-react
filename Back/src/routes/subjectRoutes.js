@@ -13,7 +13,7 @@ import {
   getStudentsBySubjectFullName
 } from "../controllers/subject.controller.js";
 import { verifyToken } from "../middlewares/auth.js";
-import { subjectValidatorRules } from "../validations/subject.validator.js";
+import { subjectValidatorRules, updateSubjectValidatorRules } from "../validations/subject.validator.js";
 import validate from "../validations/index.validator.js"
 
 const subjectRouter = Router();
@@ -25,10 +25,10 @@ subjectRouter
   .get("/currentStudent/:id", verifyToken, getStudentsCountBySubject) // estudiantes por materia
   .get("/:name/:grade/:divition", verifyToken, getStudentsBySubjectFullName) // estudiantes por materia
   .get("/:id", verifyToken, getSubjectById) // materia por id
-  .put("/update/:id", verifyToken, subjectValidatorRules(), validate, updateSubject) // modificar materia por id
+  .put("/:id", verifyToken, updateSubjectValidatorRules(), validate, updateSubject) // modificar materia por id
   .put("/assign/:id", verifyToken, assignSubjectToUsers) // Asignar materia a usuarios
-  .post("/create", verifyToken, subjectValidatorRules(), validate, createSubject) // crear una materia
+  .post("/", verifyToken, subjectValidatorRules(), validate, createSubject) // crear una materia
   .delete("/:subjectId/deassign/:userId", verifyToken, deassignUserFromSubject) // Asignar materia a usuarios
-  .delete("/delete/:id", verifyToken, deleteSubject); // borrar una materia
+  .delete("/:id", verifyToken, deleteSubject); // borrar una materia
 
 export default subjectRouter;
