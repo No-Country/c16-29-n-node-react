@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
-import MOCK from "./mock";
 import { useRoutes, Link } from "react-router-dom";
 import SubjectView from "./see-subject/index";
 import CreateSubject from "../../../components/forms/create-subject";
@@ -10,6 +9,8 @@ import Offcanvas from "../../../components/ui/offcanvas";
 import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
+import { useDispatch, useSelector } from "react-redux";
+import { createSubject, deleteSubject, fetchSubjects, updateSubject } from "../../../store/slice/principal-subject-slice";
 
 const PrincipalSubjectsView = () => {
   const routes = useRoutes([
@@ -27,7 +28,20 @@ const SubjectsView = () => {
   });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
-  const [data, setData] = useState(MOCK);
+  const dispatch = useDispatch();
+  const subjects = useSelector((state) => state.principalSubject.subjects);
+  const stateCreating = useSelector((state) => state.principalSubject.stateCreating);
+  const stateUpdating = useSelector((state) => state.principalSubject.stateUpdating);
+  const stateDeleting = useSelector((state) => state.principalSubject.stateDeleting);
+
+  useEffect(() => {
+    if(!stateCreating || !stateUpdating || !stateDeleting){
+      dispatch(fetchSubjects())
+      resetState()
+      modal.handleClose()
+      offcanvas.handleClose()
+    }
+  }, [dispatch, stateCreating, stateUpdating, stateDeleting])
 
   const resetState = (action) => () => {
     action();
@@ -52,36 +66,22 @@ const SubjectsView = () => {
     offcanvas.handleOpen();
   }
 
-  const handleEditItem = (row) => {
-    setData((data) => data.map((subject) => {
-      return subject.id === active.row.id 
-      ? (
-          {
-            ...row,
-            name: row.subject,
-            teachers: [{
-              id: row.teacher.value,
-              name: row.teacher.label,
-            }],
-            students: []
-          }
-        ) 
-      : (
-        subject
-      )
-    })
-    )
+  const handleEditItem = (subject) => {
+    const teachers = subject.teachers.map(({value}) => value);
+    dispatch(updateSubject({
+      id: active.row.id,
+      data: {
+        ...subject,
+        teachers
+      }
+    }))
   }
 
-  const handleCreateItem = (row) => {
-    setData((data) => data.concat({
-      ...row,
-      name: row.subject,
-      teachers: [{
-        id: row.teacher.value,
-        name: row.teacher.label,
-      }],
-      students: []
+  const handleCreateItem = (subject) => {
+    const teachers = subject.teachers.map(({value}) => value);
+    dispatch(createSubject({
+      ...subject,
+      teachers
     }))
   }
 
@@ -94,7 +94,7 @@ const SubjectsView = () => {
   }
 
   const handleDeleteItem = ({ id }) => {
-    setData((subjects) => subjects.filter((subject) => subject.id !== id))
+    dispatch(deleteSubject(id))
   }
 
   const columns = useMemo(() => {
@@ -123,7 +123,7 @@ const SubjectsView = () => {
       {
         Header: "Profesor Asociado",
         id: "teacher",
-        accessorFn: (row) => row.teachers[0].name,
+        accessorFn: (row) => row.teachers.length ? row.teachers[0].first_name : "",
       },
       {
         Header: "# Alumnos",
@@ -135,7 +135,7 @@ const SubjectsView = () => {
         Header: "Acciones",
         id: "actions",
         cell: ({ row: { original } }) => (
-          <div className="flex jutify-center gap-2">
+          <div className="flex justify-center gap-2">
             <button onClick={() => handleConfirmEditItem(original)}>
               <img src="/assets/edit.svg" alt="editar materia" />
             </button>
@@ -150,10 +150,10 @@ const SubjectsView = () => {
 
   return (
     <div className="grow flex flex-col overflow-auto">
-      <p>{data.length} Registros</p>
+      <p>{subjects.length} Registros</p>
       <SimpleTable 
         columns={columns} 
-        data={data}
+        data={subjects}
         actions={<Button onClick={handleConfirmCreateItem}>Crear Materia</Button>}
       />
       <Offcanvas
@@ -172,13 +172,13 @@ const SubjectsView = () => {
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleEditItem}
             initialValues={{
-              subject: active.row.name,
+              name: active.row.name,
               grade: active.row.grade.toString(),
               divition: active.row.divition,
-              teacher: {
-                value: active.row.teachers[0].id,
-                label: active.row.teachers[0].name
-              }
+              teachers: active.row.teachers.map(({ id, first_name, last_name }) => ({
+                value: id,
+                label: `${first_name} ${last_name}`
+              }))
             }}
           />
         ) }

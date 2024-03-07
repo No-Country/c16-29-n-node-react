@@ -1,35 +1,45 @@
-import { useState } from "react";
-import { teachers } from "../../pages/principal/subjects/mock";
 import Offcanvas from "../ui/offcanvas";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { useSelector, useDispatch } from "react-redux";
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react";
+import { fetchTeachers } from "../../store/slice/principal-subject-slice";
 
 const EditSubject = ({ onClose, onSubmit, initialValues }) => {
-  const [data, setData] = useState(() => teachers.map((student) => ({
-    value: student.id,
-    label: student.name
-  })));
-  const { formState: { errors }, register, handleSubmit, setValue } = useForm({
+  const teachers = useSelector((state) => state.principalSubject.teachers);
+  const dispatch = useDispatch()
+
+  const { formState: { errors }, register, handleSubmit, setValue, getValues } = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialValues
   })
 
+  useEffect(() => {
+    dispatch(fetchTeachers());
+  }, [dispatch]);
+
+  const options = teachers.map((teacher) => ({
+    value: teacher.id,
+    label: `${teacher.first_name} ${teacher.last_name}`
+  }))
+
+  console.log(getValues());
 
   return (
     <>
       <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
-            <label htmlFor="subject" className="text-base font-medium">
+            <label htmlFor="name" className="text-base font-medium">
               Materia
             </label>
             <input
-              {...register("subject")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.subject ? 'border-red-500' : 'rounded'}`}
+              {...register("name")}
+              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.name ? 'border-red-500' : 'rounded'}`}
             />       
-            {errors?.subject && <p className="text-red-500 text-xs">{errors?.subject.message}</p>}
+            {errors?.name && <p className="text-red-500 text-xs">{errors?.name.message}</p>}
           </div>
           <div className="flex flex-col">
             <label htmlFor="grade" className="text-base font-medium">
@@ -56,12 +66,13 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
               Profesor Asociado
             </label>
             <Select
-              id="teacher"
-              onChange={(option) => setValue("teacher", option)}
-              defaultValue={{value: 3, label: "Juan Alvarez"}}
-              options={data}
+              id="teachers"
+              onChange={(option) => setValue("teachers", option)}
+              defaultValue={getValues("teachers")}
+              options={options}
+              isMulti
             ></Select>
-            {errors?.teacher && <p className="text-red-500 text-xs">{errors?.teacher.message}</p>}
+            {errors?.teachers && <p className="text-red-500 text-xs">{errors?.teachers.message}</p>}
           </div>
         </div>
       </Offcanvas.Body>
@@ -77,11 +88,11 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
 export default EditSubject;
 
 const schema = z.object({
-  subject: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
+  name: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
   grade: z.string().regex(/^\d{1}$/, "Debe ser un numero"),
   divition: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  teacher: z.object({
+  teachers: z.array(z.object({
     label: z.string(),
     value: z.number()
-  }),
+  })),
 })

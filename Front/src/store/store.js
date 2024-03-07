@@ -14,6 +14,7 @@ import {
   PURGE,
   REGISTER
 } from "redux-persist";
+import principalSubjectSlice from "./slice/principal-subject-slice";
 
 const persisConfig = {
   key: "auth",
@@ -28,7 +29,8 @@ const store = configureStore({
     auth: persistedReducer,
     teachers: profesorReducer,
     select: selectReducer,
-    subjects:subjectsReducer
+    subjects:subjectsReducer,
+    principalSubject: principalSubjectSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
