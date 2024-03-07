@@ -10,9 +10,9 @@ const roles = {
 }
 
 const initialState = {
-  role: "directivo",
-  accessToken: "fakeAccessToken",
-  status: "completed"
+  role: "",
+  accessToken: "",
+  status: "idle"
 }
 
 const authSlice = createSlice({
@@ -40,11 +40,7 @@ const authSlice = createSlice({
       });
   }
 });
-const skipAuth = true;
 export const login = createAsyncThunk("auth/login", async ({ username, password }) => {
-  if (skipAuth) {
-    return { token: "fakeToken", role: "directivo" }; // Datos simulados para desarrollo
-  }
   const response = await AxiosInstance.post("login", {
     username, password
   });
