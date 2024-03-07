@@ -49,14 +49,14 @@ const subjects = [
   },
 ]
 
-const TeacherEditBann = ({ onClose, onAddBan }) => {
+const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
   const { formState: { errors }, register, handleSubmit, setValue } = useForm({
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
+    defaultValues: initialValues
   })
 
-  const onSubmit = (data) => {
-    onAddBan(data);
-    onClose();
+  const handleFormSubmit = (formData) => {
+    onSubmit(formData);
   };
 
   return (
@@ -93,6 +93,7 @@ const TeacherEditBann = ({ onClose, onAddBan }) => {
               placeholder="Seleccionar..."
               onChange={(option) => setValue("gravity", option)}
               options={data}
+              defaultValue={initialValues.gravity}
             ></Select>
             {errors?.gravity && <p className="text-red-500 text-xs">{errors?.gravity.message}</p>}
           </div>
@@ -105,6 +106,7 @@ const TeacherEditBann = ({ onClose, onAddBan }) => {
               placeholder="Seleccionar..."
               onChange={(option) => setValue("student", option)}
               options={students}
+              defaultValue={initialValues.student}
             ></Select>
             {errors?.student && <p className="text-red-500 text-xs">{errors?.student.message}</p>}
           </div>
@@ -117,6 +119,7 @@ const TeacherEditBann = ({ onClose, onAddBan }) => {
               placeholder="Seleccionar..."
               onChange={(option) => setValue("subject", option)}
               options={subjects}
+              defaultValue={initialValues.subject}
             ></Select>
             {errors?.subject && <p className="text-red-500 text-xs">{errors?.subject.message}</p>}
           </div>
@@ -134,8 +137,8 @@ const TeacherEditBann = ({ onClose, onAddBan }) => {
       </Offcanvas.Body>
       <Offcanvas.Footer
         onClose={onClose}
-        onSubmit={handleSubmit(onSubmit)}
-        text={"Crear"}
+        onSubmit={handleSubmit(handleFormSubmit)}
+        text={"Asignar"}
       >
       </Offcanvas.Footer>
     </>
