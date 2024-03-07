@@ -20,6 +20,7 @@ export const setSelectedOptions = (selectedOptions) => ({
 })
 
 export const clearSelectedOptions = () => ({
+
   type: CLEAR_TUTORS_SELECTED_OPTIONS,
 })
 

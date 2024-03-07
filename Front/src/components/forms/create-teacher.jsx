@@ -25,17 +25,18 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
       });
       const dispatch = useDispatch();
       
-      
     
       const handleSelectChange = (selectedOptions) => {
         dispatch(setSelectedOptions(selectedOptions));
       };
       const options = subjects.map(subject => ({
         value: subject.id,
-        label: subject.label,
-        color:subject.color,
+        label: `${subject.name} ${subject.grade}° ${subject.divition}`,
       }));
+    useEffect(()=>{
+      dispatch(setSelectedOptions([]))
 
+    },[dispatch])
     useEffect(()=>{
         setValue("subjects", selectedOptions)
     },[selectedOptions])
@@ -44,16 +45,16 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
         <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-base font-medium">Nombre</label>
-            <input id="name" {...register("name")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.name ? 'border-red-500' : 'rounded'}`}
+            <label htmlFor="first_name" className="text-base font-medium">Nombre</label>
+            <input id="first_name" {...register("first_name")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.first_name ? 'border-red-500' : 'rounded'}`}
             />  
-          {errors?.name && <p className="text-red-500 text-xs">{errors?.name.message}</p>} 
+          {errors?.first_name && <p className="text-red-500 text-xs">{errors?.first_name.message}</p>} 
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="lastname">Apellido</label>
-            <input id="lastname" {...register("lastname")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.lastname ? 'border-red-500' : 'rounded'}`}/>
-            {errors.lastname && <p className="text-red-500 text-xs">{errors.lastname.message}</p>}
+            <label htmlFor="last_name">Apellido</label>
+            <input id="last_name" {...register("last_name")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.last_name ? 'border-red-500' : 'rounded'}`}/>
+            {errors.last_name && <p className="text-red-500 text-xs">{errors.last_name.message}</p>}
           </div>
 
           <div className="flex flex-col">
@@ -88,6 +89,7 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
                   data={options}
                   selectedOptions={selectedOptions}
                   setSelectedOptions={handleSelectChange}
+
                 />
           ) : ( 
             <p>Cargando materias ....</p>
@@ -110,15 +112,13 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
 export default CreateTeacherForm;
 
 const schema = z.object({
-    name: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
-    lastname: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético"),
+    first_name: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
+    last_name: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético"),
     email: z.string().optional().refine(isValidEmail,"Debe ser un correo válido"),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
     password: z.string().min(6, "La contraseña es obligatoria").refine(isValidPassword, "La contraseña no es válida"),
     phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
     subjects: z.array(z.object({
-      label: z.string(),
       value: z.number(),
-      color: z.string()
     })).optional(),
   });
