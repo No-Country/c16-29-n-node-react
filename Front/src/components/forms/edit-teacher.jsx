@@ -20,7 +20,7 @@ console.log(initialValues, "initialvalues")
 
   const options = subjects.map(subject => ({
     value: subject.id,
-    label: subject.name
+    label: `${subject.name} ${subject.grade}° ${subject.divition}`
   }));
 
   {/*const handleFormSubmit = (formData) => {
@@ -34,19 +34,12 @@ console.log(initialValues, "initialvalues")
 
   onSubmit(dataToSubmit);
   };*/
-  /* useEffect(() => {
-    if (isMateriasLoaded && initialValues.subjects) {
-      const selectedSubjects = options.filter(option =>
-        initialValues.subjects.some(subject => subject.id === option.value)
-      );
-      // Comprueba si realmente necesitas actualizar el valor antes de hacerlo
-      const currentSubjects = watch('subjects');
-      if (JSON.stringify(selectedSubjects) !== JSON.stringify(currentSubjects)) {
-        setValue('subjects', selectedOptions);
-        dispatch(setSelectedOptions(selectedSubjects));
-      }
-    }
-  }, [initialValues.subjects, isMateriasLoaded, selectedOptions]);*/ 
+  useEffect(() => {
+    dispatch(setSelectedOptions(initialValues.subjects.map(subject => ({
+      value: subject.id,
+      label: subject.fullName
+    }))))
+  }, [initialValues.subjects, dispatch]);
   
   const { register, handleSubmit,formState: { errors } , setValue } = useForm({
     resolver: zodResolver(schema),
@@ -124,7 +117,7 @@ const schema = z.object({
     email: z.string().refine(isValidEmail,"Debe ser un correo válido").optional(),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
     phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
-    subjects: z.array(z.object({
+    subjects: z.optional(z.array(z.object({
       value: z.number(),
-    })).optional(),
+    }))),
 });

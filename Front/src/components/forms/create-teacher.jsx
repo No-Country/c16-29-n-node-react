@@ -31,9 +31,12 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
       };
       const options = subjects.map(subject => ({
         value: subject.id,
-        label: subject.name,
+        label: `${subject.name} ${subject.grade}° ${subject.divition}`,
       }));
+    useEffect(()=>{
+      dispatch(setSelectedOptions([]))
 
+    },[dispatch])
     useEffect(()=>{
         setValue("subjects", selectedOptions)
     },[selectedOptions])

@@ -24,7 +24,6 @@ const PrincipalTeachersView = () => {
   })
   useEffect(()=>{
     dispatch(fetchTeacher());
-    console.log(teachers); 
 }, [dispatch])
 
   const resetState = (action) => () => {
