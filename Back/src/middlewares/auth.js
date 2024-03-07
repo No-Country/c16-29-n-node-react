@@ -5,7 +5,7 @@ import { TOKEN_KEY } from "../../d_config.js";
 //const jwt = require("jsonwebtoken");
 
 export const verifyToken = (req, res, next) => {
-  const token = req.headers["x-access-token"];
+  const token = req.headers["X-Access-Token"];
 
   if (!token) {
     return res.status(403).send("No se ha enviado el token de autenticación");

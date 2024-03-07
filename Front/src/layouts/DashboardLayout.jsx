@@ -9,9 +9,8 @@ function DashboardLayout({ menues, children }) {
   const role = useSelector((state) => state.auth.role);
 
   useEffect(() => {
-    console.log(role);
     if(role.length === 0){
-      return navigate(`..`);
+      return navigate(`/`);
     }
     if(pathname.split("/")[1] !== role){
       return navigate(`/${role}`);

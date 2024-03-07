@@ -9,6 +9,10 @@ function Sidebar({ menues }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleLogout = () => {
+    dispatch(logout())
+  }
+
   return (
     <div className='flex text-custom-menu-text'>
       <div className={'flex justify-end'}>
@@ -27,7 +31,7 @@ function Sidebar({ menues }) {
                 <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80`}>{menu.text}</span>
               </li>
             ))}
-           <li onClick={() => dispatch(logout())} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
+           <li onClick={handleLogout} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
             <img src='/assets/logout.png' />
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>Cerrar</span>
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>sesión</span>

@@ -1,14 +1,16 @@
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from "../../utils/axios";
 import { getAccessToken } from '../../utils/accessToken';
 
-// Desasignar estudiante
-export const deassignStudent = createAsyncThunk(
-  'principal-subject/deassignStudent',
-  async ({subject, user}, { rejectWithValue }) => {
+
+//crear Materia
+export const createSubject = createAsyncThunk(
+  'principal-subjects/createSubject',
+  async (data, { rejectWithValue }) => {
     try {
       const token = getAccessToken();
-      const response = await AxiosInstance.delete(`/subjects/${subject}/deassign/${user}`, {
+      const response = await AxiosInstance.post('/subjects', data, {
         headers: {
           "X-Access-Token": token
         }
@@ -19,14 +21,13 @@ export const deassignStudent = createAsyncThunk(
     }
   }
 );
-
-// Asignar Estudiantes
-export const assignStudents = createAsyncThunk(
-  'principal-subject/assignStudents',
+//Editar Profesor
+export const updateSubject = createAsyncThunk(
+  'principal-subjects/updateSubject',
   async ({id, data}, { rejectWithValue }) => {
     try {
       const token = getAccessToken();
-      const response = await AxiosInstance.put(`/subjects/assign/${id}`, data, {
+      const response = await AxiosInstance.put(`/subjects/${id}`, data, {
         headers: {
           "X-Access-Token": token
         }
@@ -38,12 +39,30 @@ export const assignStudents = createAsyncThunk(
   }
 );
 
-export const fetchSubjectByFullname = createAsyncThunk(
-  'principal-subject/fetchSubjectByFullname',
-  async ({ name, grade, divition }, { rejectWithValue }) =>{
+//Eliminar profesor
+export const deleteSubject = createAsyncThunk(
+  'principal-subjects/deleteSubject',
+  async (id, { rejectWithValue }) => {
     try {
       const token = getAccessToken();
-      const res = await AxiosInstance.get(`/subjects/${name}/${grade}/${divition}`, {
+      const response = await AxiosInstance.delete(`/subjects/${id}`, {
+        headers: {
+          "X-Access-Token": token
+        }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.toString());
+    }
+  }
+);
+
+export const fetchSubjects = createAsyncThunk(
+  'principal-subjects/fetchSubjects',
+  async (_, { rejectWithValue }) =>{
+    try {
+      const token = getAccessToken();
+      const res = await AxiosInstance.get("/subjects", {
         headers: {
           "X-Access-Token": token
         }
@@ -56,13 +75,13 @@ export const fetchSubjectByFullname = createAsyncThunk(
   }
 ); 
 
-export const fetchStudents = createAsyncThunk(
-  'principal-subject/fetchStudents',
+export const fetchTeachers = createAsyncThunk(
+  'principal-subjects/fetchTeachers',
   async (_, { rejectWithValue }) =>{
     try {
       const token = getAccessToken();
-      const res = await AxiosInstance.post(`/users/role`, {
-        role: "STUDENT"
+      const res = await AxiosInstance.post("/users/role", {
+        role: "TEACHER"
       }, {
         headers: {
           "X-Access-Token": token
@@ -76,13 +95,14 @@ export const fetchStudents = createAsyncThunk(
   }
 ); 
 
+
 const initialState = {
-  subject: {},
-  allStudents: [],
+  subjects: [],
+  teachers: [],
   isLoading: false,
   alertType: "",
   alertMessage: "",
-  stateFetching: {
+  stateCreating: {
     isLoading: false,
     status: "idle "
   },
@@ -97,7 +117,7 @@ const initialState = {
 };
 
 const principalSubjectsSlice = createSlice({
-  name: 'principal-subject',
+  name: 'principal-subjects',
   initialState,
   reducers: {
     hideAlert: (state) => {
@@ -105,7 +125,7 @@ const principalSubjectsSlice = createSlice({
       state.alertMessage = ""
     },
     resetStates: (state) => {
-      state.stateFetching = {
+      state.stateCreating = {
         isLoading: false,
         status: "idle "
       },
@@ -121,60 +141,73 @@ const principalSubjectsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSubjectByFullname.pending, (state) => {
+      .addCase(fetchSubjects.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchSubjectByFullname.fulfilled, (state, action) => {
+      .addCase(fetchSubjects.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.subject = action.payload;
+        state.subjects = action.payload;
       })
-      .addCase(assignStudents.pending, (state) => {
+      .addCase(createSubject.pending, (state) => {
         state.isLoading = true;
-        state.stateUpdating.isLoading = true;
+        state.stateCreating.isLoading = true;
       })
-      .addCase(assignStudents.rejected, (state) => {
+      .addCase(createSubject.rejected, (state) => {
         state.isLoading = false;
-        state.stateUpdating.isLoading = false;
-        state.stateUpdating.status = "rejected";
+        state.stateCreating.isLoading = false;
+        state.stateCreating.status = "rejected";
         state.alertMessage = "No se pudo crear la materia";
         state.alertType = "success";
       })
-      .addCase(assignStudents.fulfilled, (state) => {
+      .addCase(createSubject.fulfilled, (state) => {
         state.isLoading = false;
-        state.stateUpdating.isLoading = false;
-        state.stateUpdating.status = "completed";
-        state.alertMessage = "Se asignó el usuario correctamente";
+        state.stateCreating.isLoading = false;
+        state.stateCreating.status = "completed";
+        state.alertMessage = "Se creo la materia correctamente";
         state.alertType = "success";
       })
-      .addCase(deassignStudent.pending, (state) => {
+      .addCase(updateSubject.pending, (state) => {
         state.isLoading = true;
-        state.stateDeleting.isLoading = true;
+        state.stateUpdating.isLoading = true;
       })
-      .addCase(deassignStudent.rejected, (state) => {
+      .addCase(updateSubject.rejected, (state) => {
         state.isLoading = false;
-        state.stateDeleting.isLoading = false;
-        state.stateDeleting.status = "rejected";
+        state.stateUpdating.isLoading = false;
+        state.stateUpdating.status = "rejected";
         state.alertMessage = "No se pudo actualizar la materia";
         state.alertType = "error";
       })
-      .addCase(deassignStudent.fulfilled, (state) => {
+      .addCase(updateSubject.fulfilled, (state) => {
+        state.isLoading = false;
+        state.stateUpdating.isLoading = false;
+        state.stateUpdating.status = "completed";
+        state.alertMessage = "Se actualizó la materia correctamente";
+        state.alertType = "success";
+      })
+      .addCase(deleteSubject.pending, (state) => {
+        state.isLoading = true;
+        state.stateDeleting.isLoading = true;
+      })
+      .addCase(deleteSubject.rejected, (state) => {
+        state.isLoading = true;
+        state.stateDeleting.isLoading = false;
+        state.stateDeleting.status = "rejected";
+        state.alertMessage = "No se pudo eliminar la materia";
+        state.alertType = "error";
+      })
+      .addCase(deleteSubject.fulfilled, (state) => {
         state.isLoading = false;
         state.stateDeleting.isLoading = false;
         state.stateDeleting.status = "completed";
-        state.alertMessage = "Se desasigno el usuario correctamente";
+        state.alertMessage = "Se eliminó la materia correctamente";
         state.alertType = "success";
       })
-      .addCase(fetchStudents.pending, (state) => {
+      .addCase(fetchTeachers.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchStudents.fulfilled, (state, action) => {
+      .addCase(fetchTeachers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.allStudents = action.payload.filter((student) => 
-          !state.subject?.students.find((current) => current.id === student.id)
-        ).map(({id, firstName, lastName}) => ({
-          value: id,
-          label: `${firstName} ${lastName}`
-        }));
+        state.teachers = action.payload;
       })
   },
 });

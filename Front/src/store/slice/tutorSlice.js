@@ -95,7 +95,7 @@ export const deleteTutor =createAsyncThunk(
         return tutorId;
   
       }catch (error){
-        return rejectWithValue(error.toString());
+        return rejectWithValue(error.response.data);
       }
     }
   )
@@ -110,9 +110,18 @@ const initialState = {
   isLoading: false,
   error: null,
   successMessage: "",
-  stateCreating:false,
-  stateUpdating:false,
-  stateDeleting:false,
+  stateCreating: {
+    isLoading: false,
+    status: "idle"
+  },
+  stateUpdating: {
+    isLoading: false,
+    status: "idle"
+  },
+  stateDeleting: {
+    isLoading: false,
+    status: "idle"
+  },
   stateAlertMessage: "",
   alertType: "",
 };
@@ -120,18 +129,42 @@ const initialState = {
 const tutorSlice = createSlice({
   name: "tutor",
   initialState,
-  reducers: {},
+  reducers: {
+    resetStates: (state) => {
+      state.stateCreating = {
+        isLoading: false,
+        status: "idle"
+      }
+      state.stateUpdating = {
+        isLoading: false,
+        status: "idle"
+      }
+      state.stateDeleting = {
+        isLoading: false,
+        status: "idle"
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createTutor.pending, (state) => {
         state.isLoading = false;
-        state.stateCreating = true        
+        state.stateCreating.isLoading = true        
+      })
+      .addCase(createTutor.rejected, (state) => {
+        state.isLoading = false;
+        state.stateCreating.isLoading = false        
+        state.stateDeleting.status = "rejected";
+        state.stateAlertMessage = "No se pudo crear el tutor";
+        state.alertType = "error";
       })
       .addCase(createTutor.fulfilled, (state, action) => {
+        console.log(state, action)
         state.isLoading = false;
-        state.stateCreating = false;  
-        state.tutors.push(action.payload);
-        state.successMessage = "Tutor creado con éxito!";
+        state.stateCreating.isLoading = false;  
+        state.stateDeleting.status = "completed";
+        state.stateAlertMessage = "Tutor creado con éxito!";
+        state.alertType = "success";
       })
       .addCase(getStudents.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -145,41 +178,47 @@ const tutorSlice = createSlice({
         state.tutors = action.payload.tutors;
       })
       .addCase(updateTutor.pending, (state) => {
-        state.stateUpdating = true;
+        state.stateUpdating.isLoading = true;
         state.isLoading = true;
-      })
-      .addCase(updateTutor.fulfilled, (state, action) => {
-        state.stateUpdating = false;
-        state.isLoading = false;
-        const index = state.tutors.findIndex(
-          (tutor) => tutor.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.tutors[index] = action.payload;
-        }
-        state.successMessage = "Tutor actualizado con éxito!";
       })
       .addCase(updateTutor.rejected, (state, action) => {
+        state.stateUpdating.isLoading = false;
         state.isLoading = false;
         state.error = action.payload;
+        state.stateDeleting.status = "rejected";
+        state.stateAlertMessage = "No se ha podido actualizar el tutor!";
+        state.alertType = "error";
+      })
+      .addCase(updateTutor.fulfilled, (state) => {
+        state.stateUpdating.isLoading = false;
+        state.isLoading = false;
+        state.stateDeleting.status = "completed";
+        state.stateAlertMessage = "Tutor actualizado con éxito!";
+        state.alertType = "success";
       })
       .addCase(deleteTutor.pending, (state) => {
-        state.stateDeleting = true;
+        state.stateDeleting.isLoading = true;
         state.isLoading = true;
       })
-      .addCase(deleteTutor.fulfilled, (state, action) => {
-        state.stateDeleting = false;
+      .addCase(deleteTutor.rejected, (state, action) => {
+        state.stateDeleting.isLoading = false;
+        state.stateDeleting.status = "rejected";
+        state.stateAlertMessage = action.payload.message;
+        state.alertType = "error";
+      })
+      .addCase(deleteTutor.fulfilled, (state) => {
         state.isLoading = false;       
-        state.successMessage = "Tutor eliminado con éxito!";
-        state.stateAlertMessage = action.payload = "Tutor eliminado con éxito!";
-        state.stateAlertType = action.payload = "success";
+        state.stateDeleting.isLoading = false;
+        state.stateDeleting.status = "completed";
+        state.stateAlertMessage = "Tutor eliminado con éxito!";
+        state.alertType = "success";
       }) 
       .addCase(hideAlert, (state) => {
-        state.alertMessage = "";
+        state.stateAlertMessage = "";
         state.alertType = "";
       })
   },
 });
 
-export const { actions, reducer } = tutorSlice;
-export default reducer;
+export const { resetStates } = tutorSlice.actions;
+export default tutorSlice.reducer;

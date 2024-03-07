@@ -1,10 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { SimpleTable } from "../../components/SimpleTabla"
 import { Link } from "react-router-dom";
-import mock from "../principal/subjects/mock";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSubjects } from "../../store/slice/teacher-subject-slice";
 
 const Subject = () => {
-  const [data, setData] = useState(mock);
+
+  const dispatch = useDispatch();
+  const subjects = useSelector((state) => state.teacherSubjects.subjects);
+
+  useEffect(() => {
+    dispatch(fetchSubjects())
+  }, [dispatch]);
 
   const columns = useMemo(() => {
     return [
@@ -32,7 +39,7 @@ const Subject = () => {
       {
         Header: "Profesor Asociado",
         id: "teacher",
-        accessorFn: (row) => row.teachers[0].name,
+        accessorFn: (row) => row.teachers.map((teacher) => teacher.fullName).join("/"),
       },
       {
         Header: "# Alumnos",
@@ -47,7 +54,7 @@ const Subject = () => {
     <>
       <SimpleTable 
         columns={columns}
-        data={data}
+        data={subjects}
       />
     </>
   )

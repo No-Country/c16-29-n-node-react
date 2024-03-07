@@ -7,6 +7,15 @@ const initialState = {
   tutorsOptions: [],
 }
 
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 const selectReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_SELECTED_OPTIONS:
@@ -29,15 +38,7 @@ const selectReducer = (state = initialState, action) => {
         ...state,
         students: action.payload,
       }
-    case GET_TUTORS_OPTIONS:
-      function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      }
+    case GET_TUTORS_OPTIONS: {
       const tutorsOptions = action.payload.map(tutor => ({
         ...tutor,
         value: `tutor-${tutor.id}`,
@@ -49,6 +50,7 @@ const selectReducer = (state = initialState, action) => {
         ...state,
         tutorsOptions: tutorsOptions,
       };
+    }
     default:
       return state
   }

@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import Button from "../../../components/ui/button";
@@ -12,10 +11,13 @@ import {
   createTutor,
   deleteTutor,
   fetchTutor,
+  hideAlert,
+  resetStates,
   updateTutor,
 } from "./../../../store/slice/tutorSlice";
 import Modal from "../../../components/ui/modal";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
+import { setSelectedOptions } from "../../../actions/actions";
 
 export const DirectivoTutor = () => {
   const dispatch = useDispatch();
@@ -23,11 +25,16 @@ export const DirectivoTutor = () => {
   const stateCreating = useSelector((state) => state.tutor.stateCreating);
   const stateUpdating = useSelector((state) => state.tutor.stateUpdating);
   const stateDeleting = useSelector((state) => state.tutor.stateDeleting);
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
+  const stateAlertMessage = useSelector(
+    (state) => state.tutor.stateAlertMessage
+  );
+  const alertType = useSelector((state) => state.tutor.alertType);
   // const stateMessage = useSelector((state) => state.tutor.alertMessage);
 
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
-  
+
   // const [data, setData] = useState(tutor);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
@@ -35,10 +42,32 @@ export const DirectivoTutor = () => {
     row: {},
   });
 
-
   useEffect(() => {
-    if (!stateCreating || !stateUpdating || !stateDeleting) {
+    if (
+      !stateCreating.isLoading &&
+      !stateUpdating.isLoading &&
+      !stateDeleting.isLoading
+    ) {
+      const status = [stateCreating, stateUpdating, stateDeleting];
+      if (status.some(({ status }) => status === "rejected")) {
+        setAlert({
+          message: stateAlertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+      } else if (status.some(({ status }) => status === "completed")) {
+        setAlert({
+          message: stateAlertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        resetState();
+        modal.handleClose();
+        offcanvas.handleClose();
+      }
       dispatch(fetchTutor());
+      dispatch(setSelectedOptions([]));
+      dispatch(hideAlert());
     }
   }, [dispatch, stateCreating, stateUpdating, stateDeleting]);
 
@@ -48,6 +77,7 @@ export const DirectivoTutor = () => {
       type: "",
       row: {},
     });
+    dispatch(setSelectedOptions([]));
   };
 
   const handleConfirmCreateItem = () => {
@@ -75,17 +105,6 @@ export const DirectivoTutor = () => {
 
   const handleDeleteItem = ({ id }) => {
     dispatch(deleteTutor(id));
-    if(!id) {
-      setAlert({
-        message : "el tutor fue eliminado con exito!", 
-        type: "success"   
-      }) 
-    } else {
-      setAlert({
-        message : "el tutor no se pudo elminar!", 
-        type: "error"   
-      }) 
-    }
   };
 
   const handleCreateItem = (row) => {
@@ -105,12 +124,6 @@ export const DirectivoTutor = () => {
       students: parsedStudents,
     };
     dispatch(createTutor(newItem));
-    offcanvas.handleClose();
-    if(newItem)
-    setAlert({
-    message : "El tutor fue creado con exito!", 
-    type: "success"   
-  }) 
   };
 
   const handleEditItem = (updatedTutor) => {
@@ -127,19 +140,13 @@ export const DirectivoTutor = () => {
               : updatedTutor.email,
           password: updatedTutor.password,
           phone: updatedTutor.phone,
-          students: updatedTutor.students.map(({ value }) => ({
+          students: selectedOptions.map(({ value }) => ({
             id: value,
           })),
         },
       })
     );
-    offcanvas.handleClose();
-    setAlert({
-      message : "el tutor fue editado con exito!", 
-      type: "success"   
-    }) 
   };
-
 
   const columns = useMemo(() => {
     return [
@@ -147,9 +154,7 @@ export const DirectivoTutor = () => {
         Header: "Nombre completo",
         id: "id",
         accessorFn: (row) => {
-
           return `${row.first_name} ${row.last_name}`;
-
         },
       },
       {
@@ -184,9 +189,6 @@ export const DirectivoTutor = () => {
 
   return (
     <div className="grow flex flex-col overflow-auto">
-          {/* {alert.show && (
-      <Alert message={alert.message} type={alert.type} onDismiss={() => setAlert({ show: false, message: "", type: "" })} />
-    )} */}
       <p>{tutors.length} registros</p>
       <SimpleTable
         columns={columns}
@@ -235,15 +237,14 @@ export const DirectivoTutor = () => {
         )}
       </Offcanvas>
       <Modal isOpen={modal.isOpen} onClose={resetState(modal.handleClose)}>
-      {active.type === "delete" && (
-        <ConfirmDelete
-          text={`${active.row.first_name} ${active.row.last_name}`}
-          onClose={resetState(modal.handleClose)}
-          onConfirm={() => handleDeleteItem(active.row)}
-        />
-      )}
+        {active.type === "delete" && (
+          <ConfirmDelete
+            text={`${active.row.first_name} ${active.row.last_name}`}
+            onClose={resetState(modal.handleClose)}
+            onConfirm={() => handleDeleteItem(active.row)}
+          />
+        )}
       </Modal>
-
     </div>
   );
 };

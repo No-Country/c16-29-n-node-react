@@ -1,6 +1,9 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from "../../utils/axios";
+import { getAccessToken } from '../../utils/access-token';
+
+
 
 
 //crear Profesor
@@ -8,22 +11,45 @@ export const createTeacher = createAsyncThunk(
   'profesor/createTeacher',
   async (teacherData, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.post('/profesores', teacherData);
+     
+      const token = getAccessToken();
+      const responseData ={
+        ...teacherData,
+        role: "TEACHER",
+      }
+      const response = await AxiosInstance.post('/users', responseData, { headers:{"X-Access-Token": token}});
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.toString());
+      if (error.response && error.response.data) {
+        // Si hay una respuesta del servidor, incluye información más detallada del error
+        console.error("Server Error Response:", error.response.data);
+        return rejectWithValue(error.response.data);
+      } else {
+        // Error de red o error desconocido
+        console.error("Error:", error.toString());
+        return rejectWithValue(error.toString());
+      }
     }
   }
 );
 //Editar Profesor
 export const updateTeacher = createAsyncThunk(
   'profesor/updateTeacher',
-  async ({id, teacherData},thunkAPI) => {
+  async ({id, teacherData}) => {
     try {
-      const response = await AxiosInstance.put(`/profesores/${id}`, teacherData);
+      const token = getAccessToken();
+      const response = await AxiosInstance.put(`/users/${id}`, teacherData, { headers:{"X-Access-Token": token}});
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        // Si hay una respuesta del servidor, incluye información más detallada del error
+        console.error("Server Error Response:", error.response.data);
+        return rejectWithValue(error.response.data);
+      } else {
+        // Error de red o error desconocido
+        console.error("Error:", error.toString());
+        return rejectWithValue(error.toString());
+      }
     }
   }
 );
@@ -33,7 +59,8 @@ export const deleteTeacher =createAsyncThunk(
   'profesor/deleteTeacher',
   async(teacherId, {rejectWithValue})=>{
     try{
-      await AxiosInstance.delete(`profesores/${teacherId}`);
+      const token= getAccessToken();
+      await AxiosInstance.delete(`/users/${teacherId}`, { headers:{"X-Access-Token": token}});
       return teacherId;
 
     }catch (error){
@@ -47,13 +74,14 @@ export const fetchTeacher =createAsyncThunk(
   'profesor/fetchTeacher',
   async (_, { rejectWithValue }) =>{
     try {
-      const [teachersResponse] = await Promise.all([
-        AxiosInstance.get('/profesores'),
-    //    AxiosInstance.get('subjects'),
-      ])
+      const token = getAccessToken();
+      const teachersResponse = await AxiosInstance.post(
+        '/users/role', 
+        {role: "TEACHER"}, {
+          headers:{"X-Access-Token": token}
+        });
       return {
         teachers: teachersResponse.data,
-    //    subjects: subjectsResponse.data,
       }
 
     } catch (error) {

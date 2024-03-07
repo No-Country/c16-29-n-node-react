@@ -1,10 +1,7 @@
-
 import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
-// import { useDispatch, useSelector } from 'react-redux';
-
 
 const animatedComponents = makeAnimated();
 
@@ -61,8 +58,7 @@ const colourStyles = {
   }),
 };
 
-
-const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions, defaultValues }) => {
+const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 
   const handleSelectionChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
@@ -76,7 +72,7 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions, defaultV
       options={data}
       onChange={handleSelectionChange}
       styles={colourStyles}
-      value={defaultValues}
+      value={selectedOptions}
     />
   );
 };
