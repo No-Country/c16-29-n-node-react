@@ -11,7 +11,7 @@ const animatedComponents = makeAnimated();
 const colourStyles = {
   control: (styles) => ({ ...styles, backgroundColor: '#EEFAFF' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = chroma(data.color);
+    const color = chroma(data.color || "#00875A");
     return {
       ...styles,
       backgroundColor: isDisabled
@@ -41,7 +41,7 @@ const colourStyles = {
     };
   },
   multiValue: (styles, { data }) => {
-    const color = chroma(data.color);
+    const color = chroma(data.color || "#00875A");
     return {
       ...styles,
       backgroundColor: color.alpha(0.1).css(),
