@@ -21,7 +21,6 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
 
   useEffect(() => {
     dispatch(getTutorsOptions())
-    console.log(tutorsFetchOptions);
   }, [])
 
   // ------------------------------------------------------------------------------ //
@@ -34,7 +33,11 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
   });
 
   const handleFormSubmit = (formData) => {
-    onSubmit(formData);
+    const newData = {
+      ...formData,
+      id: initialValues.id
+    }
+    onSubmit(newData);
   };
 
   useEffect(() => {
@@ -124,6 +127,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               selectedOptions={selectedTutorsOptions}
               setSelectedOptions={handleSelectChange}
             />
+            {errors?.tutors && <p className="text-red-500 text-xs">{errors?.tutors.message}</p>}
           </div>
         </div>
       </Offcanvas.Body>
@@ -148,18 +152,14 @@ const schema = z.object({
   // password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Debe ser alfanumérico y contener al menos 1 letra minúscula, 1 letra mayúscula, 1 dígito, 1 carácter especial, y tener una longitud mínima de 8 caracteres"),
   email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
   phone: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-  // state: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  grade: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser un número"),
-  tutors: z.array(
-    z.object({
-      id: z.number(),
-      value: z.string(),
-      label: z.string(),
-      name: z.string(),
-      color: z.string(),
-    })
-  ).nonempty("Debe seleccionar al menos un tutor"),
-})
+  grade: z.string().regex(/^\d{1}$/, "Grado inválido, debe tener 1 dígito"),
+  // tutors: z.optional(z.array(
+  //   z.object({
+  //     label: z.string(),
+  //     value: z.string()
+  //   })
+  // ), []),
+});
 
 // ------------------------------------------------------------------------------ //
 // ------------------------------------------------------------------------------ //

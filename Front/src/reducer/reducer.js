@@ -15,7 +15,6 @@ const selectReducer = (state = initialState, action) => {
         selectedOptions: action.payload,
       }
     case SET_TUTORS_SELECTED_OPTIONS:
-      console.log(action.payload);
       return {
         ...state,
         selectedTutorsOptions: action.payload,

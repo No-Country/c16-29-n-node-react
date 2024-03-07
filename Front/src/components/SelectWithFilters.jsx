@@ -62,7 +62,7 @@ const colourStyles = {
 };
 
 
-const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
+const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions, defaultValues }) => {
 
   const handleSelectionChange = (selectedOptions) => {
     setSelectedOptions(selectedOptions);
@@ -76,7 +76,7 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
       options={data}
       onChange={handleSelectionChange}
       styles={colourStyles}
-      value={selectedOptions}
+      value={defaultValues}
     />
   );
 };
