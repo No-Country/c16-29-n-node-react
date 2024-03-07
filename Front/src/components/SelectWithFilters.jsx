@@ -2,7 +2,6 @@ import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
-// import { useDispatch, useSelector } from 'react-redux';
 
 const animatedComponents = makeAnimated();
 

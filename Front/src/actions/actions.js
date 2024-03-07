@@ -38,17 +38,35 @@ export function getStudents() {
   };
 }
 
-export function createStudent() {
-  return async function (dispatch) {
+export function createStudent(data) {
+  return async function () {
     const token = getAccessToken()
-    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role`,
-      { role: "STUDENT" },
+    const json = await axios.post(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/`,
+       data,
       { headers: { "x-access-token": token } }
     );
-    return dispatch({
-      type: CREATE_STUDENT,
-      payload: json.data
-    });
+    return json
+  };
+}
+
+export function editStudent(data, id) {
+  return async function () {
+    const token = getAccessToken()
+    const json = await axios.put(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+       data,
+      { headers: { "x-access-token": token } }
+    );
+    return json
+  };
+}
+
+export function deleteStudent(id) {
+  return async function () {
+    const token = getAccessToken()
+    const json = await axios.delete(`https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/${id}`,
+      { headers: { "x-access-token": token } }
+    );
+    return json
   };
 }
 

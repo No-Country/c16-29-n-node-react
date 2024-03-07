@@ -10,7 +10,9 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
 import { useDispatch, useSelector } from "react-redux";
 import Alert from "../../../components/Alert";
-import { getStudents } from "../../../actions/actions";
+import { createStudent, deleteStudent, editStudent, getStudents, getTutorsOptions } from "../../../actions/actions";
+
+// URL BACK https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
@@ -26,6 +28,7 @@ const StudentsView = () => {
 
   const dispatch = useDispatch();
   const data = useSelector((state) => state.students.students);
+  const selectedTutorsOptions = useSelector((state) => state.tutorsOptions.selectedTutorsOptions);
   const [active, setActive] = useState({
     type: "",
     row: {}
@@ -33,7 +36,6 @@ const StudentsView = () => {
   const [alert, setAlert] = useState({ message: "", type: "" });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
-  // const [data, setData] = useState(MOCK);
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -43,7 +45,7 @@ const StudentsView = () => {
 
   useEffect(() => {
     dispatch(getStudents())
-  }, [])
+  }, [alert])
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -62,6 +64,7 @@ const StudentsView = () => {
   const showAlert = (message, type) => {
     setAlert({ message, type });
   };
+
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -92,41 +95,48 @@ const StudentsView = () => {
   }
 
   const handleEditItem = (row) => {
-    setData((data) =>
-      data.map((student) =>
-        student.id === active.row.id ? {
-          ...row,
-          firstName: row.firstName,
-          lastName: row.lastName,
-          tutors: selectedOptions.map(option => option.label),
-          email: row.email,
-          phone: row.phone,
-          password: row.password,
-          username: row.username,
-          grade: row.grade,
-        } : student
-      )
-    );
-    showAlert("Alumno editado exitosamente", "success");
-    offcanvas.handleClose();
-  };
-
-  const handleCreateItem = (row) => {
-    setData((prevData) => {
-      const newId = Math.max(...prevData.map(item => item.id), 0) + 1;
+    if (active.row.email === row.email) {
       const newItem = {
-        id: newId,
-        firstName: row.firstName,
-        lastName: row.lastName,
+        first_name: row.firstName,
+        last_name: row.lastName,
+        username: row.username,
+        password: row.password,
+        phone: row.phone,
+        grade: row.grade,
+        tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
+      }
+      dispatch(editStudent(newItem, row.id))
+    } else {
+      const newItem = {
+        first_name: row.firstName,
+        last_name: row.lastName,
         username: row.username,
         password: row.password,
         email: row.email,
         phone: row.phone,
         grade: row.grade,
-        tutors: selectedOptions.map(option => option.label),
+        tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
       }
-      return [...prevData, newItem];
-    });
+      dispatch(editStudent(newItem, row.id))
+    }
+
+    showAlert("Alumno editado exitosamente", "success");
+    offcanvas.handleClose();
+  };
+
+  const handleCreateItem = (row) => {
+    const newItem = {
+      first_name: row.firstName,
+      last_name: row.lastName,
+      role: "STUDENT",
+      username: row.username,
+      password: row.password,
+      email: row.email,
+      phone: row.phone,
+      grade: row.grade,
+      tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
+    }
+    dispatch(createStudent(newItem))
     showAlert("Alumno creado exitosamente", "success");
     offcanvas.handleClose();
   }
@@ -140,8 +150,15 @@ const StudentsView = () => {
   }
 
   const handleDeleteItem = ({ id }) => {
-    setData((students) => students.filter((student) => student.id !== id))
-    showAlert("Alumno eliminado exitosamente", "error");
+    const objetoEncontrado = data.filter(objeto => objeto.id === id);
+    if (objetoEncontrado[0].tutors.length > 0 && objetoEncontrado[0].subjects.length === 0) {
+      showAlert("No se puede eliminar el alumno si tiene un tutor asociado", "error");
+    } else if(objetoEncontrado[0].tutors.length === 0 && objetoEncontrado[0].subjects.length > 0){
+      showAlert("No se puede eliminar el alumno si tiene materias asociadas", "error");
+    } else {
+      dispatch(deleteStudent(id))
+      showAlert("Alumno eliminado exitosamente", "error");
+    }
   }
 
   // ------------------------------------------------------------------------------ //
@@ -236,6 +253,7 @@ const StudentsView = () => {
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleEditItem}
             initialValues={{
+              id: active.row.id,
               firstName: active.row.firstName,
               lastName: active.row.lastName,
               username: active.row.username,
