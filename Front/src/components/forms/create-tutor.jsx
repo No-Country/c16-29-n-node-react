@@ -1,38 +1,73 @@
+import { useEffect, useState } from "react";
 import Offcanvas from "../ui/offcanvas";
-// import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getStudents } from "../../store/slice/tutorSlice";
-import { setSelectedOptions } from "../../actions/actions";
 import SelectWithFilter from "../../components/SelectWithFilters";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedOptions } from "../../actions/actions";
+import { getStudents } from "../../store/slice/tutorSlice";
 
-const EditTutor = ({ onClose, onSubmit, initialValues }) => {
-  const students = useSelector(state=>state.tutor.students || []);
-  const isStudentsLoaded = Array.isArray(students) && students.length > 0;
-  const selectedOptions = useSelector((state) => state.select.selectedOptions); 
-  const dispatch = useDispatch();
+const CreateTutor = ({ onClose, onSubmit }) => {
 
-  const {formState: { errors }, register, handleSubmit, setValue, } = useForm({
+    // const students = useSelector(state=>state.students.students || []);
+    const students = useSelector(state=>state.tutor.students || []);
+    const isStudentsLoaded = Array.isArray(students) && students.length > 0;
+    const selectedOptions = useSelector((state) => state.select.selectedOptions);    
+    const dispatch = useDispatch();
+
+    
+    const {
+    formState: { errors },
+    register,
+    handleSubmit,
+    setValue,
+  } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
 });
 
-useEffect(()=> {
+  useEffect(()=> {
   dispatch(getStudents())
 },[])
 
-const handleSelectChange = (selectedOptions) => {
-  dispatch(setSelectedOptions(selectedOptions));
-};
 
-const options = students.map(students => ({
-  value: students.id,
-  label: students.label,
-  color: students.color,
-}));
+  const handleSelectChange = (selectedOptions) => {
+    dispatch(setSelectedOptions(selectedOptions));
+  };
+
+  const options = students.map(students => ({
+    value: students.id,
+    label: students.label,
+    color: students.color,
+  }));
+
+//   const [options, setOptions] = useState([
+//     {
+//       id: 1,
+//       value: "ocean",
+//       label: "Bart Simpson",
+//       name: "Bart Simpson",
+//       color: "#00B8D9",
+//     },
+//     {
+//       id: 2,
+//       value: "orange",
+//       label: "Lisa Simpson",
+//       name: "Lisa Simpson",
+//       color: "#FF8B00",
+//     },
+//     {
+//       id: 3,
+//       value: "forest",
+//       label: "Homero Simpson",
+//       name: "Homero Simpson",
+//       color: "#00875A",
+//     },
+//   ]);
+
+  useEffect(() => {
+    setValue("students", selectedOptions);
+  }, [selectedOptions]);
 
   return (
     <>
@@ -43,27 +78,31 @@ const options = students.map(students => ({
               Nombre
             </label>
             <input
-              {...register("firstName")}
+              {...register("firstName", { required: "El nombre es requerido" })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.firstName ? "border-red-500" : "rounded"
               }`}
             />
             {errors?.firstName && (
-              <p className="text-red-500 text-xs">{errors?.firstName.message}</p>
+              <p className="text-red-500 text-xs">
+                {errors?.firstName.message}
+              </p>
             )}
           </div>
           <div className="flex flex-col">
-            <label htmlFor="lastName" className="text-base font-medium">
+            <label htmlFor="lastname" className="text-base font-medium">
               Apellido
             </label>
             <input
-              {...register("lastName")}
+              {...register("lastname", {
+                required: "El apellido es requerido",
+              })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
-                errors?.lastName ? "border-red-500" : "rounded"
+                errors?.lastname ? "border-red-500" : "rounded"
               }`}
             />
-            {errors?.lastName && (
-              <p className="text-red-500 text-xs">{errors?.lastName.message}</p>
+            {errors?.lastname && (
+              <p className="text-red-500 text-xs">{errors?.lastname.message}</p>
             )}
           </div>
           <div className="flex flex-col">
@@ -71,7 +110,7 @@ const options = students.map(students => ({
               Usuario
             </label>
             <input
-              {...register("username")}
+              {...register("username", { required: "El usuario es requerido" })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.username ? "border-red-500" : "rounded"
               }`}
@@ -85,7 +124,9 @@ const options = students.map(students => ({
               Contraseña
             </label>
             <input
-              {...register("password")}
+              {...register("password", {
+                required: "El passoword es requerido",
+              })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.password ? "border-red-500" : "rounded"
               }`}
@@ -105,9 +146,7 @@ const options = students.map(students => ({
               }`}
             />
             {errors?.email && (
-              <p className="text-red-500 text-xs">
-                {errors?.email.message}
-              </p>
+              <p className="text-red-500 text-xs">{errors?.email.message}</p>
             )}
           </div>
           <div className="flex flex-col">
@@ -126,7 +165,7 @@ const options = students.map(students => ({
           </div>
           <div>
             <label htmlFor="students" className="text-base font-medium">
-              Alumno Asociado
+              Alumnos Asociados
             </label>
             {isStudentsLoaded ? (
                 <SelectWithFilter 
@@ -138,12 +177,11 @@ const options = students.map(students => ({
           ) : ( 
             <p>Cargando studiantes ....</p>
           )}
-            {/* <Select
-              id="students"
-              onChange={handleStudentChange}
-              defaultValue={selectedStudents}
-              options={data}
-            ></Select> */}
+            {/* <SelectWithFilter
+              data={options}
+              selectedOptions={selectedOptions}
+              setSelectedOptions={handleSelectChange}
+            /> */}
             {errors?.students && (
               <p className="text-red-500 text-xs">{errors?.students.message}</p>
             )}
@@ -151,7 +189,7 @@ const options = students.map(students => ({
         </div>
       </Offcanvas.Body>
       <Offcanvas.Footer
-        text={"Actualizar"}
+        text={"Crear"}
         onSubmit={handleSubmit(onSubmit)}
         onClose={onClose}
       />
@@ -159,20 +197,40 @@ const options = students.map(students => ({
   );
 };
 
-export default EditTutor;
-
-const studentSchema = z.object({
-  value: z.number(),
-  label: z.string().min(2).max(20),  
-});
+export default CreateTutor;
 
 const schema = z.object({
-  id: z.number(),
-  firstName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  lastName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  username: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  // password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
-  phone: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-  students: z.array(studentSchema), 
+  firstName: z
+    .string()
+    .min(3)
+    .max(15)
+    .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  lastname: z
+    .string()
+    .min(3)
+    .max(15)
+    .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  username: z
+    .string()
+    .min(3)
+    .max(15)
+    .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
+  password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
+  email: z
+    .string()
+    .regex(
+      /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      "Dirección de correo electrónico inválida"
+    ),
+  phone: z
+    .string()
+    .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
+
+  students: z
+    .array(
+      z.object({        
+        value: z.number(),
+        label: z.string(), })
+    )
+    .nonempty("Debe seleccionar al menos un Alumno"),
 });

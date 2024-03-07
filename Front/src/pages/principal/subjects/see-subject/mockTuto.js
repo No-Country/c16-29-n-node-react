@@ -1,7 +1,7 @@
 export default[
     {
         id: "123456789",
-        role: "tutor",
+        role: "Administrador",
         firstName: "Juan",
         lastName: "Pérez",
         email: "juan@example.com",
@@ -16,7 +16,7 @@ export default[
       },
       {
         id: "234567890",
-        role: "tutor",
+        role: "Tutor",
         firstName: "Pedro",
         lastName: "González",
         email: "pedro@example.com",
@@ -29,14 +29,14 @@ export default[
           },
           {
             id: "456789012",
-            nafirstNameme: "Laura",
+            firstName: "Laura",
             lastName:"valledor"
           },
         ],
       },
       {
         id: "456789012",
-        role: "tutor",
+        role: "Director",
         firstName: "José",
         lastName: "López",
         email: "",
@@ -59,7 +59,7 @@ export const tutor = [
     password: "secreto123",
     email: "juan@example.com",
     phone: "123456789",
-    role: "tutor",
+    role: "Tutor",
     students: [
       {
         id: "987654321",
@@ -70,7 +70,7 @@ export const tutor = [
   },
   {
     id: "234567890",
-    role: "tutor",
+    role: "Tutor",
     firstName: "Pedro",
     lastName: "González",
     username: "12345678A",
@@ -85,14 +85,14 @@ export const tutor = [
       },
       {
         id: "456789012",
-        nafirstNameme: "Laura",
+        firstName: "Laura",
         lastName:"valledor"
       },
     ],
   },
   {
     id: "456789012",
-    role: "tutor",
+    role: "Director",
     firstName: "José",
     lastName: "López",
     username: "12345678A",

@@ -3,6 +3,7 @@ import authReducer from "./slice/auth";
 import selectReducer from "../reducer/reducer";
 import profesorReducer from "./slice/profesorSlice";
 import { subjectsReducer } from "./slice/subjectsSlice";
+import  tutorReducer  from "./slice/tutorSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
@@ -28,7 +29,8 @@ const store = configureStore({
     auth: persistedReducer,
     teachers: profesorReducer,
     select: selectReducer,
-    subjects:subjectsReducer
+    subjects:subjectsReducer,
+    tutor: tutorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

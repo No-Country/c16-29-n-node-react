@@ -1,31 +1,46 @@
-import { useCallback, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import Button from "../../../components/ui/button";
-import OffCanvas from "../../../components/OffCanvas";
-import tutorFields from "../../../config/tutorFields";
-import { colourOptions } from "../../../utils/data";
-import {
-  setSelectedOptions,
-  clearSelectedOptions,
-} from "../../../actions/actions";
-import { useDispatch } from "react-redux";
-import { tutor } from "./see-subject/mockTuto";
+import { useDispatch, useSelector } from "react-redux";
+// import { tutor } from "./see-subject/mockTuto";
 import Alert from "../../../components/Alert";
 import useDisclosure from "../../../hooks/useDisclosure";
 import EditTutor from "../../../components/forms/edit-tutor";
 import Offcanvas from "../../../components/ui/offcanvas";
+import CreateTutor from "../../../components/forms/create-tutor";
+import {
+  createTutor,
+  deleteTutor,
+  fetchTutor,
+  updateTutor,
+} from "./../../../store/slice/tutorSlice";
+import Modal from "../../../components/ui/modal";
+import ConfirmDelete from "../../../components/modals/confirm-delete";
 
 export const DirectivoTutor = () => {
-  const [alert, setAlert] = useState({ message: "", type: "" });
-  const [data, setData] = useState(tutor);
+  const dispatch = useDispatch();
+  const tutors = useSelector((state) => state.tutor.tutors);
+  const stateCreating = useSelector((state) => state.tutor.stateCreating);
+  const stateUpdating = useSelector((state) => state.tutor.stateUpdating);
+  const stateDeleting = useSelector((state) => state.tutor.stateDeleting);
+  // const stateMessage = useSelector((state) => state.tutor.alertMessage);
 
+  const offcanvas = useDisclosure();
+  const modal = useDisclosure();
+  
+  // const [data, setData] = useState(tutor);
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
     type: "",
     row: {},
   });
 
-  const dispatch = useDispatch();
-  const offcanvas = useDisclosure();
+
+  useEffect(() => {
+    if (!stateCreating || !stateUpdating || !stateDeleting) {
+      dispatch(fetchTutor());
+    }
+  }, [dispatch, stateCreating, stateUpdating, stateDeleting]);
 
   const resetState = (action) => () => {
     action();
@@ -50,13 +65,79 @@ export const DirectivoTutor = () => {
     offcanvas.handleOpen();
   };
 
-  const handleEditItem = (updatedTutor) => {
-    setData((prevState) => {
-      const newState = [...prevState];
-      const index = newState.findIndex((tutor) => tutor.id === updatedTutor.id);
-      newState[index] = updatedTutor;
-      return newState;
+  const handleConfirmDeleteItem = (row) => {
+    setActive({
+      type: "delete",
+      row,
     });
+    modal.handleOpen();
+  };
+
+  const handleDeleteItem = ({ id }) => {
+    dispatch(deleteTutor(id));
+    if(!id) {
+      setAlert({
+        message : "el tutor fue eliminado con exito!", 
+        type: "success"   
+      }) 
+    } else {
+      setAlert({
+        message : "el tutor no se pudo elminar!", 
+        type: "error"   
+      }) 
+    }
+  };
+
+  const handleCreateItem = (row) => {
+    const parsedStudents = row.students.map((student) => {
+      return {
+        id: student.value,
+      };
+    });
+    const newItem = {
+      first_name: row.firstName,
+      last_name: row.lastname,
+      username: row.username,
+      password: row.password,
+      email: row.email,
+      phone: row.phone,
+      role: "TUTOR",
+      students: parsedStudents,
+    };
+    dispatch(createTutor(newItem));
+    offcanvas.handleClose();
+    if(newItem)
+    setAlert({
+    message : "El tutor fue creado con exito!", 
+    type: "success"   
+  }) 
+  };
+
+  const handleEditItem = (updatedTutor) => {
+    dispatch(
+      updateTutor({
+        id: updatedTutor.id,
+        tutorData: {
+          first_name: updatedTutor.firstName,
+          last_name: updatedTutor.lastName,
+          username: updatedTutor.username,
+          email:
+            updatedTutor.email === active.row.email
+              ? undefined
+              : updatedTutor.email,
+          password: updatedTutor.password,
+          phone: updatedTutor.phone,
+          students: updatedTutor.students.map(({ value }) => ({
+            id: value,
+          })),
+        },
+      })
+    );
+    offcanvas.handleClose();
+    setAlert({
+      message : "el tutor fue editado con exito!", 
+      type: "success"   
+    }) 
   };
 
   const columns = useMemo(() => {
@@ -65,7 +146,7 @@ export const DirectivoTutor = () => {
         Header: "Nombre completo",
         id: "id",
         accessorFn: (row) => {
-          return `${row.firstName} ${row.lastName}`;
+          return `${row.first_name} ${row.last_name}`;
         },
       },
       {
@@ -74,10 +155,11 @@ export const DirectivoTutor = () => {
         accessorFn: (row) =>
           row.students
             .map(
-              (estudiante) => `${estudiante.firstName} ${estudiante.lastName}`
+              (estudiante) => `${estudiante.first_name} ${estudiante.last_name}`
             )
             .join(", "),
       },
+
       {
         Header: "Acciones",
         id: "actions",
@@ -87,7 +169,7 @@ export const DirectivoTutor = () => {
               <button onClick={() => handleConfirmEditItem(original)}>
                 <img src="/assets/edit.svg" alt="editar materia" />
               </button>
-              <button onClick={() => original}>
+              <button onClick={() => handleConfirmDeleteItem(original)}>
                 <img src="/assets/trash.svg" alt="eliminar materia" />
               </button>
             </div>
@@ -95,90 +177,69 @@ export const DirectivoTutor = () => {
         },
       },
     ];
-  }, []);
-
-  const [showOffCanvas, setShowOffCanvas] = useState(false);
-  const [currentForm, setCurrentForm] = useState(null);
-
-  const handleCreateTutor = () => {
-    setCurrentForm({
-      actionType: "crearTutor",
-      title: "Crear Tutor",
-      fields: tutorFields(colourOptions),
-      onSubmit: (formData) => {
-        setTimeout(() => {
-          setAlert({
-            message: "1 Tutor registrado con éxito.",
-            type: "success",
-          });
-          setShowOffCanvas(false);
-        });
-      },
-    });
-    setShowOffCanvas(true);
-  };
-
-  const handleCloseForm = useCallback(() => {
-    setShowOffCanvas(false);
-  }, []);
+  }, [tutors]);
 
   return (
-    <div className="grow overflow-auto">
-      <div className="flex justify-between">
-        <div className="w-full">
-          <p>{data.length} registros</p>
-          <SimpleTable
-            columns={columns}
-            data={data}
-            actions={<Button onClick={handleCreateTutor}>Crear tutor</Button>}
-          />
-        </div>
-        {alert.message && (
-          <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
-            <div className=" p-4 rounded w-auto ">
-              <Alert
-                type={alert.type}
-                message={alert.message}
-                onDismiss={() => setAlert({ message: "", type: "" })}
-              />
-            </div>
-          </div>
-        )}
-        {showOffCanvas && (
-          <OffCanvas
-            title={currentForm.title}
-            actionType={currentForm.actionType}
-            onSubmit={currentForm.onSubmit}
-            fields={currentForm.fields}
-            handleCloseForm={handleCloseForm}
-          />
-        )}
-        <Offcanvas
-          isOpen={offcanvas.isOpen}
-          onClose={resetState(offcanvas.handleClose)}
-          title={"Crear Tutor"}
-        >
-          {active.type === "edit" && (
-            <EditTutor
-              onClose={resetState(offcanvas.handleClose)}
-              onSubmit={handleEditItem}
-              initialValues={{
-                id: active.row.id,
-                firstName: active.row.firstName,
-                lastName: active.row.lastName,
-                username: active.row.username,
-                password: active.row.password,
-                email: active.row.email,
-                phone: active.row.phone,
-                students: active.row.students.map((estudiante) => ({
-                  value: estudiante.id,
-                  label: `${estudiante.firstName} ${estudiante.lastName}`,
-                })),
-              }}
+    <div className="grow flex flex-col overflow-auto">
+          {/* {alert.show && (
+      <Alert message={alert.message} type={alert.type} onDismiss={() => setAlert({ show: false, message: "", type: "" })} />
+    )} */}
+      <p>{tutors.length} registros</p>
+      <SimpleTable
+        columns={columns}
+        data={tutors}
+        actions={<Button onClick={handleConfirmCreateItem}>Crear tutor</Button>}
+      />
+      {alert.message && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
             />
-          )}
-        </Offcanvas>
-      </div>
+          </div>
+        </div>
+      )}
+      <Offcanvas
+        isOpen={offcanvas.isOpen}
+        onClose={resetState(offcanvas.handleClose)}
+        title={"Crear Tutor"}
+      >
+        {active.type === "create" && (
+          <CreateTutor
+            onClose={resetState(offcanvas.handleClose)}
+            onSubmit={handleCreateItem}
+          />
+        )}
+        {active.type === "edit" && (
+          <EditTutor
+            onClose={resetState(offcanvas.handleClose)}
+            onSubmit={handleEditItem}
+            initialValues={{
+              id: active.row.id,
+              firstName: active.row.first_name,
+              lastName: active.row.last_name,
+              username: active.row.username,
+              email: active.row.email,
+              phone: active.row.phone,
+              students: active.row.students.map((estudiante) => ({
+                value: estudiante.id,
+                label: `${estudiante.first_name} ${estudiante.last_name}`,
+              })),
+            }}
+          />
+        )}
+      </Offcanvas>
+      <Modal isOpen={modal.isOpen} onClose={resetState(modal.handleClose)}>
+      {active.type === "delete" && (
+        <ConfirmDelete
+          text={`${active.row.first_name} ${active.row.last_name}`}
+          onClose={resetState(modal.handleClose)}
+          onConfirm={() => handleDeleteItem(active.row)}
+        />
+      )}
+      </Modal>
     </div>
   );
 };
