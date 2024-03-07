@@ -15,7 +15,7 @@ export const getAllExams = async () =>{
       throw new Error("Error fetching exams");
     }
   };
-  export const insertExam = async (examData ) =>{
+  export const insertExam = async (examData) =>{
     try {
         return await ExamModel.create(examData)
     } catch (error) {
