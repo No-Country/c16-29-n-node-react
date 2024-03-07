@@ -12,7 +12,7 @@ const Exams = () => {
 
   const [data, setData] = useState(MOCK);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isScorePopupOpen, setIsScorePopupOpen] = useState(false);
+  // const [isScorePopupOpen, setIsScorePopupOpen] = useState(false);
   const [activeStudent, setActiveStudent] = useState()
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
@@ -20,8 +20,6 @@ const Exams = () => {
     row: {}
   });
   const [editPopupOpen, setEditPopupOpen] = useState(false);
-  const offcanvas = useDisclosure();
-  const modal = useDisclosure();
 
   useEffect(() => {
     if (alert.message) {
