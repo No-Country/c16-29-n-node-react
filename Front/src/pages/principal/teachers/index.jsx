@@ -22,8 +22,6 @@ const PrincipalTeachersView = () => {
     type:"",
     row:{}
   })
-
-
   useEffect(()=>{
     dispatch(fetchTeacher());
 
@@ -45,9 +43,15 @@ const PrincipalTeachersView = () => {
         offcanvas.handleOpen();
       };
 
-  const handleCreateTeacher =  (teacherData) =>{
-       dispatch(createTeacher(teacherData))
-      resetState(offcanvas.handleClose)();
+  const handleCreateTeacher = (teacherData) =>{
+      dispatch(createTeacher(teacherData))
+      .then(()=>{
+        dispatch(fetchTeacher())
+      })
+      .finally(()=>{
+        resetState(offcanvas.handleClose)();
+        console.log(teacherData)
+      })
   }
   
   const handleConfirmEditTeacher = (row)=>{
@@ -64,11 +68,34 @@ const PrincipalTeachersView = () => {
 
   const handleEditTeacher = async (teacherData) =>{
     if (selectedTeacherId) {
-      const res = await dispatch(updateTeacher({ id: selectedTeacherId, teacherData: teacherData })).unwrap();
-      dispatch(fetchTeacher())
-      setTimeout(() => {
+      // Se obtiene los valores iniciales para la comparación
+      const initialValues = active.row;
+  
+      // Objeto para almacenar solo los cambios
+      let changes = {};
+  
+      // Iterar sobre los campos en teacherData para ver si han cambiado comparados con initialValues
+      for (let key in teacherData) {
+        if (teacherData[key] !== initialValues[key]) {
+          changes[key] = teacherData[key];
+        }
+      }
+      //solo se envia el id
+      if(teacherData.subjects && teacherData.subjects.length >0){
+        changes['subjects'] = teacherData.subjects.map(subject=>({id:subject.value}));
+      }
+
+      // Si hay cambios, despachar la acción updateTeacher con esos cambios
+      if (Object.keys(changes).length > 0) {
+        await dispatch(updateTeacher({ id: selectedTeacherId, teacherData: changes })).unwrap();
+        dispatch(fetchTeacher()); // Actualizar la lista de profesores después de haber enviado los cambios
+        setTimeout(() => {
+          resetState(offcanvas.handleClose)();
+        }, 100);
+      } else {
+        console.log("No hay cambios para actualizar.");
         resetState(offcanvas.handleClose)();
-      }, 100)
+      }
     } else {
       console.error("No se ha seleccionado ningún profesor para actualizar");
     }
@@ -115,11 +142,8 @@ const PrincipalTeachersView = () => {
       },
       {
         Header: "Materias",
-        accessorKey: "subjects",
+        accessorFn: (row)=>row.subjects.map((subject)=>subject.name).join("/"),
         id:"subjects",
-        cell: ({ row: { original } }) => (
-            <span>{original.subjects?.map((subject) => subject.label)?.join(" / ") ?? ""}</span>
-        ),
       },
       {
         Header: "Acciones",
@@ -175,7 +199,7 @@ return (
       >
       {active.type === "delete" && (
         <ConfirmDelete 
-          text={`${active.row.firstname} ${active.row.lastname}`}
+          text={`${active.row.first_name} ${active.row.last_name}`}
           onClose={resetState(modal.handleClose)}
           onConfirm={()=>handleDeleteTeacher(active.row)}
         />
