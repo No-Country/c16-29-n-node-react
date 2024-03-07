@@ -5,7 +5,7 @@ import z from "zod";
 import { useSelector, useDispatch } from "react-redux";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react";
-import { fetchTeachers } from "../../store/slice/principal-subject-slice";
+import { fetchTeachers } from "../../store/slice/principal-subjects-slice";
 
 const EditSubject = ({ onClose, onSubmit, initialValues }) => {
   const teachers = useSelector((state) => state.principalSubject.teachers);
@@ -24,8 +24,6 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
     value: teacher.id,
     label: `${teacher.first_name} ${teacher.last_name}`
   }))
-
-  console.log(getValues());
 
   return (
     <>
@@ -91,8 +89,8 @@ const schema = z.object({
   name: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
   grade: z.string().regex(/^\d{1}$/, "Debe ser un numero"),
   divition: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  teachers: z.array(z.object({
+  teachers: z.optional(z.array(z.object({
     label: z.string(),
     value: z.number()
-  })),
+  }))),
 })

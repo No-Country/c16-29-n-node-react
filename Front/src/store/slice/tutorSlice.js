@@ -129,7 +129,22 @@ const initialState = {
 const tutorSlice = createSlice({
   name: "tutor",
   initialState,
-  reducers: {},
+  reducers: {
+    resetStates: (state) => {
+      state.stateCreating = {
+        isLoading: false,
+        status: "idle"
+      }
+      state.stateUpdating = {
+        isLoading: false,
+        status: "idle"
+      }
+      state.stateDeleting = {
+        isLoading: false,
+        status: "idle"
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createTutor.pending, (state) => {
@@ -205,5 +220,5 @@ const tutorSlice = createSlice({
   },
 });
 
-export const { actions, reducer } = tutorSlice;
-export default reducer;
+export const { resetStates } = tutorSlice.actions;
+export default tutorSlice.reducer;

@@ -5,7 +5,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { fetchTeachers } from "../../store/slice/principal-subject-slice";
+import { fetchTeachers } from "../../store/slice/principal-subjects-slice";
 
 const CreateSubject = ({ onClose, onSubmit }) => {
   const teachers = useSelector((state) => state.principalSubject.teachers);

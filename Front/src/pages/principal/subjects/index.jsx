@@ -10,13 +10,21 @@ import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
 import { useDispatch, useSelector } from "react-redux";
-import { createSubject, deleteSubject, fetchSubjects, updateSubject } from "../../../store/slice/principal-subject-slice";
+import {
+  createSubject,
+  deleteSubject,
+  fetchSubjects,
+  hideAlert,
+  resetStates,
+  updateSubject,
+} from "../../../store/slice/principal-subjects-slice";
+import Alert from "../../../components/Alert";
 
 const PrincipalSubjectsView = () => {
   const routes = useRoutes([
-    { path: "/" , element: <SubjectsView />},
-    { path: "/:id", element: <SubjectView />}
-  ])
+    { path: "/", element: <SubjectsView /> },
+    { path: "/:id", element: <SubjectView /> },
+  ]);
 
   return routes;
 };
@@ -24,78 +32,116 @@ const PrincipalSubjectsView = () => {
 const SubjectsView = () => {
   const [active, setActive] = useState({
     type: "",
-    row: {}
+    row: {},
+  });
+  const [alert, setAlert] = useState({
+    message: "",
+    type: "",
   });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
   const dispatch = useDispatch();
-  const subjects = useSelector((state) => state.principalSubject.subjects);
-  const stateCreating = useSelector((state) => state.principalSubject.stateCreating);
-  const stateUpdating = useSelector((state) => state.principalSubject.stateUpdating);
-  const stateDeleting = useSelector((state) => state.principalSubject.stateDeleting);
+  const subjects = useSelector((state) => state.principalSubjects.subjects);
+  const stateCreating = useSelector(
+    (state) => state.principalSubjects.stateCreating
+  );
+  const stateUpdating = useSelector(
+    (state) => state.principalSubjects.stateUpdating
+  );
+  const stateDeleting = useSelector(
+    (state) => state.principalSubjects.stateDeleting
+  );
+  const alertType = useSelector((state) => state.principalSubjects.alertType);
+  const alertMessage = useSelector(
+    (state) => state.principalSubjects.alertMessage
+  );
 
   useEffect(() => {
-    if(!stateCreating || !stateUpdating || !stateDeleting){
-      dispatch(fetchSubjects())
-      resetState()
-      modal.handleClose()
-      offcanvas.handleClose()
+    if (
+      !stateCreating.isLoading &&
+      !stateUpdating.isLoading &&
+      !stateDeleting.isLoading
+    ) {
+      const status = [stateCreating, stateUpdating, stateDeleting];
+      if (status.some(({ status }) => status === "rejected")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        console.log(status);
+      } else if (status.some(({ status }) => status === "completed")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        resetState();
+        modal.handleClose();
+        offcanvas.handleClose();
+      }
+      dispatch(fetchSubjects());
+      dispatch(hideAlert());
     }
-  }, [dispatch, stateCreating, stateUpdating, stateDeleting])
+  }, [dispatch, stateCreating, stateUpdating, stateDeleting]);
 
   const resetState = (action) => () => {
     action();
     setActive({
       type: "",
-      row: {}
+      row: {},
     });
-  } 
+  };
 
   const handleConfirmCreateItem = () => {
     setActive({
-      type: "create"
+      type: "create",
     });
     offcanvas.handleOpen();
-  }
+  };
 
   const handleConfirmEditItem = (row) => {
     setActive({
       type: "edit",
-      row
-    })
+      row,
+    });
     offcanvas.handleOpen();
-  }
+  };
 
   const handleEditItem = (subject) => {
-    const teachers = subject.teachers.map(({value}) => value);
-    dispatch(updateSubject({
-      id: active.row.id,
-      data: {
-        ...subject,
-        teachers
-      }
-    }))
-  }
+    const teachers = subject.teachers.map(({ value }) => value);
+    dispatch(
+      updateSubject({
+        id: active.row.id,
+        data: {
+          ...subject,
+          teachers,
+        },
+      })
+    );
+  };
 
   const handleCreateItem = (subject) => {
-    const teachers = subject.teachers.map(({value}) => value);
-    dispatch(createSubject({
-      ...subject,
-      teachers
-    }))
-  }
+    const teachers = subject.teachers.map(({ value }) => value);
+    dispatch(
+      createSubject({
+        ...subject,
+        teachers,
+      })
+    );
+  };
 
   const handleConfirmDeleteItem = (row) => {
     setActive({
       type: "delete",
-      row
-    })
+      row,
+    });
     modal.handleOpen();
-  }
+  };
 
   const handleDeleteItem = ({ id }) => {
-    dispatch(deleteSubject(id))
-  }
+    dispatch(deleteSubject(id));
+  };
 
   const columns = useMemo(() => {
     return [
@@ -103,13 +149,13 @@ const SubjectsView = () => {
         Header: "Materia",
         accessorKey: "name",
         cell: ({ row: { original } }) => (
-          <Link 
+          <Link
             to={`${original.name}_${original.grade}°_${original.divition}`}
             className="underline text-[#1368CE]"
           >
             {original.name}
           </Link>
-        )
+        ),
       },
       {
         id: "grade",
@@ -123,13 +169,16 @@ const SubjectsView = () => {
       {
         Header: "Profesor Asociado",
         id: "teacher",
-        accessorFn: (row) => row.teachers.length ? row.teachers[0].first_name : "",
+        accessorFn: (row) =>
+          row.teachers.length ? row.teachers[0].first_name : "",
       },
       {
         Header: "# Alumnos",
         id: "students",
         accessorFn: (row) => row.students.length,
-        cell: (props) => <p className="text-right pr-2">{props.cell.getValue()}</p>
+        cell: (props) => (
+          <p className="text-right pr-2">{props.cell.getValue()}</p>
+        ),
       },
       {
         Header: "Acciones",
@@ -146,57 +195,69 @@ const SubjectsView = () => {
         ),
       },
     ];
-  }, [])
+  }, []);
 
   return (
     <div className="grow flex flex-col overflow-auto">
       <p>{subjects.length} Registros</p>
-      <SimpleTable 
-        columns={columns} 
+      <SimpleTable
+        columns={columns}
         data={subjects}
-        actions={<Button onClick={handleConfirmCreateItem}>Crear Materia</Button>}
+        actions={
+          <Button onClick={handleConfirmCreateItem}>Crear Materia</Button>
+        }
       />
+      {alert.message && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
+            />
+          </div>
+        </div>
+      )}
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
         title={"Crear Materia"}
       >
-        { active.type === "create" && (
-          <CreateSubject 
+        {active.type === "create" && (
+          <CreateSubject
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleCreateItem}
           />
-        ) }
-        { active.type === "edit" && (
-          <EditSubject 
+        )}
+        {active.type === "edit" && (
+          <EditSubject
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleEditItem}
             initialValues={{
               name: active.row.name,
               grade: active.row.grade.toString(),
               divition: active.row.divition,
-              teachers: active.row.teachers.map(({ id, first_name, last_name }) => ({
-                value: id,
-                label: `${first_name} ${last_name}`
-              }))
+              teachers: active.row.teachers.map(
+                ({ id, first_name, last_name }) => ({
+                  value: id,
+                  label: `${first_name} ${last_name}`,
+                })
+              ),
             }}
           />
-        ) }
+        )}
       </Offcanvas>
-      <Modal
-        isOpen={modal.isOpen}
-        onClose={modal.handleClose}
-      >
-        { active.type === "delete" && (
-          <ConfirmDelete 
+      <Modal isOpen={modal.isOpen} onClose={modal.handleClose}>
+        {active.type === "delete" && (
+          <ConfirmDelete
             text={`${active.row.name} ${active.row.grade}° ${active.row.divition}`}
             onClose={resetState(modal.handleClose)}
             onConfirm={() => handleDeleteItem(active.row)}
           />
-        ) }
+        )}
       </Modal>
     </div>
   );
-}
+};
 
 export default PrincipalSubjectsView;

@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import Button from "../../../components/ui/button";
@@ -13,6 +12,7 @@ import {
   deleteTutor,
   fetchTutor,
   hideAlert,
+  resetStates,
   updateTutor,
 } from "./../../../store/slice/tutorSlice";
 import Modal from "../../../components/ui/modal";
@@ -26,13 +26,15 @@ export const DirectivoTutor = () => {
   const stateUpdating = useSelector((state) => state.tutor.stateUpdating);
   const stateDeleting = useSelector((state) => state.tutor.stateDeleting);
   const selectedOptions = useSelector((state) => state.select.selectedOptions);
-  const stateAlertMessage = useSelector((state) => state.tutor.stateAlertMessage);
+  const stateAlertMessage = useSelector(
+    (state) => state.tutor.stateAlertMessage
+  );
   const alertType = useSelector((state) => state.tutor.alertType);
   // const stateMessage = useSelector((state) => state.tutor.alertMessage);
 
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
-  
+
   // const [data, setData] = useState(tutor);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
@@ -41,34 +43,33 @@ export const DirectivoTutor = () => {
   });
 
   useEffect(() => {
-    if (!stateCreating.isLoading && !stateUpdating.isLoading && !stateDeleting.isLoading) {
-      const status = [stateCreating, stateUpdating, stateDeleting]
-      if(status.some(({ status }) => status === "rejected")){
+    if (
+      !stateCreating.isLoading &&
+      !stateUpdating.isLoading &&
+      !stateDeleting.isLoading
+    ) {
+      const status = [stateCreating, stateUpdating, stateDeleting];
+      if (status.some(({ status }) => status === "rejected")) {
         setAlert({
           message: stateAlertMessage,
-          type: alertType
-        })
-        dispatch(hideAlert());
-      } else if(status.some(({ status }) => status === "completed")) {
+          type: alertType,
+        });
+        dispatch(resetStates());
+      } else if (status.some(({ status }) => status === "completed")) {
         setAlert({
           message: stateAlertMessage,
-          type: alertType
-        })
-        dispatch(hideAlert());
+          type: alertType,
+        });
+        dispatch(resetStates());
         resetState();
         modal.handleClose();
         offcanvas.handleClose();
       }
       dispatch(fetchTutor());
-      dispatch(setSelectedOptions([]))
+      dispatch(setSelectedOptions([]));
+      dispatch(hideAlert());
     }
   }, [dispatch, stateCreating, stateUpdating, stateDeleting]);
-
-  useEffect(() => {
-    if(alert.message === ""){
-      dispatch(hideAlert())
-    }
-  }, [dispatch, alert]);
 
   const resetState = (action) => () => {
     action();
@@ -76,7 +77,7 @@ export const DirectivoTutor = () => {
       type: "",
       row: {},
     });
-    dispatch(setSelectedOptions([]))
+    dispatch(setSelectedOptions([]));
   };
 
   const handleConfirmCreateItem = () => {
@@ -147,16 +148,13 @@ export const DirectivoTutor = () => {
     );
   };
 
-
   const columns = useMemo(() => {
     return [
       {
         Header: "Nombre completo",
         id: "id",
         accessorFn: (row) => {
-
           return `${row.first_name} ${row.last_name}`;
-
         },
       },
       {
@@ -191,9 +189,6 @@ export const DirectivoTutor = () => {
 
   return (
     <div className="grow flex flex-col overflow-auto">
-          {/* {alert.show && (
-      <Alert message={alert.message} type={alert.type} onDismiss={() => setAlert({ show: false, message: "", type: "" })} />
-    )} */}
       <p>{tutors.length} registros</p>
       <SimpleTable
         columns={columns}
@@ -242,15 +237,14 @@ export const DirectivoTutor = () => {
         )}
       </Offcanvas>
       <Modal isOpen={modal.isOpen} onClose={resetState(modal.handleClose)}>
-      {active.type === "delete" && (
-        <ConfirmDelete
-          text={`${active.row.first_name} ${active.row.last_name}`}
-          onClose={resetState(modal.handleClose)}
-          onConfirm={() => handleDeleteItem(active.row)}
-        />
-      )}
+        {active.type === "delete" && (
+          <ConfirmDelete
+            text={`${active.row.first_name} ${active.row.last_name}`}
+            onClose={resetState(modal.handleClose)}
+            onConfirm={() => handleDeleteItem(active.row)}
+          />
+        )}
       </Modal>
-
     </div>
   );
 };

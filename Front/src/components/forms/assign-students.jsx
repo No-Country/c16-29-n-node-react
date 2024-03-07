@@ -2,24 +2,17 @@ import Select from 'react-select';
 import Offcanvas from '../ui/offcanvas'
 import Label from '../Label';
 import { useEffect, useState } from 'react';
-import { students } from '../../pages/principal/subjects/mock';
+import { useSelector, useDispatch } from "react-redux";
+import { fetchStudents } from "../../store/slice/principal-subject-slice";
 
-const AssignStudents = ({ onClose, onSubmit, assigneds }) => {
-  const [data, setData] = useState(() => students.map((student) => ({
-    value: student.id,
-    label: student.name
-  })));
+const AssignStudents = ({ onClose, onSubmit }) => {
+  const allStudents = useSelector((state) => state.principalSubject.allStudents);
+  const dispatch = useDispatch();
   const [selecteds, setSelecteds] = useState([]);
 
   useEffect(() => {
-    const filtered = students.filter((currentStudent) => {
-      return !assigneds.some(({id}) => currentStudent.id === id)
-    });
-    setData(filtered.map((student) => ({
-      value: student.id,
-      label: student.name
-    })));
-  }, [assigneds]);
+    dispatch(fetchStudents())
+  }, [dispatch]);
 
   const handleSelectOne = (option) => {
     setSelecteds((selecteds) => selecteds.concat(option));
@@ -31,7 +24,6 @@ const AssignStudents = ({ onClose, onSubmit, assigneds }) => {
 
   const handleSubmit = () => {
     onSubmit(selecteds);
-    onClose();
   }
 
   return (
@@ -40,7 +32,7 @@ const AssignStudents = ({ onClose, onSubmit, assigneds }) => {
         <Label htmlFor="associated-students">Alumnos Asociados</Label>
         <Select
           id="associated-students"
-          options={data.filter((selected) => !selecteds.includes(selected))}
+          options={allStudents.filter((selected) => !selecteds.includes(selected))}
           onChange={handleSelectOne}
           value={null}
         ></Select>
