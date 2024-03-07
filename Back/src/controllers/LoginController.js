@@ -5,6 +5,7 @@ let newUser = {};
 let users = [];
 import { validateUser } from "./UsersController.js";
 import { verified } from "../middlewares/encrypt.js";
+import { UserModel } from "../database/models/UserModel.js";
 let role;
 let res_user = {};
 
@@ -63,5 +64,33 @@ export const login = async (req, res) => {
     }
   } catch (err) {
     console.log("Ha ocurrido un error", err);
+  }
+};
+
+export const verifyTokenIsValid = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+
+    const payload = jwt.verify(token, TOKEN_KEY)
+
+    const user = await UserModel.findOne({
+      attributes: [
+        "id",
+        ["first_name", "firstName"],
+        ["last_name", "lastName"],
+        "role",
+        "email",
+        "phone"
+      ],
+      where: {
+        id: payload.id
+      }
+    })
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(422).json({
+      message: err
+    })
   }
 };

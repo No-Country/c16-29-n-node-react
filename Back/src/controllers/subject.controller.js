@@ -11,7 +11,7 @@ import {
 } from "../services/subject.service.js";
 import { encrypt } from "../middlewares/encrypt.js";
 import { hashSync } from "bcrypt";
-import { SubjectModel,} from "../database/models/index.js";
+import { BannModel, NonAttendanceModel, NoteModel, SubjectModel, UserModel,} from "../database/models/index.js";
 
 
 
@@ -38,10 +38,56 @@ export const getSubjects = async (req, res) => {
 export const getSubjectById = async (req, res) => {
   try {
     const SUBJECT_ID = req.params.id;
-    const subject = await getSubjectId(SUBJECT_ID);
+    const subject = await SubjectModel.findByPk(SUBJECT_ID, {
+      include: [
+        {
+          attributes: [
+            "id",
+            "first_name",
+            "last_name",
+            "fullName",
+            "role",
+            "grade"
+          ],
+          as: "users",
+          model: UserModel
+        },
+        {
+          attributes: [
+            "id",
+            "reason",
+            "type",
+            "note",
+            "date"
+          ],
+          as: "banns",
+          model: BannModel
+        },
+        {
+          attributes: [
+            "id",
+            "date",
+            "type",
+            "note"
+          ],
+          as: "nonattendances",
+          model: NonAttendanceModel
+        },
+        {
+          attributes: [
+            "id",
+            "date",
+            "note",
+            ["is_public", "isPublic"]
+          ],
+          as: "notes",
+          model: NoteModel
+        }
+      ]
+    });
     return res.status(200).json(subject);
   } catch (error) {
-    res.status(500).json({ Error: error });
+    res.status(500).json({ message: error });
   }
 };//estudiantes por materia
 export const getStudentsCountBySubject = async (req, res) => {
@@ -50,6 +96,38 @@ export const getStudentsCountBySubject = async (req, res) => {
     /* console.log('subjectId:', id); */
     const studentsCount = await getStudentsCountBySubjectId(id);
     return res.status(200).json({ studentsCount });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+// Materia con estudiantes por fullName
+export const getStudentsBySubjectFullName = async (req, res) => {
+  try {
+    const { name, grade, divition } = req.params;
+    
+    const subject = await SubjectModel.findOne({
+      where: {
+        name,
+        grade,
+        divition
+      }
+    });
+
+    if(!subject) throw new Error("La materia no ha sido encontrada");
+    
+    const users = await subject.getUsers({
+      attributes: [
+        "id",
+        "first_name",
+        "last_name",
+        "fullName",
+        "grade",
+        "role"
+      ]
+    });
+    const students = users.filter((user) => user.role === "STUDENT");
+
+    return res.status(200).json(students);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -127,11 +205,16 @@ export const assignSubjectToUsers = async (req, res) => {
 
     const subject = await SubjectModel.findByPk(id);
 
-    await subject.addUser(students);
+    const users = await subject.getUsers();
+    const studentsInSubject = users.filter((user) => {
+      return user.role === "STUDENT"
+    })
+    if(studentsInSubject.length + students.length > 30) throw new Error("No pueden haber mas de 30 estudiantes en una materia");
+
+    await subject.addUsers(students);
 
     return res.status(201).json({ message: "materia actualizada"});
   } catch (error) {
-    console.log(error) 
     return res.status(500).json({ Error: error });
   }
 };
@@ -144,7 +227,7 @@ export const deassignUserFromSubject = async (req, res) => {
 
     const subject = await SubjectModel.findByPk(subjectId);
 
-    await subject.removeUser(userId);
+    await subject.removeUsers(userId);
 
     return res.status(201).json({ message: "materia actualizada"});
   } catch (error) {
