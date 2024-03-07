@@ -16,7 +16,6 @@ console.log(initialValues, "initialvalues")
  
   const handleSelectChange = (selectedOptions) => {
     dispatch(setSelectedOptions(selectedOptions));
-    setValue('subjects', selectedOptions);
   };
 
   const options = subjects.map(subject => ({
@@ -24,44 +23,42 @@ console.log(initialValues, "initialvalues")
     label: subject.name
   }));
 
+  {/*const handleFormSubmit = (formData) => {
+    // Asegúrate de que estás enviando el ID de las materias, que es lo que comúnmente se requiere.
+  const subjectsIds = formData.subjects.map(option => option.value);
   
-console.log(options, "options")
-console.log(initialValues.subjects, "initialsubjects")
- 
-  const { register, handleSubmit,formState: { errors } , setValue, watch } = useForm({
+  const dataToSubmit = {
+    ...formData,
+    subjects: subjectsIds, // Suponiendo que tu backend espera un arreglo de IDs
+  };
+
+  onSubmit(dataToSubmit);
+  };*/
+  /* useEffect(() => {
+    if (isMateriasLoaded && initialValues.subjects) {
+      const selectedSubjects = options.filter(option =>
+        initialValues.subjects.some(subject => subject.id === option.value)
+      );
+      // Comprueba si realmente necesitas actualizar el valor antes de hacerlo
+      const currentSubjects = watch('subjects');
+      if (JSON.stringify(selectedSubjects) !== JSON.stringify(currentSubjects)) {
+        setValue('subjects', selectedOptions);
+        dispatch(setSelectedOptions(selectedSubjects));
+      }
+    }
+  }, [initialValues.subjects, isMateriasLoaded, selectedOptions]);*/ 
+  
+  const { register, handleSubmit,formState: { errors } , setValue } = useForm({
     resolver: zodResolver(schema),
     defaultValues:initialValues
   });
 
-
   const handleFormSubmit = (formData) => {
     onSubmit(formData);
   };
-  {/*useEffect(() => {
-    if (isMateriasLoaded && initialValues.subjects) {
-      const selectedSubjectsOptions = initialValues.subjects.map(subjectId => {
-        return options.find(option => option.value === subjectId);
-      }).filter(Boolean);
-  
-      // Verifica si las opciones seleccionadas han cambiado antes de actualizar el estado
-      if (JSON.stringify(selectedSubjectsOptions) !== JSON.stringify(watch('subjects'))) {
-        setValue('subjects', selectedSubjectsOptions); // Actualiza react-hook-form
-        dispatch(setSelectedOptions(selectedSubjectsOptions)); // Actualiza Redux
-      }
-    }
-  }, [initialValues.subjects, options, isMateriasLoaded, setValue, dispatch, watch]);*/}
-  
-  useEffect(() => {
-    if (isMateriasLoaded && initialValues.subjects) {
-      setValue('subjects', options); // Establece el valor en react-hook-form
-      dispatch(setSelectedOptions(options)); // Actualiza el estado de Redux si es necesario
-    }
-  }, [initialValues.subjects, isMateriasLoaded, setValue, dispatch]);
-
-  console.log(selectedOptions, "selectedOptions"); // Deberías ver el array de valores seleccionados aquí
-
-console.log(errors, "errores desde el edit teacher")
-console.log(watch())
+  useEffect(()=>{
+    setValue("subjects", selectedOptions)
+},[selectedOptions, initialValues])
 return (
     <>
         <Offcanvas.Body>
@@ -102,9 +99,7 @@ return (
               <SelectWithFilters
                 data={options}
                 selectedOptions={selectedOptions}
-                setSelectedOptions={(options) => {
-                handleSelectChange(options)
-              }}
+                setSelectedOptions={handleSelectChange}
                 />
                 ) : ( 
             <p>Cargando materias ....</p>
@@ -120,7 +115,7 @@ return (
         </Offcanvas.Footer>
     </>
 );
-}
+}}
 
 export default EditTeacher; 
 const schema = z.object({

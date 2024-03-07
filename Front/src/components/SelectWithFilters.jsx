@@ -2,13 +2,14 @@ import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
+// import { useDispatch, useSelector } from 'react-redux';
 
 const animatedComponents = makeAnimated();
 
 const colourStyles = {
   control: (styles) => ({ ...styles, backgroundColor: '#EEFAFF' }),
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = chroma(data.color || '#999999');
+    const color = chroma(data.color || "#00875A");
     return {
       ...styles,
       backgroundColor: isDisabled
@@ -38,7 +39,7 @@ const colourStyles = {
     };
   },
   multiValue: (styles, { data }) => {
-    const color = chroma(data.color || '#999999');
+    const color = chroma(data.color || "#00875A");
     return {
       ...styles,
       backgroundColor: color.alpha(0.1).css(),
@@ -78,8 +79,6 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 };
 
 export default SelectWithFilters;
-
-
 
 // Ejemplo de formato del array "data", lo que se deberia pasar por props:
 // [

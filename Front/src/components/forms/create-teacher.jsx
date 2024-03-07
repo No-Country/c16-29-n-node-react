@@ -24,7 +24,6 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
         }
       });
       const dispatch = useDispatch();
-      console.log(subjects)
       
     
       const handleSelectChange = (selectedOptions) => {
@@ -38,7 +37,6 @@ const CreateTeacherForm = ({onClose, onSubmit}) =>{
     useEffect(()=>{
         setValue("subjects", selectedOptions)
     },[selectedOptions])
-    console.log(errors)
     return (
         <>
         <Offcanvas.Body>
@@ -118,7 +116,6 @@ const schema = z.object({
     password: z.string().min(6, "La contraseña es obligatoria").refine(isValidPassword, "La contraseña no es válida"),
     phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
     subjects: z.array(z.object({
-      label: z.string(),
       value: z.number(),
     })).optional(),
   });

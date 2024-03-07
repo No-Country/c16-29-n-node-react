@@ -24,7 +24,7 @@ const PrincipalTeachersView = () => {
   })
   useEffect(()=>{
     dispatch(fetchTeacher());
-
+    console.log(teachers); 
 }, [dispatch])
 
   const resetState = (action) => () => {
@@ -44,7 +44,13 @@ const PrincipalTeachersView = () => {
       };
 
   const handleCreateTeacher = (teacherData) =>{
-      dispatch(createTeacher(teacherData))
+    const formattedSubjects = teacherData.subjects.map(subject => ({ id: subject.value }));
+    const dataToSubmit = {
+      ...teacherData,
+      subjects: formattedSubjects,
+    };
+  
+      dispatch(createTeacher(dataToSubmit))
       .then(()=>{
         dispatch(fetchTeacher())
       })
@@ -142,7 +148,7 @@ const PrincipalTeachersView = () => {
       },
       {
         Header: "Materias",
-        accessorFn: (row)=>row.subjects.map((subject)=>subject.name).join("/"),
+        accessorFn: (row) => Array.isArray(row.subjects) ? row.subjects.map((subject) => subject.name).join("/") : "",
         id:"subjects",
       },
       {

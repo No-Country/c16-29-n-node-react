@@ -26,6 +26,7 @@ export const OffCanvas = ({
   const [formData, setFormData] = useState(formInitialState);
   const [fieldErrors, setFieldErrors] = useState({});
   const [formAlert, setFormAlert] = useState({ message: "", type: "" });
+  console.log(formData)
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;

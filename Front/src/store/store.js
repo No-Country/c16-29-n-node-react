@@ -3,6 +3,7 @@ import authReducer from "./slice/auth";
 import selectReducer from "../reducer/reducer";
 import profesorReducer from "./slice/profesorSlice";
 import { subjectsReducer } from "./slice/subjectsSlice";
+import  tutorReducer  from "./slice/tutorSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
@@ -14,6 +15,7 @@ import {
   PURGE,
   REGISTER
 } from "redux-persist";
+import principalSubjectSlice from "./slice/principal-subject-slice";
 
 const persisConfig = {
   key: "auth",
@@ -28,7 +30,11 @@ const store = configureStore({
     auth: persistedReducer,
     teachers: profesorReducer,
     select: selectReducer,
-    subjects:subjectsReducer
+    principalSubject: principalSubjectSlice,
+    tutor: tutorReducer,
+    subjects: subjectsReducer,
+    students: selectReducer,
+    tutorsOptions: selectReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

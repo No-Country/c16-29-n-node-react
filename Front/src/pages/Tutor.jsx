@@ -1,28 +1,15 @@
 import { useState } from "react";
 import { SimpleTable } from "../components/SimpleTabla";
 import SelectWithFilters from "../components/SelectWithFilters";
+import MOCK from "../pages/principal/subjects/mock";
 
-const data = [
-  { value: "ocean", label: "Matematica", color: "#00B8D9", isFixed: true },
-  { value: "blue", label: "Lengua", color: "#0052CC", isDisabled: false },
-  { value: "purple", label: "Ciencias Sociales", color: "#5243AA" },
-  {
-    value: "red",
-    label: "Ciencias Naturales",
-    color: "#FF5630",
-    isFixed: true,
-  },
-  { value: "orange", label: "Musica", color: "#FF8B00" },
-  { value: "yellow", label: "Educacion Fisica", color: "#FFC400" },
-  { value: "green", label: "Historia", color: "#36B37E" },
-  { value: "forest", label: "Geografia", color: "#00875A" },
-  { value: "slate", label: "Economia", color: "#253858" },
-  { value: "silver", label: "Contabilidad", color: "#666666" },
-];
+
+
 
 export const Tutor = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [activatorSelectwithfilters, setActivatorSelectwithfilters] = useState(null);
+  const [data, setData] = useState(MOCK);
 
   const handlerSelectwithfilters = () => {
     setActivatorSelectwithfilters(!activatorSelectwithfilters)
@@ -192,7 +179,7 @@ export const Tutor = () => {
           </div>
         </div>
         <div className="w-[1353px] left-[66px] top-[180px] absolute rounded shadow border-2 border-slate-300 justify-start items-start inline-flex">
-          <SimpleTable />
+          {/* <SimpleTable  data={data} /> */}
         </div>
       </div>
     </div>
