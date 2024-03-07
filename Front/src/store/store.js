@@ -28,7 +28,9 @@ const store = configureStore({
     auth: persistedReducer,
     teachers: profesorReducer,
     select: selectReducer,
-    subjects:subjectsReducer
+    subjects: subjectsReducer,
+    students: selectReducer,
+    tutorsOptions: selectReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
