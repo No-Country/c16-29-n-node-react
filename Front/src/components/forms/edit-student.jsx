@@ -11,12 +11,11 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
 
   // Estados
 
-  const selectedTutorsOptions = useSelector((state) => state.select.selectedTutorsOptions);
+  const selectedTutorsOptions = useSelector((state) => state.tutorsOptions.selectedTutorsOptions);
   const dispatch = useDispatch();
-  const tutorsFetchOptions = useSelector((state) => state.tutors.tutorsOptions);
+  const tutorsFetchOptions = useSelector((state) => state.tutorsOptions.tutorsOptions);
 
   const handleSelectChange = (selectedTutorsOptions) => {
-    console.log(selectedTutorsOptions);
     dispatch(setSelectedTutorsOptions(selectedTutorsOptions));
   };
 
