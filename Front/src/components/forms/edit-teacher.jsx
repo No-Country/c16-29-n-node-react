@@ -2,7 +2,7 @@ import Offcanvas from "../ui/offcanvas";
 import { useForm,  } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod";
-import {isAlphabetic, isAlphaNumeric, isValidPhone, isValidEmail} from "../../utils/validation";
+import {isAlphabetic, isAlphaNumeric, isValidPhone, isValidEmail, isValidPassword} from "../../utils/validation";
 import { useEffect } from "react";
 import SelectWithFilters from "../SelectWithFilters";
 import { setSelectedOptions } from "../../actions/actions";
@@ -51,6 +51,7 @@ const EditTeacher = ({onClose, onSubmit, initialValues}) =>{
   useEffect(()=>{
     setValue("subjects", selectedOptions)
 },[selectedOptions, initialValues])
+//
 return (
     <>
         <Offcanvas.Body>
@@ -72,6 +73,11 @@ return (
             <label htmlFor="username">Usuario</label>
             <input id="username" {...register("username")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.username ? 'border-red-500' : 'rounded'}`} />
             {errors.username && <p className="text-red-500 text-xs">{errors.username.message}</p>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="password">Contraseña</label>
+            <input type="password" id="password" {...register("password")} className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.password ? 'border-red-500' : 'rounded'}`} />
+            {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
           </div>
           <div className="flex flex-col">
             <label htmlFor="email">Email</label>
@@ -115,6 +121,7 @@ const schema = z.object({
     last_name: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético").optional(),
     email: z.string().refine(isValidEmail,"Debe ser un correo válido").optional(),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
+    password: z.optional(z.string().min(6, "Debe tener un minimo de 6 caracteres").refine(isValidPassword, "El nombre de usuario debe ser alfanumérico")),
     phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
     subjects: z.optional(z.array(z.object({
       value: z.number(),
