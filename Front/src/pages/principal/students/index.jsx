@@ -12,8 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Alert from "../../../components/Alert";
 import { getStudents } from "../../../actions/actions";
 
-// URL BACK https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role
-
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
     { path: "/", element: <StudentsView /> }
