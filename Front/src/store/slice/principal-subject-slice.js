@@ -43,19 +43,13 @@ export const fetchSubjectByFullname = createAsyncThunk(
   async ({ name, grade, divition }, { rejectWithValue }) =>{
     try {
       const token = getAccessToken();
-      const res = await AxiosInstance.get(`/subjects`, {
+      const res = await AxiosInstance.get(`/subjects/${name}/${grade}/${divition}`, {
         headers: {
           "X-Access-Token": token
         }
       });
 
-      const subject = res.data.find((subject) => {
-        return subject.name === name && subject.grade === grade && subject.divition === divition
-      })
-
-      if(!subject) throw new Error("No se encontró la materia");
-
-      return subject;
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -83,8 +77,7 @@ export const fetchStudents = createAsyncThunk(
 ); 
 
 const initialState = {
-  id: null,
-  students: [],
+  subject: {},
   allStudents: [],
   isLoading: false,
   alertType: "",
@@ -133,8 +126,7 @@ const principalSubjectsSlice = createSlice({
       })
       .addCase(fetchSubjectByFullname.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.id = action.payload.id;
-        state.students = action.payload.students;
+        state.subject = action.payload;
       })
       .addCase(assignStudents.pending, (state) => {
         state.isLoading = true;
@@ -178,7 +170,7 @@ const principalSubjectsSlice = createSlice({
       .addCase(fetchStudents.fulfilled, (state, action) => {
         state.isLoading = false;
         state.allStudents = action.payload.filter((student) => 
-          !state.students.find((current) => current.id === student.id)
+          !state.subject?.students.find((current) => current.id === student.id)
         ).map(({id, firstName, lastName}) => ({
           value: id,
           label: `${firstName} ${lastName}`

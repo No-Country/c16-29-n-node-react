@@ -22,7 +22,7 @@ const SubjectView = () => {
   const stateDeleting = useSelector((state) => state.principalSubject.stateDeleting);
   const alertMessage = useSelector((state) => state.principalSubject.alertMessage);
   const alertType = useSelector((state) => state.principalSubject.alertType);
-  const students = useSelector((state) => state.principalSubject.students);
+  const subject = useSelector((state) => state.principalSubject.subject);
 
   useEffect(() => {
     if (
@@ -109,7 +109,7 @@ const SubjectView = () => {
       )}
       <SimpleTable 
         columns={columns}
-        data={students}
+        data={subject?.students ?? []}
         actions={<Button onClick={handleOpen}>Asignar Alumnos</Button>}
       />
       <Offcanvas
