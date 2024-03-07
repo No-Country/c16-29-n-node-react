@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
-import MOCK from "./mock";
 import { useRoutes } from "react-router-dom";
 import CreateStudent from "../../../components/forms/create-student";
 import EditStudent from "../../../components/forms/edit-student";
@@ -9,8 +8,9 @@ import Offcanvas from "../../../components/ui/offcanvas";
 import Modal from "../../../components/ui/modal";
 import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Alert from "../../../components/Alert";
+import { getStudents } from "../../../actions/actions";
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
@@ -24,8 +24,8 @@ const StudentsView = () => {
 
   // Estados
 
-  const selectedOptions = useSelector((state) => state.select.selectedOptions);
-
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.students.students);
   const [active, setActive] = useState({
     type: "",
     row: {}
@@ -33,7 +33,17 @@ const StudentsView = () => {
   const [alert, setAlert] = useState({ message: "", type: "" });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
-  const [data, setData] = useState(MOCK);
+  // const [data, setData] = useState(MOCK);
+
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------ //
+
+  // UseEffect
+
+  useEffect(() => {
+    dispatch(getStudents())
+  }, [])
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -86,13 +96,14 @@ const StudentsView = () => {
       data.map((student) =>
         student.id === active.row.id ? {
           ...row,
-          name: row.name,
-          state: row.state,
+          firstName: row.firstName,
+          lastName: row.lastName,
           tutors: selectedOptions.map(option => option.label),
           email: row.email,
-          phonenumber: row.phonenumber,
+          phone: row.phone,
           password: row.password,
-          username: row.username
+          username: row.username,
+          grade: row.grade,
         } : student
       )
     );
@@ -105,14 +116,14 @@ const StudentsView = () => {
       const newId = Math.max(...prevData.map(item => item.id), 0) + 1;
       const newItem = {
         id: newId,
-        name: row.name,
-        lastname: row.lastname,
+        firstName: row.firstName,
+        lastName: row.lastName,
         username: row.username,
         password: row.password,
         email: row.email,
-        phonenumber: row.phonenumber,
+        phone: row.phone,
+        grade: row.grade,
         tutors: selectedOptions.map(option => option.label),
-        state: row.state,
       }
       return [...prevData, newItem];
     });
@@ -143,11 +154,11 @@ const StudentsView = () => {
     return [
       {
         Header: "Nombre",
-        accessorKey: "name",
+        accessorKey: "firstName",
       },
       {
         Header: "Apellido",
-        accessorKey: "lastname",
+        accessorKey: "lastName",
       },
       {
         Header: "Correo Electrónico",
@@ -155,7 +166,11 @@ const StudentsView = () => {
       },
       {
         Header: "Celular",
-        accessorKey: "phonenumber",
+        accessorKey: "phone",
+      },
+      {
+        Header: "Grado",
+        accessorKey: "grade",
       },
       {
         Header: "Tutor asociado",
@@ -163,7 +178,9 @@ const StudentsView = () => {
         accessor: "tutors",
         cell: ({ row: { original } }) => (
           data ? (
-            <span>{original.tutors?.join(" / ")}</span>
+            <span>
+              {original.tutors.map(tutor => tutor.fullName).join(" / ")}
+            </span>
           ) : null
         ),
       },
@@ -219,13 +236,13 @@ const StudentsView = () => {
             onClose={resetState(offcanvas.handleClose)}
             onSubmit={handleEditItem}
             initialValues={{
-              name: active.row.name,
-              lastname: active.row.lastname,
+              firstName: active.row.firstName,
+              lastName: active.row.lastName,
               username: active.row.username,
               password: active.row.password,
               email: active.row.email,
-              phonenumber: active.row.phonenumber,
-              state: active.row.state,
+              phone: active.row.phone,
+              grade: active.row.grade,
             }}
           />
         )}

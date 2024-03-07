@@ -3,6 +3,7 @@ import React from 'react';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import chroma from 'chroma-js';
+// import { useDispatch, useSelector } from 'react-redux';
 
 
 const animatedComponents = makeAnimated();
@@ -67,8 +68,6 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
     setSelectedOptions(selectedOptions);
   };
 
-
-
   return (
     <Select
       components={animatedComponents}
@@ -83,8 +82,6 @@ const SelectWithFilters = ({ data, selectedOptions, setSelectedOptions }) => {
 };
 
 export default SelectWithFilters;
-
-
 
 // Ejemplo de formato del array "data", lo que se deberia pasar por props:
 // [
