@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef } from "react"
 
 const Offcanvas = ({ isOpen, onClose, children, title }) => {
   const offcanvasRef = useRef();
+
   const handleClick = useCallback((e) => {
     if(isOpen && !offcanvasRef.current.contains(e.target)) {
       onClose();
     }
-  }, [])
-  useEffect(() => {
-      
+  }, []);
 
+  useEffect(() => {
     if(isOpen){
       setTimeout(() => {
         window.addEventListener("click", handleClick);
