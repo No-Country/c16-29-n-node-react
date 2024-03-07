@@ -1,8 +1,8 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../../components/SimpleTabla";
 import Button from "../../../components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
-// import { tutor } from "./see-subject/mockTuto";
 import Alert from "../../../components/Alert";
 import useDisclosure from "../../../hooks/useDisclosure";
 import EditTutor from "../../../components/forms/edit-tutor";
@@ -140,13 +140,16 @@ export const DirectivoTutor = () => {
     }) 
   };
 
+
   const columns = useMemo(() => {
     return [
       {
         Header: "Nombre completo",
         id: "id",
         accessorFn: (row) => {
+
           return `${row.first_name} ${row.last_name}`;
+
         },
       },
       {
@@ -240,6 +243,7 @@ export const DirectivoTutor = () => {
         />
       )}
       </Modal>
+
     </div>
   );
 };
