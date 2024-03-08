@@ -32,8 +32,6 @@ function DashboardLayout({ menues, children }) {
 
   const paths = pathname.split(/(\/)/).slice(4);
 
-  console.log(user);
-
   return (
     <div className="w-full h-full flex">
       <Sidebar menues={menues} />

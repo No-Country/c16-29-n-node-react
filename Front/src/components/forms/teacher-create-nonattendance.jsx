@@ -19,7 +19,7 @@ const TeacherCreateNonAttendance = ({ onClose, onSubmit }) => {
   const { formState: { errors }, register, handleSubmit, setValue, watch } = useForm({
     resolver: zodResolver(schema)
   })
-console.log(watch())
+  
   return (
     <>
       <Offcanvas.Body>

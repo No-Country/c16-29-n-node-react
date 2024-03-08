@@ -41,8 +41,6 @@ const StudentsView = () => {
 
   // UseEffect
 
-  console.log(data)
-
   useEffect(() => {
     dispatch(getStudents())
   }, [dispatch])

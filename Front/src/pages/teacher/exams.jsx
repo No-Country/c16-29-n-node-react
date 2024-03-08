@@ -51,7 +51,6 @@ const Exams = () => {
   }, [alert]);
 
   // useEffect(() => {
-  //   console.log(active);
   // }, [active]);
 
   // ------------------------------------------------------------------------------ //
@@ -272,7 +271,6 @@ const EditScoreForm = ({ handleEdit, onClose, initialValues }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(score, note)
     if (initialValues.score) {
       handleEdit(parseValues({note}));
     } else {

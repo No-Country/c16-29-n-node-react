@@ -37,7 +37,6 @@ const SubjectView = () => {
           type: alertType,
         });
         dispatch(resetStates());
-        console.log(status);
       } else if (status.some(({ status }) => status === "completed")) {
         setAlert({
           message: alertMessage,
@@ -56,8 +55,8 @@ const SubjectView = () => {
   }, [dispatch, stateFetching, stateUpdating, stateDeleting]);
   const { handleClose, handleOpen, isOpen } = useDisclosure();
 
-
   const handleDeleteStudent = (id) => {
+    console.log(subject)
     dispatch(deassignStudent({
       subject: subject.id,
       user: id
@@ -90,7 +89,7 @@ const SubjectView = () => {
         ),
       },
     ];
-  }, [])
+  }, [subject])
 
   return (
     <div

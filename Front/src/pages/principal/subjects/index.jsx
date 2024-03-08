@@ -69,7 +69,6 @@ const SubjectsView = () => {
           type: alertType,
         });
         dispatch(resetStates());
-        console.log(status);
       } else if (status.some(({ status }) => status === "completed")) {
         setAlert({
           message: alertMessage,

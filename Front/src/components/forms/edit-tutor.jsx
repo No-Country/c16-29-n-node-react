@@ -30,8 +30,6 @@ const EditTutor = ({ onClose, onSubmit, initialValues }) => {
     dispatch(setSelectedOptions(initialValues.students));
   }, []);
 
-  console.log(selectedOptions)
-
   const handleSelectChange = (selectedOptions) => {
     dispatch(setSelectedOptions(selectedOptions));
   };

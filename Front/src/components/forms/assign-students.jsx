@@ -34,6 +34,7 @@ const AssignStudents = ({ onClose, onSubmit }) => {
           id="associated-students"
           options={allStudents.filter((selected) => !selecteds.includes(selected))}
           onChange={handleSelectOne}
+          isMulti
           value={null}
         ></Select>
         <ul className='flex flex-col gap-1 mt-2'>
