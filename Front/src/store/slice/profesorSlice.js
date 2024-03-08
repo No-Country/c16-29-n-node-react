@@ -35,7 +35,7 @@ export const createTeacher = createAsyncThunk(
 //Editar Profesor
 export const updateTeacher = createAsyncThunk(
   'profesor/updateTeacher',
-  async ({id, teacherData}) => {
+  async ({id, teacherData}, { rejectWithValue }) => {
     try {
       const token = getAccessToken();
       const response = await AxiosInstance.put(`/users/${id}`, teacherData, { headers:{"X-Access-Token": token}});
@@ -64,7 +64,7 @@ export const deleteTeacher =createAsyncThunk(
       return teacherId;
 
     }catch (error){
-      return rejectWithValue(error.toString());
+      return rejectWithValue(error.response.data.message);
     }
   }
 )

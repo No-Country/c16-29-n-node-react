@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getStudents } from "../../store/slice/tutorSlice";
 import { setSelectedOptions } from "../../actions/actions";
 import SelectWithFilter from "../../components/SelectWithFilters";
+import { parseValues } from "../../utils/validation";
 
 const EditTutor = ({ onClose, onSubmit, initialValues }) => {
   const students = useSelector((state) => state.tutor.students || []);
@@ -21,13 +22,15 @@ const EditTutor = ({ onClose, onSubmit, initialValues }) => {
     handleSubmit,
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
+    defaultValues: parseValues(initialValues),
   });
 
   useEffect(() => {
     dispatch(getStudents());
     dispatch(setSelectedOptions(initialValues.students));
   }, []);
+
+  console.log(selectedOptions)
 
   const handleSelectChange = (selectedOptions) => {
     dispatch(setSelectedOptions(selectedOptions));

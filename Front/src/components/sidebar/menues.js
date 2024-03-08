@@ -9,7 +9,7 @@ export const PrincipalMenues = [
 
 export const TeacherMenues = [
   { title: "Dashboard", text: "Dashboard" },
-  { title: "Anotaciones", text: "Anotaciones" },
+  { title: "Curso", text: "Materias" },
   { title: "Configuracion", text: "Configuración" },
 ]
 

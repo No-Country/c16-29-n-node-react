@@ -18,6 +18,10 @@ const PrincipalTeachersView = () => {
   const offcanvas= useDisclosure();
   const modal = useDisclosure(); //modal para eliminar
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [ alert, setAlert ] = useState({
+    message: "",
+    type: ""
+  })
   const [ active, setActive] = useState({
     type:"",
     row:{}
@@ -52,12 +56,20 @@ const PrincipalTeachersView = () => {
     };
   
       dispatch(createTeacher(dataToSubmit))
+      .unwrap()
       .then(()=>{
         dispatch(fetchTeacher())
-      })
-      .finally(()=>{
+        setAlert({
+          message: "Se creo el profesor correctamente",
+          type: "success"
+        })
         resetState(offcanvas.handleClose)();
-        console.log(teacherData)
+      })
+      .catch(()=>{
+        setAlert({
+          message: "No se pudo crear el profesor",
+          type: "error"
+        })
       })
   }
   
@@ -95,11 +107,23 @@ const PrincipalTeachersView = () => {
 
       // Si hay cambios, despachar la acción updateTeacher con esos cambios
       if (Object.keys(changes).length > 0) {
-        await dispatch(updateTeacher({ id: selectedTeacherId, teacherData: changes })).unwrap();
-        dispatch(fetchTeacher()); // Actualizar la lista de profesores después de haber enviado los cambios
-        setTimeout(() => {
+        console.log(changes)
+        await dispatch(updateTeacher({ id: selectedTeacherId, teacherData: changes }))
+        .unwrap()
+        .then(()=>{
+          dispatch(fetchTeacher())
+          setAlert({
+            message: "Se edito el profesor correctamente",
+            type: "success"
+          })
           resetState(offcanvas.handleClose)();
-        }, 100);
+        })
+        .catch(()=>{
+          setAlert({
+            message: "No se pudo editar al profesor",
+            type: "error"
+          })
+        })
       } else {
         console.log("No hay cambios para actualizar.");
         resetState(offcanvas.handleClose)();
@@ -119,7 +143,23 @@ const PrincipalTeachersView = () => {
   const handleDeleteTeacher = async()=>{
     if (active && active.type === "delete" && active.row.id) {
       try {
-        await dispatch(deleteTeacher(active.row.id)); 
+        await dispatch(deleteTeacher(active.row.id))
+        .unwrap()
+        .then(()=>{
+          dispatch(fetchTeacher())
+          setAlert({
+            message: "Se eliminó el profesor correctamente",
+            type: "success"
+          })
+          resetState(modal.handleClose)();
+        })
+        .catch((message)=>{
+          setAlert({
+            message: message,
+            type: "error"
+          })
+        })
+          ; 
         modal.handleClose(); 
       } catch (error) {
         console.error(error);
@@ -173,8 +213,16 @@ const PrincipalTeachersView = () => {
   }, [teachers])
 return (
     <div className="grow flex flex-col overflow-auto">
-     {alert.show && (
-      <Alert message={alert.message} type={alert.type} onDismiss={() => setAlert({ show: false, message: "", type: "" })} />
+      {alert.message && (
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+        <div className=" p-4 rounded w-auto ">
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onDismiss={() => setAlert({ message: "", type: "" })}
+          />
+        </div>
+      </div>
     )}
       <p> {teachers.length} Registros</p>
       <SimpleTable

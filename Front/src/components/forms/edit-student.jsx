@@ -9,6 +9,7 @@ import {
   setSelectedTutorsOptions,
 } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { parseValues } from "../../utils/validation";
 
 const EditStudent = ({ onClose, onSubmit, initialValues }) => {
   // Estados
@@ -41,9 +42,8 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
     setValue,
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
+    defaultValues: parseValues(initialValues),
   });
-
 
   const handleFormSubmit = (formData) => {
     const newData = {

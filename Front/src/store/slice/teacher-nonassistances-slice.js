@@ -42,7 +42,7 @@ export const deleteNonAttendaces =createAsyncThunk(
   async(id, {rejectWithValue})=>{
     try{
       const token= getAccessToken();
-      await AxiosInstance.delete(`/users/${id}`, { headers:{"X-Access-Token": token}});
+      await AxiosInstance.delete(`/nonattendances/${id}`, { headers:{"X-Access-Token": token}});
       return id;
 
     }catch (error){

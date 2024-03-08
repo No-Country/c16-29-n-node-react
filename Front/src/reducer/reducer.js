@@ -54,7 +54,7 @@ const selectReducer = (state = initialState, action) => {
     case GET_TUTORS_OPTIONS: {
       const tutorsOptions = action.payload.map(tutor => ({
         ...tutor,
-        value: `tutor-${tutor.id}`,
+        value: tutor.id,
         color: getRandomColor(),
         label: `${tutor.first_name} ${tutor.last_name}`,
       }));

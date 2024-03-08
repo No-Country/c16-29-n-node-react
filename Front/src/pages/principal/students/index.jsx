@@ -10,9 +10,7 @@ import useDisclosure from "../../../hooks/useDisclosure";
 import ConfirmDelete from "../../../components/modals/confirm-delete";
 import { useDispatch, useSelector } from "react-redux";
 import Alert from "../../../components/Alert";
-import { createStudent, deleteStudent, editStudent, getStudents, getTutorsOptions } from "../../../actions/actions";
-
-// URL BACK https://no-country-backend-dev-srdg.1.us-1.fl0.io/api/users/role
+import { createStudent, deleteStudent, editStudent, getStudents } from "../../../actions/actions";
 
 const PrincipalStudentsView = () => {
   const routes = useRoutes([
@@ -43,9 +41,11 @@ const StudentsView = () => {
 
   // UseEffect
 
+  console.log(data)
+
   useEffect(() => {
     dispatch(getStudents())
-  }, [alert])
+  }, [dispatch])
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -70,15 +70,6 @@ const StudentsView = () => {
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
 
-  useEffect(() => {
-    if (alert.message) {
-      const timer = setTimeout(() => {
-        setAlert({ message: "", type: "" });
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [alert.message]);
-
   const handleConfirmCreateItem = () => {
     setActive({
       type: "create"
@@ -95,18 +86,6 @@ const StudentsView = () => {
   }
 
   const handleEditItem = (row) => {
-    if (active.row.email === row.email) {
-      const newItem = {
-        first_name: row.firstName,
-        last_name: row.lastName,
-        username: row.username,
-        password: row.password,
-        phone: row.phone,
-        grade: row.grade,
-        tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
-      }
-      dispatch(editStudent(newItem, row.id))
-    } else {
       const newItem = {
         first_name: row.firstName,
         last_name: row.lastName,
@@ -117,11 +96,15 @@ const StudentsView = () => {
         grade: row.grade,
         tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
       }
-      dispatch(editStudent(newItem, row.id))
-    }
-
-    showAlert("Alumno editado exitosamente", "success");
-    offcanvas.handleClose();
+      editStudent(newItem, row.id)
+      .then(() => {
+        dispatch(getStudents())
+        resetState(offcanvas.handleClose)()
+        showAlert("Alumno actualizado exitosamente", "success");
+      })
+      .catch(() => {
+        showAlert("No se pudo actualizar el alumno", "error");
+      })
   };
 
   const handleCreateItem = (row) => {
@@ -136,9 +119,15 @@ const StudentsView = () => {
       grade: row.grade,
       tutors: selectedTutorsOptions.map(option => ({ id: option.id })),
     }
-    dispatch(createStudent(newItem))
-    showAlert("Alumno creado exitosamente", "success");
-    offcanvas.handleClose();
+    createStudent(newItem)
+    .then(() => {
+      dispatch(getStudents())
+      resetState(offcanvas.handleClose)()
+      showAlert("Alumno creado exitosamente", "success");
+    })
+    .catch(() => {
+      showAlert("No se pudo crear el alumno", "error");
+    })
   }
 
   const handleConfirmDeleteItem = (row) => {
@@ -150,15 +139,15 @@ const StudentsView = () => {
   }
 
   const handleDeleteItem = ({ id }) => {
-    const objetoEncontrado = data.filter(objeto => objeto.id === id);
-    if (objetoEncontrado[0].tutors.length > 0 && objetoEncontrado[0].subjects.length === 0) {
-      showAlert("No se puede eliminar el alumno si tiene un tutor asociado", "error");
-    } else if (objetoEncontrado[0].tutors.length === 0 && objetoEncontrado[0].subjects.length > 0) {
-      showAlert("No se puede eliminar el alumno si tiene materias asociadas", "error");
-    } else {
-      dispatch(deleteStudent(id))
-      showAlert("Alumno eliminado exitosamente", "error");
-    }
+    deleteStudent(id)
+      .then(() => {
+        dispatch(getStudents())
+        resetState(modal.handleClose)()
+        showAlert("Alumno eliminado exitosamente", "success");
+      })
+      .catch((error) => {
+        showAlert(error.response.data.message, "error");
+      })
   }
 
   // ------------------------------------------------------------------------------ //
@@ -279,7 +268,7 @@ const StudentsView = () => {
       >
         {active.type === "delete" && (
           <ConfirmDelete
-            text={`${active.row.name} ${active.row.grade}° ${active.row.divition}`}
+            text={`${active.row.firstName} ${active.row.lastName}`}
             onClose={resetState(modal.handleClose)}
             onConfirm={() => handleDeleteItem(active.row)}
           />
