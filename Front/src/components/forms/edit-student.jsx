@@ -44,6 +44,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
     defaultValues: initialValues,
   });
 
+
   const handleFormSubmit = (formData) => {
     const newData = {
       ...formData,
@@ -231,9 +232,8 @@ const schema = z.object({
   ),
   grade: z.string().regex(/^\d{1}$/, "Grado inválido, debe tener 1 dígito"),
   tutors: z.array(
-    z.object({
-      label: z.string(),
-      value: z.string(),
+    z.object({      
+      value: z.number(),
     })
   ),
 });
