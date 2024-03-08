@@ -49,13 +49,6 @@ const Banns = () => {
     });
   }
 
-  // const handleConfirmCreateItem = () => {
-  //   setActive({
-  //     type: "create"
-  //   });
-  //   offcanvas.handleOpen();
-  // }
-
   const handleConfirmEditItem = (row) => {
     setActive({
       type: "edit",

@@ -7,7 +7,8 @@ export const GET_STUDENTS = 'GET_STUDENTS'
 export const GET_TUTORS_OPTIONS = 'GET_TUTORS_OPTIONS'
 export const CREATE_STUDENT = 'CREATE_STUDENT'
 export const GET_BANNS = 'GET_BANNS'
-
+export const GET_EXAMS = 'GET_EXAMS'
+export const GET_MARKS = 'GET_MARKS'
 
 
 export const setSelectedTutorsOptions = (selectedTutorsOptions) => ({
@@ -47,6 +48,32 @@ export function getBanns() {
     );
     return dispatch({
       type: GET_BANNS,
+      payload: json.data
+    });
+  };
+}
+
+export function getExams() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await AxiosInstance.get(`marks/exams/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_EXAMS,
+      payload: json.data
+    });
+  };
+}
+
+export function getMarks() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await AxiosInstance.get(`marks/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_MARKS,
       payload: json.data
     });
   };
