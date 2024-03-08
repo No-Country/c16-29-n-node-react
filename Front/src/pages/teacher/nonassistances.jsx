@@ -1,16 +1,25 @@
-import {useState, useMemo } from "react"
+import {useState, useMemo, useEffect } from "react"
 import { SimpleTable } from "../../components/SimpleTabla";
 import Offcanvas from "../../components/ui/offcanvas";
 import useDisclosure from "../../hooks/useDisclosure";
-import EditNonAssistances from "../../components/forms/teacher-edit-nonassistances";
-import { nonAttendances, students, subjects } from "../../utils/data";
-
+import EditNonAttendance from "../../components/forms/teacher-edit-nonattendance";
+import {useSelector, useDispatch } from "react-redux";
+import { fetchNonAttendances } from "../../store/slice/teacher-nonassistances-slice";
 const NonAssistances = () => {
+  const nonassistancesList = useSelector(state=> state.nonAttendances.nonAttendances);
+  const dispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(null);
   const [ active, setActive] = useState({
     type:"",
     row:{}
   })
+
+ 
+  useEffect(()=>{
+    dispatch(fetchNonAttendances())
+    console.log(nonassistancesList, "fetchnonattendances")
+  },[dispatch])
+
   const resetState = (action) => () => {
     setSelectedId(null);
     action();
@@ -19,17 +28,10 @@ const NonAssistances = () => {
       row: {}
     });
   } 
-
-  const getStudentNameById = (studentId) => {
-    const student = students.find(s => s.id === studentId);
-    return student ? student.name : 'Desconocido';
-  }
-
-  // Encuentra el nombre de la materia por ID
-  const getSubjectNameById = (subjectId) => {
-    const subject = subjects.find(s => s.id === subjectId);
-    return subject ? subject.name : 'Desconocida';
-  }
+  const typeToLabelMapping = {
+    DELAY: 'Tardanza',
+    NON_ATTENDANCE: 'Inasistencia',
+  };
   const handleConfirmEditNonAssistances = (row)=>{
     setSelectedId(row.id);
     setActive({
@@ -41,9 +43,9 @@ const NonAssistances = () => {
 
       };
 
-  const handleEditNonAssistances = async (nonassistancesData) =>{
+  const handleEditNonAssistances = async (updateNonassistancesData) =>{
     if (selectedId) {
-      const res = await dispatch(updateNonAssistances({ id: selectedId, nonassistancesData: nonassistancesData })).unwrap();
+      const res = await dispatch(updateNonAssistances({ id: selectedId, nonassistancesData:updateNonassistancesData })).unwrap();
       dispatch(getNonAssistances())
       setTimeout(() => {
         resetState(offcanvas.handleClose)();
@@ -61,17 +63,18 @@ const NonAssistances = () => {
     },
     {
       Header: "Alumno",
-      accessorFn: row => getStudentNameById(row.student_id),
-      accessorKey: "student_id"
+      accessorKey: "students",
+      accessorFn: (row)=>row.student?.fullName
     },
     {
       Header:"Materias",
-      accessorFn: row => getSubjectNameById(row.subject_id),
-      accessorKey: "subject_id"
+      accessorKey: "subject_id",
+      accessorFn: (row)=>row.subject?.fullName
     },
     {
       Header:"Tipo de Inasistencia",
-      accessorKey:"type"
+      accessorKey:"type",
+      Cell: ({ value }) => typeToLabelMapping[value] || value, 
     },
     {
       Header: "Observación",
@@ -92,19 +95,19 @@ const NonAssistances = () => {
       ),
     },
  ]
- }, [students, subjects])
+ }, [nonassistancesList])
  const offcanvas= useDisclosure();
   return (
     <div>
       <SimpleTable
        columns={columns}
-        data={nonAttendances}/>
+        data={nonassistancesList}/>
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
         title={"Editar Inasistencia"}
         >
-        <EditNonAssistances
+        <EditNonAttendance
                   onClose={resetState(offcanvas.handleClose)}
                   onSubmit={handleEditNonAssistances}
                   initialValues={active.row}

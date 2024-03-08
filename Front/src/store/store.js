@@ -5,6 +5,7 @@ import profesorReducer from "./slice/profesorSlice";
 import { subjectsReducer } from "./slice/subjectsSlice";
 import  tutorReducer  from "./slice/tutorSlice";
 import storage from "redux-persist/lib/storage";
+import teacherNonAttendancesReducer from "./slice/teacher-nonassistances-slice"
 import {
   persistReducer,
   persistStore,
@@ -39,6 +40,7 @@ const store = configureStore({
     subjects: subjectsReducer,
     students: selectReducer,
     tutorsOptions: selectReducer,
+    nonAttendances:teacherNonAttendancesReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

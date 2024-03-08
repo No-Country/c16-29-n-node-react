@@ -3,8 +3,24 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import {useState, useEffect, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSelector } from "react-redux";
 import Select from "react-select";
-const EditNonAssistances = ({ onClose, onSubmit, initialValues }) => {
+const EditNonAttendance = ({ onClose, onSubmit, initialValues }) => {
+  const nonassistancesList = useSelector(state=> state.nonAttendances.nonAttendances);
+
+
+console.log(nonassistancesList, "lista de inasistencias desde el edit")
+
+const data = [
+  {
+    value: "NONATTENDANCE",
+    label: "Inasistencia"
+  },
+  {
+    value: "DELAY",
+    label: "Tardanza"
+  }
+]
 
   const initialTypeValue = useMemo(() => {
     return initialValues.type === 'NON_ATTENDANCE'
@@ -12,28 +28,23 @@ const EditNonAssistances = ({ onClose, onSubmit, initialValues }) => {
      : { value: 'DELAY', label: 'Tardanza' };
    }, [initialValues.type]);
   const [selectedType, setSelectedType] = useState (initialTypeValue);
-  const data= [
-    {
-      value: "NONATTENDANCE",
-      label: "Inasistencia"
-    },
-    {
-      value: "DELAY",
-      label: "Tardanza"
-    }
-  ]
+
+
+  
+
+
   const handleFormSubmit = (formData) => {
       onSubmit({
          ...formData, 
          type: selectedType ? selectedType.value : 'DEFAULT_VALUE'
         });
   };
-  const { formState: { errors }, register, handleSubmit, setValue , watch} = useForm({
+  const { formState: { errors }, register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       ...initialValues,
       type: initialTypeValue,
-      note: initialValues.note // Asegúrate de que 'note' es una cadena
+      note: initialValues.note //  'note' debe ser una cadena
     }
   });
   useEffect(() => {
@@ -45,7 +56,6 @@ const EditNonAssistances = ({ onClose, onSubmit, initialValues }) => {
    
  
 console.log(errors)
-console.log(watch())
   return (
     <>
       <Offcanvas.Body>
@@ -57,7 +67,7 @@ console.log(watch())
             <Select
               options={data}
               value={selectedType} 
-              onChange={(option) =>{setSelectedType(option); setValue('type', option)}}
+              onChange={(data) =>{setSelectedType(data); setValue('type', data)}}
             />
           </div>
           <div className="flex flex-col">
@@ -82,7 +92,7 @@ console.log(watch())
   );
 };
 
-export default EditNonAssistances;
+export default EditNonAttendance;
 
 
 
