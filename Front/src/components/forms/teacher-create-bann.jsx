@@ -22,12 +22,6 @@ const data = [
 const TeacherCreateBann = ({ onClose, onSubmit }) => {
   const { formState: { errors }, register, handleSubmit, setValue, getValues } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: {
-      type: {
-        value: "WARNING",
-        label: "Advertencia"
-      }
-    }
   })
 
   return (
