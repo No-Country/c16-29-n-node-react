@@ -1,12 +1,15 @@
 import Sidebar from "../components/sidebar/Sidebar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { verify } from "../store/slice/auth";
 
 function DashboardLayout({ menues, children }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const role = useSelector((state) => state.auth.role);
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if(role.length === 0){
@@ -17,7 +20,19 @@ function DashboardLayout({ menues, children }) {
     }
   }, [role, navigate, pathname]);
 
+  useEffect(() => {
+    dispatch(verify());
+    const fiveMinutesInMiliseconds = 1000 * 60 * 5
+    const intervalId = setInterval(() => {
+      dispatch(verify());
+    }, fiveMinutesInMiliseconds);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch])
+
   const paths = pathname.split(/(\/)/).slice(4);
+
+  console.log(user);
 
   return (
     <div className="w-full h-full flex">

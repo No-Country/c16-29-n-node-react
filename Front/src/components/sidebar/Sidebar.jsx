@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slice/auth";
+
+const roles = {
+  PRINCIPAL: "directivo",
+  TEACHER: "profesor",
+  TUTOR: "tutor",
+  STUDENT: "alumno"
+}
 
 function Sidebar({ menues }) {
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
     dispatch(logout())
@@ -31,7 +39,20 @@ function Sidebar({ menues }) {
                 <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80`}>{menu.text}</span>
               </li>
             ))}
-           <li onClick={handleLogout} className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
+            {user && (
+              <>
+                <li className={'w-[calc(14rem-0.25rem)] mt-4 text-white text-sm flex flex-col gap-x-1 rounded-md pl-[calc(0.25rem+46px)]'}>
+                  <h2>Nombre</h2>
+                  <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80 capitalize`}>{user.firstName} {user.lastName}</span>
+                </li>
+                <li className={'w-[calc(14rem-0.25rem+46px)] mt-4 text-white text-sm flex flex-col gap-x-1 rounded-md pl-[calc(0.25rem+46px)]'}>
+                  <h2>Rol</h2>
+                  <span className={`${open ? "" : "opacity-0"} duration-300 tracking-wide text-base opacity-80 capitalize`}>{roles[user.role]}</span>
+                </li>
+              </>
+            )}
+           <li onClick={handleLogout} 
+            className={'text-white text-sm flex items-center gap-x-1 cursor-pointer hover:bg-violet-950 rounded-md mt-auto'}>
             <img src='/assets/logout.png' />
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>Cerrar</span>
             <span className={`${open ? "" : "opacity-0"} duration-300 text-base opacity-80`}>sesión</span>
