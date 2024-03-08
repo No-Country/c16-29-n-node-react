@@ -74,8 +74,9 @@ const SubjectView = () => {
   const columns = useMemo(() => {
     return [
       {
+        id: "alumno",
         Header: "Alumno",
-        accessorKey: "first_name"
+        accessorFn: (row) => `${row.first_name} ${row.last_name}`
       },
       {
         Header: "Acciones",

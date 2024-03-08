@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 const data = [
   {
-    value: "NONATTENDANCE",
+    value: "NON_ATTENDANCE",
     label: "Inasistencia"
   },
   {
-    value: "DELAY",
+    value: "DELAYED",
     label: "Tardanza"
   }
 ]
@@ -73,10 +73,9 @@ export default TeacherCreateNonAttendance;
 const schema = z.object({
   date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
   type: z.object({
-    label: z.string(),
     value: z.string()
   }, {
     required_error: "Requerido"
   }),
-  note: z.string().min(1, "Requerido")
+  note: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string()))
 });
