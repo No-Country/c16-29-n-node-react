@@ -11,7 +11,7 @@ import TeacherCreateMark from '../../../../components/forms/teacher-create-mark'
 import TeacherCreateNonAttendance from '../../../../components/forms/teacher-create-nonattendance';
 import TeacherCreateExam from '../../../../components/forms/teacher-create-exam';
 import { useSelector, useDispatch } from "react-redux";
-// import { createExam, fetchSubjectByFullname } from "../../../../store/slice/teacher-subject-slice";
+import { createExam, fetchSubjectByFullname } from "../../../../store/slice/teacher-subject-slice";
 
 const SubjectView = () => {
   const dispatch = useDispatch();
