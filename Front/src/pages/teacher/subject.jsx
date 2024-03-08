@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { SimpleTable } from "../../components/SimpleTabla"
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSubjects } from "../../store/slice/teacher-subject-slice";
+import { fetchSubjects } from "../../store/slice/teacher-subjects-slice";
 
 const Subject = () => {
 

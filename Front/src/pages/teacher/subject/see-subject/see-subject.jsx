@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MOCK from "../../../principal/subjects/mock"
 import { SimpleTable } from "../../../../components/SimpleTabla";
-import usePromise from "../../../../hooks/usePromise";
 import Button from '../../../../components/ui/button';
 import Offcanvas from '../../../../components/ui/offcanvas';
 import useDisclosure from '../../../../hooks/useDisclosure';
@@ -12,45 +10,40 @@ import TeacherCreateBann from '../../../../components/forms/teacher-create-bann'
 import TeacherCreateMark from '../../../../components/forms/teacher-create-mark';
 import TeacherCreateNonAttendance from '../../../../components/forms/teacher-create-nonattendance';
 import TeacherCreateExam from '../../../../components/forms/teacher-create-exam';
+import { useSelector, useDispatch } from "react-redux";
+import { createExam, fetchSubjectByFullname } from "../../../../store/slice/teacher-subject-slice";
 
 const SubjectView = () => {
+  const dispatch = useDispatch();
+  const subject = useSelector((state) => state.teacherSubject.subject);
   const [active, setActive] = useState({
     type: "",
     row: {}
   });
   const { id } = useParams();
-  const [promiseResult, isLoading, isError] = usePromise(() => {
-    const [subject, grade, divition] = id.split("_");
-    const parsedGrade = parseInt(grade.charAt(0))
-    const foundedSubject = MOCK.find((current) => 
-      current.name === subject && current.grade === parsedGrade && current.divition === divition
-    );
-    if(!foundedSubject){
-      throw new Error("No encontrado");
-    } 
-
-    return foundedSubject.students;
-  })
-  const [data, setData] = useState();
   const { handleClose, handleOpen, isOpen } = useDisclosure();
   const [selecteds, setSelecteds] = useState({});
   const hasSelecteds = Object.keys(selecteds).length === 0;
 
   useEffect(() => {
-    setData(promiseResult);
-  }, [promiseResult]);
+    const [name, grade, divition] = id.split("_");
+    dispatch(createExam())
+    dispatch(fetchSubjectByFullname({
+      name,
+      grade: grade[0],
+      divition
+    }))
+  }, [dispatch]);
 
   const resetState = (action) => () => {
     action();
-    setTimeout(() => {
-      setActive({
-        type: "",
-        row: {}
-      });
-    }, 400)
+    setActive({
+      type: "",
+      row: {}
+    });
   }
 
-  const handleRegisterNote = (row) => {
+  const handleConfirmRegisterNote = (row) => {
     setActive(
       {
         type: "Registrar Anotacion",
@@ -59,7 +52,7 @@ const SubjectView = () => {
     );
     handleOpen();
   }
-  const handleRegisterBann = (row) => {
+  const handleConfirmRegisterBann = (row) => {
     setActive(
       {
         type: "Registrar Amonestacion",
@@ -68,7 +61,7 @@ const SubjectView = () => {
     );
     handleOpen();
   }
-  const handleRegisterMark = (row) => {
+  const handleConfirmRegisterMark = (row) => {
     setActive(
       {
         type: "Registrar Calificacion",
@@ -77,19 +70,24 @@ const SubjectView = () => {
     );
     handleOpen();
   }
-  const handleRegisterNonAttendance = () => {
+  const handleConfirmRegisterNonAttendance = () => {
     setActive({
       type: "Registrar Inasistencias",
       row: {}
     });
     handleOpen();
   }
-  const handleRegisterExam = () => {
+  const handleConfirmRegisterExam = () => {
     setActive({
       type: "Registrar Evaluacion",
       row: {}
     });
     handleOpen();
+  }
+
+  const handleCreateExam = (row) => {
+    console.log(row);
+    dispatch(createExam(row))
   }
 
   const columns = useMemo(() => {
@@ -115,20 +113,20 @@ const SubjectView = () => {
       },
       {
         Header: "Alumno",
-        accessorKey: "name"
+        accessorKey: "fullName"
       },
       {
         Header: "Acciones",
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex jutify-center gap-2">
-            <button onClick={() => handleRegisterBann(original)} title='Registrar Amonestacion'>
+            <button onClick={() => handleConfirmRegisterBann(original)} title='Registrar Amonestacion'>
               <img src="/assets/bann-action.svg" alt="Registrar Amonestacion" />
             </button>
-            <button onClick={() => handleRegisterMark(original)} title='Registrar Evaluacion'>
+            <button onClick={() => handleConfirmRegisterMark(original)} title='Registrar Evaluacion'>
               <img src="/assets/exam-action.svg" alt="Registrar Evaluacion" />
             </button>
-            <button onClick={() => handleRegisterNote(original)} title='Registrar Nota'>
+            <button onClick={() => handleConfirmRegisterNote(original)} title='Registrar Nota'>
               <img src="/assets/note-action.svg" alt="Registrar Nota" />
             </button>
           </div>
@@ -137,33 +135,28 @@ const SubjectView = () => {
     ];
   }, [])
 
+  console.log(subject)
+
   return (
     <div
       className='grow flex flex-col overflow-y-auto'
     >
-      {
-        isError && <p>Hubo un error buscando la materia...</p> 
-      }
-      {
-        !isError && !isLoading && (
-          <SimpleTable 
-            columns={columns}
-            data={data ?? []}
-            filters={(
-              <button 
-                className={`flex gap-1 items-center ${!hasSelecteds ? "" : "text-gray-500"}`}
-                onClick={handleRegisterNonAttendance}
-                disabled={hasSelecteds}
-              >
-                <img className='inline-block w-4 h-4' src="/assets/non-attendance-action.svg" />
-                Inasistencia
-              </button>
-            )}
-            actions={<Button onClick={handleRegisterExam}>Crear Evaluacion</Button>}
-            onSelect={setSelecteds}
-          />
-        )
-      }
+      <SimpleTable 
+        columns={columns}
+        data={subject?.students ?? []}
+        filters={(
+          <button 
+            className={`flex gap-1 items-center ${!hasSelecteds ? "" : "text-gray-500"}`}
+            onClick={handleConfirmRegisterNonAttendance}
+            disabled={hasSelecteds}
+          >
+            <img className='inline-block w-4 h-4' src="/assets/non-attendance-action.svg" />
+            Inasistencia
+          </button>
+        )}
+        actions={<Button onClick={handleConfirmRegisterExam}>Crear Evaluacion</Button>}
+        onSelect={setSelecteds}
+      />
       <Offcanvas
         isOpen={isOpen}
         onClose={resetState(handleClose)}
@@ -195,7 +188,7 @@ const SubjectView = () => {
         )}
         { active.type === "Registrar Evaluacion" && (
           <TeacherCreateExam 
-            onSubmit={() => 1}
+            onSubmit={handleCreateExam}
             onClose={resetState(handleClose)}
           />
         )}
