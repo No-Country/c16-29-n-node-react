@@ -57,6 +57,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
     defaultValues: initialValues
   });
 
+
   const handleFormSubmit = (formData) => {
     onSubmit(formData);
   };
@@ -164,12 +165,8 @@ const schema = z.object({
   phonenumber: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
   // state: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   tutors: z.array(
-    z.object({
-      id: z.number(),
-      value: z.string(),
-      label: z.string(),
-      name: z.string(),
-      color: z.string(),
+    z.object({      
+      value: z.number(),
     })
   ).nonempty("Debe seleccionar al menos un tutor"),
 })
