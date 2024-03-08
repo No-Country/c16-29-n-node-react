@@ -19,6 +19,7 @@ import principalSubjectsSlice from "./slice/principal-subjects-slice";
 import principalSubjectSlice from "./slice/principal-subject-slice";
 import teacherSubjectsSlice from "./slice/teacher-subjects-slice";
 import teacherSubjectSlice from "./slice/teacher-subject-slice";
+import teacherNotesSlice from "./slice/teacher-notes-slice";
 
 const persisConfig =  {
   key: "auth",
@@ -37,6 +38,7 @@ const store = configureStore({
     principalSubject: principalSubjectSlice,
     teacherSubjects: teacherSubjectsSlice,
     teacherSubject: teacherSubjectSlice,
+    teacherNotes: teacherNotesSlice,
     tutor: tutorReducer,
     subjects: subjectsReducer,
     students: selectReducer,
