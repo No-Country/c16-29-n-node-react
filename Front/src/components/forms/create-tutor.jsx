@@ -3,36 +3,17 @@ import Offcanvas from "../ui/offcanvas";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SelectWithFilters from "../SelectWithFilters";
-import {
-  getTutorsOptions,
-  setSelectedTutorsOptions,
-} from "../../actions/actions";
+import SelectWithFilter from "../../components/SelectWithFilters";
 import { useDispatch, useSelector } from "react-redux";
+import { setSelectedOptions } from "../../actions/actions";
+import { getStudents } from "../../store/slice/tutorSlice";
 
-const EditStudent = ({ onClose, onSubmit, initialValues }) => {
-  // Estados
-
-  const selectedTutorsOptions = useSelector(
-    (state) => state.tutorsOptions.selectedTutorsOptions
-  );
+const CreateTutor = ({ onClose, onSubmit }) => {
+  // const students = useSelector(state=>state.students.students || []);
+  const students = useSelector((state) => state.tutor.students || []);
+  const isStudentsLoaded = Array.isArray(students) && students.length > 0;
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
   const dispatch = useDispatch();
-  const tutorsFetchOptions = useSelector(
-    (state) => state.tutorsOptions.tutorsOptions
-  );
-
-  const handleSelectChange = (selectedTutorsOptions) => {
-    dispatch(setSelectedTutorsOptions(selectedTutorsOptions));
-  };
-
-  useEffect(() => {
-    dispatch(getTutorsOptions());
-    dispatch(setSelectedTutorsOptions(initialValues.tutors));
-  }, [dispatch]);
-
-  // ------------------------------------------------------------------------------ //
-  // ------------------------------------------------------------------------------ //
-  // ------------------------------------------------------------------------------ //
 
   const {
     formState: { errors },
@@ -41,21 +22,49 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
     setValue,
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
   });
 
+  useEffect(() => {
+    dispatch(getStudents());
+  }, [dispatch]);
 
-  const handleFormSubmit = (formData) => {
-    const newData = {
-      ...formData,
-      id: initialValues.id,
-    };
-    onSubmit(newData);
+  const handleSelectChange = (selectedOptions) => {
+    dispatch(setSelectedOptions(selectedOptions));
   };
 
+  const options = students.map((students) => ({
+    value: students.id,
+    label: students.label,
+    color: students.color,
+  }));
+
+  //   const [options, setOptions] = useState([
+  //     {
+  //       id: 1,
+  //       value: "ocean",
+  //       label: "Bart Simpson",
+  //       name: "Bart Simpson",
+  //       color: "#00B8D9",
+  //     },
+  //     {
+  //       id: 2,
+  //       value: "orange",
+  //       label: "Lisa Simpson",
+  //       name: "Lisa Simpson",
+  //       color: "#FF8B00",
+  //     },
+  //     {
+  //       id: 3,
+  //       value: "forest",
+  //       label: "Homero Simpson",
+  //       name: "Homero Simpson",
+  //       color: "#00875A",
+  //     },
+  //   ]);
+
   useEffect(() => {
-    setValue("tutors", selectedTutorsOptions);
-  }, [selectedTutorsOptions, setValue]);
+    setValue("students", selectedOptions);
+  }, [selectedOptions, setValue]);
 
   return (
     <>
@@ -66,7 +75,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               Nombre
             </label>
             <input
-              {...register("firstName")}
+              {...register("firstName", { required: "El nombre es requerido" })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.firstName ? "border-red-500" : "rounded"
               }`}
@@ -78,17 +87,19 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
             )}
           </div>
           <div className="flex flex-col">
-            <label htmlFor="lastName" className="text-base font-medium">
+            <label htmlFor="lastname" className="text-base font-medium">
               Apellido
             </label>
             <input
-              {...register("lastName")}
+              {...register("lastname", {
+                required: "El apellido es requerido",
+              })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
-                errors?.lastName ? "border-red-500" : "rounded"
+                errors?.lastname ? "border-red-500" : "rounded"
               }`}
             />
-            {errors?.lastName && (
-              <p className="text-red-500 text-xs">{errors?.lastName.message}</p>
+            {errors?.lastname && (
+              <p className="text-red-500 text-xs">{errors?.lastname.message}</p>
             )}
           </div>
           <div className="flex flex-col">
@@ -96,7 +107,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               Usuario
             </label>
             <input
-              {...register("username")}
+              {...register("username", { required: "El usuario es requerido" })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.username ? "border-red-500" : "rounded"
               }`}
@@ -110,7 +121,10 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               Contraseña
             </label>
             <input
-              {...register("password")}
+              type="password"
+              {...register("password", {
+                required: "El passoword es requerido",
+              })}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.password ? "border-red-500" : "rounded"
               }`}
@@ -147,54 +161,48 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               <p className="text-red-500 text-xs">{errors?.phone.message}</p>
             )}
           </div>
-          <div className="flex flex-col">
-            <label htmlFor="grade" className="text-base font-medium">
-              Grado
-            </label>
-            <input
-              {...register("grade")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
-                errors?.grade ? "border-red-500" : "rounded"
-              }`}
-            />
-            {errors?.grade && (
-              <p className="text-red-500 text-xs">{errors?.grade.message}</p>
-            )}
-          </div>
           <div>
-            <label htmlFor="tutors" className="text-base font-medium">
-              Tutores Asociados
+            <label htmlFor="students" className="text-base font-medium">
+              Alumnos Asociados
             </label>
-            <SelectWithFilters
-              data={tutorsFetchOptions}
-              selectedOptions={selectedTutorsOptions}
+            {isStudentsLoaded ? (
+              <SelectWithFilter
+                //   id="students"
+                data={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={handleSelectChange}
+              />
+            ) : (
+              <p>Cargando studiantes ....</p>
+            )}
+            {/* <SelectWithFilter
+              data={options}
+              selectedOptions={selectedOptions}
               setSelectedOptions={handleSelectChange}
-            />
-            {errors?.tutors && (
-              <p className="text-red-500 text-xs">{errors?.tutors.message}</p>
+            /> */}
+            {errors?.students && (
+              <p className="text-red-500 text-xs">{errors?.students.message}</p>
             )}
           </div>
         </div>
       </Offcanvas.Body>
       <Offcanvas.Footer
-        text={"Asignar"}
-        onSubmit={handleSubmit(handleFormSubmit)}
+        text={"Crear"}
+        onSubmit={handleSubmit(onSubmit)}
         onClose={onClose}
       />
     </>
   );
 };
 
-export default EditStudent;
-
-// Validaciones
+export default CreateTutor;
 
 const schema = z.object({
   firstName: z
     .string()
     .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  lastName: z
+  lastname: z
     .string()
     .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
@@ -202,22 +210,17 @@ const schema = z.object({
     .string()
     .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  password: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.optional(
-      z
-        .string()
-        .min(6, "Debe contener al menos 6 caracteres")
-        .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico")
-    )
-  ),
+  password: z
+    .string()
+    .min(3, "Debe contener al menos 3 caracteres")
+    .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
   email: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z.optional(
       z
         .string()
         .regex(
-          /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+          /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
           "Dirección de correo electrónico inválida"
         )
     )
@@ -230,14 +233,10 @@ const schema = z.object({
         .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos")
     )
   ),
-  grade: z.string().regex(/^\d{1}$/, "Grado inválido, debe tener 1 dígito"),
-  tutors: z.array(
-    z.object({      
+  students: z.array(
+    z.object({
       value: z.number(),
+      label: z.string(),
     })
   ),
 });
-
-// ------------------------------------------------------------------------------ //
-// ------------------------------------------------------------------------------ //
-// ------------------------------------------------------------------------------ //

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Offcanvas from "../ui/offcanvas";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectWithFilter from "../../components/SelectWithFilters";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedOptions } from "../../actions/actions";
+import { getTutorsOptions, setSelectedTutorsOptions } from "../../actions/actions";
 
 const CreateStudent = ({ onClose, onSubmit }) => {
 
@@ -13,64 +13,45 @@ const CreateStudent = ({ onClose, onSubmit }) => {
     resolver: zodResolver(schema),
   });
 
-  const selectedOptions = useSelector((state) => state.select.selectedOptions);
   const dispatch = useDispatch();
+  const tutorsOptions = useSelector((state) => state.tutorsOptions.tutorsOptions);
+  const selectedTutorsOptions = useSelector((state) => state.tutorsOptions.selectedTutorsOptions);
 
-  const handleSelectChange = (selectedOptions) => {
-    dispatch(setSelectedOptions(selectedOptions));
+  const handleSelectChange = (selectedTutorsOptions) => {
+    dispatch(setSelectedTutorsOptions(selectedTutorsOptions));
   };
 
-  const [options, setOptions] = useState([
-    {
-      id: 1,
-      value: "ocean",
-      label: "Bart Simpson",
-      name: "Bart Simpson",
-      color: "#00B8D9",
-    },
-    {
-      id: 2,
-      value: "orange",
-      label: "Lisa Simpson",
-      name: "Lisa Simpson",
-      color: "#FF8B00",
-    },
-    {
-      id: 3,
-      value: "forest",
-      label: "Homero Simpson",
-      name: "Homero Simpson",
-      color: "#00875A",
-    },
-  ]);
+  useEffect(() => {
+    dispatch(getTutorsOptions())
+  }, [])
 
   useEffect(() => {
-    setValue("tutors", selectedOptions)
-  }, [selectedOptions])
+    setValue("tutors", selectedTutorsOptions)
+  }, [selectedTutorsOptions])
 
   return (
     <>
       <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-base font-medium">
+            <label htmlFor="firstName" className="text-base font-medium">
               Nombre
             </label>
             <input
-              {...register("name")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.name ? 'border-red-500' : 'rounded'}`}
+              {...register("firstName")}
+              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.firstName ? 'border-red-500' : 'rounded'}`}
             />
-            {errors?.name && <p className="text-red-500 text-xs">{errors?.name.message}</p>}
+            {errors?.firstName && <p className="text-red-500 text-xs">{errors?.firstName.message}</p>}
           </div>
           <div className="flex flex-col">
             <label htmlFor="lastname" className="text-base font-medium">
               Apellido
             </label>
             <input
-              {...register("lastname")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.lastname ? 'border-red-500' : 'rounded'}`}
+              {...register("lastName")}
+              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.lastName ? 'border-red-500' : 'rounded'}`}
             />
-            {errors?.lastname && <p className="text-red-500 text-xs">{errors?.lastname.message}</p>}
+            {errors?.lastName && <p className="text-red-500 text-xs">{errors?.lastName.message}</p>}
           </div>
           <div className="flex flex-col">
             <label htmlFor="username" className="text-base font-medium">
@@ -107,18 +88,28 @@ const CreateStudent = ({ onClose, onSubmit }) => {
               Celular
             </label>
             <input
-              {...register("phonenumber")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.phonenumber ? 'border-red-500' : 'rounded'}`}
+              {...register("phone")}
+              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.phone ? 'border-red-500' : 'rounded'}`}
             />
-            {errors?.phonenumber && <p className="text-red-500 text-xs">{errors?.phonenumber.message}</p>}
+            {errors?.phone && <p className="text-red-500 text-xs">{errors?.phone.message}</p>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="grade" className="text-base font-medium">
+              Grado
+            </label>
+            <input
+              {...register("grade")}
+              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.grade ? 'border-red-500' : 'rounded'}`}
+            />
+            {errors?.grade && <p className="text-red-500 text-xs">{errors?.grade.message}</p>}
           </div>
           <div>
             <label htmlFor="tutors" className="text-base font-medium">
               Tutores Asociados
             </label>
             <SelectWithFilter
-              data={options}
-              selectedOptions={selectedOptions}
+              data={tutorsOptions}
+              selectedOptions={selectedTutorsOptions}
               setSelectedOptions={handleSelectChange}
             />
             {errors?.tutors && <p className="text-red-500 text-xs">{errors?.tutors.message}</p>}
@@ -136,23 +127,17 @@ const CreateStudent = ({ onClose, onSubmit }) => {
 
 export default CreateStudent;
 
-
 const schema = z.object({
-  name: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  lastname: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  firstName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  lastName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   username: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
   password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  // password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Debe ser alfanumérico y contener al menos 1 letra minúscula, 1 letra mayúscula, 1 dígito, 1 carácter especial, y tener una longitud mínima de 8 caracteres"),
-  email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
-  phonenumber: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-  // state: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  email: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"))),
+  phone: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"))),
+  grade: z.string().regex(/^\d{1}$/, "Grado inválido debe tener 1 dígito"),
   tutors: z.array(
     z.object({
-      id: z.number(),
-      value: z.string(),
-      label: z.string(),
-      name: z.string(),
-      color: z.string(),
+      value: z.number(),
     })
-  ).nonempty("Debe seleccionar al menos un tutor"),
+  )
 })

@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from "../../utils/axios";
-
+import { getAccessToken } from '../../utils/access-token';
 
 export const getSubjects = createAsyncThunk(
   'subjects/getSubjects',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await AxiosInstance.get('/subjects');
+      const token = getAccessToken();
+      const response = await AxiosInstance.get('/subjects', { headers:{"X-Access-Token": token}});
       return response.data; 
     } catch (error) {
       return rejectWithValue(error.response.data);

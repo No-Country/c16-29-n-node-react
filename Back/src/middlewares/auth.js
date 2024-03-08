@@ -11,8 +11,10 @@ export const verifyToken = (req, res, next) => {
     return res.status(403).send("No se ha enviado el token de autenticación");
   }
 
+  const parse = token.replaceAll("\"", "")
+
   try {
-    const decoded = jwt.verify(token, TOKEN_KEY);
+    const decoded = jwt.verify(parse, TOKEN_KEY);
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Token inválido");

@@ -1,61 +1,43 @@
-import { useEffect } from "react";
 import Offcanvas from "../ui/offcanvas";
+// import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SelectWithFilters from "../SelectWithFilters";
-import {
-  getTutorsOptions,
-  setSelectedTutorsOptions,
-} from "../../actions/actions";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { getStudents } from "../../store/slice/tutorSlice";
+import { setSelectedOptions } from "../../actions/actions";
+import SelectWithFilter from "../../components/SelectWithFilters";
 
-const EditStudent = ({ onClose, onSubmit, initialValues }) => {
-  // Estados
-
-  const selectedTutorsOptions = useSelector(
-    (state) => state.tutorsOptions.selectedTutorsOptions
-  );
+const EditTutor = ({ onClose, onSubmit, initialValues }) => {
+  const students = useSelector((state) => state.tutor.students || []);
+  const isStudentsLoaded = Array.isArray(students) && students.length > 0;
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
   const dispatch = useDispatch();
-  const tutorsFetchOptions = useSelector(
-    (state) => state.tutorsOptions.tutorsOptions
-  );
-
-  const handleSelectChange = (selectedTutorsOptions) => {
-    dispatch(setSelectedTutorsOptions(selectedTutorsOptions));
-  };
-
-  useEffect(() => {
-    dispatch(getTutorsOptions());
-    dispatch(setSelectedTutorsOptions(initialValues.tutors));
-  }, [dispatch]);
-
-  // ------------------------------------------------------------------------------ //
-  // ------------------------------------------------------------------------------ //
-  // ------------------------------------------------------------------------------ //
 
   const {
     formState: { errors },
     register,
     handleSubmit,
-    setValue,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   });
 
+  useEffect(() => {
+    dispatch(getStudents());
+    dispatch(setSelectedOptions(initialValues.students));
+  }, []);
 
-  const handleFormSubmit = (formData) => {
-    const newData = {
-      ...formData,
-      id: initialValues.id,
-    };
-    onSubmit(newData);
+  const handleSelectChange = (selectedOptions) => {
+    dispatch(setSelectedOptions(selectedOptions));
   };
 
-  useEffect(() => {
-    setValue("tutors", selectedTutorsOptions);
-  }, [selectedTutorsOptions, setValue]);
+  const options = students.map((students) => ({
+    value: students.id,
+    label: students.label,
+    color: students.color,
+  }));
 
   return (
     <>
@@ -110,6 +92,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               Contraseña
             </label>
             <input
+              type="password"
               {...register("password")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.password ? "border-red-500" : "rounded"
@@ -147,49 +130,49 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               <p className="text-red-500 text-xs">{errors?.phone.message}</p>
             )}
           </div>
-          <div className="flex flex-col">
-            <label htmlFor="grade" className="text-base font-medium">
-              Grado
-            </label>
-            <input
-              {...register("grade")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
-                errors?.grade ? "border-red-500" : "rounded"
-              }`}
-            />
-            {errors?.grade && (
-              <p className="text-red-500 text-xs">{errors?.grade.message}</p>
-            )}
-          </div>
           <div>
-            <label htmlFor="tutors" className="text-base font-medium">
-              Tutores Asociados
+            <label htmlFor="students" className="text-base font-medium">
+              Alumno Asociado
             </label>
-            <SelectWithFilters
-              data={tutorsFetchOptions}
-              selectedOptions={selectedTutorsOptions}
-              setSelectedOptions={handleSelectChange}
-            />
-            {errors?.tutors && (
-              <p className="text-red-500 text-xs">{errors?.tutors.message}</p>
+            {isStudentsLoaded ? (
+              <SelectWithFilter
+                //   id="students"
+                data={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={handleSelectChange}
+              />
+            ) : (
+              <p>Cargando studiantes ....</p>
+            )}
+            {/* <Select
+              id="students"
+              onChange={handleStudentChange}
+              defaultValue={selectedStudents}
+              options={data}
+            ></Select> */}
+            {errors?.students && (
+              <p className="text-red-500 text-xs">{errors?.students.message}</p>
             )}
           </div>
         </div>
       </Offcanvas.Body>
       <Offcanvas.Footer
-        text={"Asignar"}
-        onSubmit={handleSubmit(handleFormSubmit)}
+        text={"Actualizar"}
+        onSubmit={handleSubmit(onSubmit)}
         onClose={onClose}
       />
     </>
   );
 };
 
-export default EditStudent;
+export default EditTutor;
 
-// Validaciones
+const studentSchema = z.object({
+  value: z.number(),
+});
 
 const schema = z.object({
+  id: z.number(),
   firstName: z
     .string()
     .min(3, "Debe contener al menos 3 caracteres")
@@ -213,11 +196,12 @@ const schema = z.object({
   ),
   email: z.preprocess(
     (value) => (value === "" ? undefined : value),
+
     z.optional(
       z
         .string()
         .regex(
-          /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+          /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
           "Dirección de correo electrónico inválida"
         )
     )
@@ -230,14 +214,5 @@ const schema = z.object({
         .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos")
     )
   ),
-  grade: z.string().regex(/^\d{1}$/, "Grado inválido, debe tener 1 dígito"),
-  tutors: z.array(
-    z.object({      
-      value: z.number(),
-    })
-  ),
+  students: z.array(studentSchema),
 });
-
-// ------------------------------------------------------------------------------ //
-// ------------------------------------------------------------------------------ //
-// ------------------------------------------------------------------------------ //

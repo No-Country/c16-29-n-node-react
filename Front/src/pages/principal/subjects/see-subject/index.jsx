@@ -1,50 +1,81 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MOCK from "../mock"
 import { SimpleTable } from "../../../../components/SimpleTabla";
-import usePromise from "../../../../hooks/usePromise";
 import Button from '../../../../components/ui/button';
 import Offcanvas from '../../../../components/ui/offcanvas';
 import useDisclosure from '../../../../hooks/useDisclosure';
 import AssignStudents from "../../../../components/forms/assign-students";
+import { useSelector, useDispatch } from "react-redux";
+import { assignStudents, deassignStudent, fetchSubjectByFullname, hideAlert, resetStates } from '../../../../store/slice/principal-subject-slice';
+import Alert from '../../../../components/Alert';
 
 const SubjectView = () => {
   const { id } = useParams();
-  const [promiseResult, isLoading, isError] = usePromise(() => {
-    const [subject, grade, divition] = id.split("_");
-    const parsedGrade = parseInt(grade.charAt(0))
-    const foundedSubject = MOCK.find((current) => 
-      current.name === subject && current.grade === parsedGrade && current.divition === divition
-    );
-    if(!foundedSubject){
-      throw new Error("No encontrado");
-    } 
-
-    return foundedSubject.students;
-  })
-  const [data, setData] = useState();
-  const { handleClose, handleOpen, isOpen } = useDisclosure();
+  const [ alert, setAlert ] = useState({
+    message: "",
+    type: ""
+  });
+  const dispatch = useDispatch()
+  const stateFetching = useSelector((state) => state.principalSubject.stateFetching);
+  const stateUpdating = useSelector((state) => state.principalSubject.stateUpdating);
+  const stateDeleting = useSelector((state) => state.principalSubject.stateDeleting);
+  const alertMessage = useSelector((state) => state.principalSubject.alertMessage);
+  const alertType = useSelector((state) => state.principalSubject.alertType);
+  const subject = useSelector((state) => state.principalSubject.subject);
 
   useEffect(() => {
-    setData(promiseResult);
-  }, [promiseResult]);
+    if (
+      !stateFetching.isLoading &&
+      !stateUpdating.isLoading &&
+      !stateDeleting.isLoading
+    ) {
+      const [subject, grade, divition] = id.split("_");
+      const status = [stateFetching, stateUpdating, stateDeleting];
+      if (status.some(({ status }) => status === "rejected")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        console.log(status);
+      } else if (status.some(({ status }) => status === "completed")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        handleClose();
+      }
+      dispatch(fetchSubjectByFullname({
+        name: subject,
+        grade: grade[0],
+        divition
+      }));
+      dispatch(hideAlert());
+    }
+  }, [dispatch, stateFetching, stateUpdating, stateDeleting]);
+  const { handleClose, handleOpen, isOpen } = useDisclosure();
+
 
   const handleDeleteStudent = (id) => {
-    setData((data) => data.filter((student) => student.id !== id));
+    dispatch(deassignStudent({
+      subject: subject.id,
+      user: id
+    }))
   }
 
   const handleAssignStudent = (selected) => {
-    setData((data) => data.concat(selected.map((student) => ({
-      id: student.value,
-      name: student.label
-    }))));
+    dispatch(assignStudents({
+      id: subject.id,
+      data: selected.map((option) => option.value)
+    }))
   }
 
   const columns = useMemo(() => {
     return [
       {
         Header: "Alumno",
-        accessorKey: "name"
+        accessorKey: "first_name"
       },
       {
         Header: "Acciones",
@@ -64,18 +95,22 @@ const SubjectView = () => {
     <div
       className='grow overflow-y-auto'
     >
-      {
-        isError && <p>Hubo un error buscando la materia...</p> 
-      }
-      {
-        !isError && !isLoading && (
-          <SimpleTable 
-            columns={columns}
-            data={data ?? []}
-            actions={<Button onClick={handleOpen}>Asignar Alumnos</Button>}
-          />
-        )
-      }
+       {alert.message && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
+            />
+          </div>
+        </div>
+      )}
+      <SimpleTable 
+        columns={columns}
+        data={subject?.students ?? []}
+        actions={<Button onClick={handleOpen}>Asignar Alumnos</Button>}
+      />
       <Offcanvas
         isOpen={isOpen}
         onClose={handleClose}
@@ -84,7 +119,7 @@ const SubjectView = () => {
         <AssignStudents
           key={Math.random()}
           onClose={handleClose} 
-          assigneds={data ?? []}
+          assigneds={[]}
           onSubmit={handleAssignStudent}
         />
       </Offcanvas>
