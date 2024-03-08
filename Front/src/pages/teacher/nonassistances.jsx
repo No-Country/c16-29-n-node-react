@@ -4,8 +4,11 @@ import Offcanvas from "../../components/ui/offcanvas";
 import useDisclosure from "../../hooks/useDisclosure";
 import EditNonAttendance from "../../components/forms/teacher-edit-nonattendance";
 import {useSelector, useDispatch } from "react-redux";
-import { fetchNonAttendances } from "../../store/slice/teacher-nonassistances-slice";
+import { deleteNonAttendaces, fetchNonAttendances, updateNonAttendaces } from "../../store/slice/teacher-nonassistances-slice";
+import Modal from "../../components/ui/modal";
+import ConfirmDelete from "../../components/modals/confirm-delete";
 const NonAssistances = () => {
+  const modal = useDisclosure();
   const nonassistancesList = useSelector(state=> state.nonAttendances.nonAttendances);
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(null);
@@ -17,7 +20,6 @@ const NonAssistances = () => {
  
   useEffect(()=>{
     dispatch(fetchNonAttendances())
-    console.log(nonassistancesList, "fetchnonattendances")
   },[dispatch])
 
   const resetState = (action) => () => {
@@ -29,7 +31,7 @@ const NonAssistances = () => {
     });
   } 
   const typeToLabelMapping = {
-    DELAY: 'Tardanza',
+    DELAYED: 'Tardanza',
     NON_ATTENDANCE: 'Inasistencia',
   };
   const handleConfirmEditNonAssistances = (row)=>{
@@ -39,22 +41,41 @@ const NonAssistances = () => {
       row,
     });
     offcanvas.handleOpen();
-    console.log("Editando inasistencias desde el index:", row);
-
       };
 
-  const handleEditNonAssistances = async (updateNonassistancesData) =>{
+  const handleEditNonAttendances = async (updateNonassistancesData) =>{
     if (selectedId) {
-      const res = await dispatch(updateNonAssistances({ id: selectedId, nonassistancesData:updateNonassistancesData })).unwrap();
-      dispatch(getNonAssistances())
-      setTimeout(() => {
-        resetState(offcanvas.handleClose)();
-      }, 100)
-    } else {
-      console.error("No se ha seleccionado ningún tipo de inasistencia");
-    }
+        try{
+            await dispatch(updateNonAttendaces({ id: selectedId, nonAttendancesData:updateNonassistancesData })).unwrap();
+             dispatch(fetchNonAttendances())
+          } catch(error) {
+      console.error("Error al actualizar la inasistencia", error);
+         }
+          finally{
+            setTimeout(() => {
+              resetState(offcanvas.handleClose)();
+            }, 100)
+          }
+  }else{
+    console.error("No se ha seleccionado ningún tipo de inasistencia");
+  }}
 
+  const handleConfirmDeleteNonAttendances=(row)=>{
+    setActive({
+      type: "delete",
+      row
+    });
+    modal.handleOpen();
   }
+  const handleDeleteNonAttendances = async()=>{
+    if (active && active.type === "delete" && active.row.id) {
+      try {
+        await dispatch(deleteNonAttendaces(active.row.id)); 
+        modal.handleClose(); 
+      } catch (error) {
+        console.error(error);
+      }
+  }}
  const columns = useMemo(()=>{
   return [
     {
@@ -67,14 +88,14 @@ const NonAssistances = () => {
       accessorFn: (row)=>row.student?.fullName
     },
     {
-      Header:"Materias",
+      Header:"Materia",
       accessorKey: "subject_id",
       accessorFn: (row)=>row.subject?.fullName
     },
     {
       Header:"Tipo de Inasistencia",
       accessorKey:"type",
-      Cell: ({ value }) => typeToLabelMapping[value] || value, 
+      accessorFn: (row) => typeToLabelMapping[row.type] || row.type,
     },
     {
       Header: "Observación",
@@ -88,7 +109,7 @@ const NonAssistances = () => {
           <button onClick={() => handleConfirmEditNonAssistances(original)}>
             <img src="/assets/edit.svg" alt="editar inasitencia" />
           </button>
-          <button onClick={() => handleConfirmDeleteNonAssistances(original)}>
+          <button onClick={() => handleConfirmDeleteNonAttendances(original)}>
             <img src="/assets/trash.svg" alt="eliminar inasistencia" />
           </button>
         </div>
@@ -105,15 +126,26 @@ const NonAssistances = () => {
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
-        title={"Editar Inasistencia"}
+        title={"Editar asistencia"}
         >
         <EditNonAttendance
                   onClose={resetState(offcanvas.handleClose)}
-                  onSubmit={handleEditNonAssistances}
+                  onSubmit={handleEditNonAttendances}
                   initialValues={active.row}
                 />
       </Offcanvas>
-    
+      <Modal
+          isOpen={modal.isOpen}
+          onClose={modal.handleClose}
+      >
+      {active.type === "delete" && (
+        <ConfirmDelete 
+          text={`${active.row.student.fullName}`}
+          onClose={resetState(modal.handleClose)}
+          onConfirm={()=>handleDeleteNonAttendances(active.row)}
+        />
+      )}   
+      </Modal>
     </div>
   )
 }
