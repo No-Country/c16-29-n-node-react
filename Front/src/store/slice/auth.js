@@ -67,7 +67,7 @@ const authSlice = createSlice({
       .addCase(verify.rejected, (state) => {
         state.role = initialState.role;
         state.accessToken = initialState.accessToken;
-        state.status = initialState.status;
+        state.status = "disconnected";
         state.user = initialState.user;
       });
   }

@@ -9,7 +9,6 @@ function DashboardLayout({ menues, children }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const role = useSelector((state) => state.auth.role);
-  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if(role.length === 0){

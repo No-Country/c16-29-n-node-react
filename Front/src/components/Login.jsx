@@ -28,6 +28,13 @@ export const Login = () => {
       });
       dispatch(resetStatus());
     }
+    if (status === "disconnected") {
+      setAlert({
+        message: "Se terminó el tiempo limite de sesion, se redirigio al inicio",
+        type: "error",
+      });
+      dispatch(resetStatus());
+    }
   }, [dispatch, status]);
 
   useEffect(() => {
