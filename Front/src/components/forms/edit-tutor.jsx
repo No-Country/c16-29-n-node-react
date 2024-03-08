@@ -10,30 +10,34 @@ import { setSelectedOptions } from "../../actions/actions";
 import SelectWithFilter from "../../components/SelectWithFilters";
 
 const EditTutor = ({ onClose, onSubmit, initialValues }) => {
-  const students = useSelector(state=>state.tutor.students || []);
+  const students = useSelector((state) => state.tutor.students || []);
   const isStudentsLoaded = Array.isArray(students) && students.length > 0;
-  const selectedOptions = useSelector((state) => state.select.selectedOptions); 
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
   const dispatch = useDispatch();
 
-  const {formState: { errors }, register, handleSubmit } = useForm({
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
-});
+  });
 
-useEffect(()=> {
-  dispatch(getStudents())
-  dispatch(setSelectedOptions(initialValues.students))
-},[])
+  useEffect(() => {
+    dispatch(getStudents());
+    dispatch(setSelectedOptions(initialValues.students));
+  }, []);
 
-const handleSelectChange = (selectedOptions) => {
-  dispatch(setSelectedOptions(selectedOptions));
-};
+  const handleSelectChange = (selectedOptions) => {
+    dispatch(setSelectedOptions(selectedOptions));
+  };
 
-const options = students.map(students => ({
-  value: students.id,
-  label: students.label,
-  color: students.color,
-}));
+  const options = students.map((students) => ({
+    value: students.id,
+    label: students.label,
+    color: students.color,
+  }));
 
   return (
     <>
@@ -50,7 +54,9 @@ const options = students.map(students => ({
               }`}
             />
             {errors?.firstName && (
-              <p className="text-red-500 text-xs">{errors?.firstName.message}</p>
+              <p className="text-red-500 text-xs">
+                {errors?.firstName.message}
+              </p>
             )}
           </div>
           <div className="flex flex-col">
@@ -107,9 +113,7 @@ const options = students.map(students => ({
               }`}
             />
             {errors?.email && (
-              <p className="text-red-500 text-xs">
-                {errors?.email.message}
-              </p>
+              <p className="text-red-500 text-xs">{errors?.email.message}</p>
             )}
           </div>
           <div className="flex flex-col">
@@ -131,15 +135,15 @@ const options = students.map(students => ({
               Alumno Asociado
             </label>
             {isStudentsLoaded ? (
-                <SelectWithFilter 
+              <SelectWithFilter
                 //   id="students"
-                  data={options}
-                  selectedOptions={selectedOptions}
-                  setSelectedOptions={handleSelectChange}
-                />
-          ) : ( 
-            <p>Cargando studiantes ....</p>
-          )}
+                data={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={handleSelectChange}
+              />
+            ) : (
+              <p>Cargando studiantes ....</p>
+            )}
             {/* <Select
               id="students"
               onChange={handleStudentChange}
@@ -165,16 +169,50 @@ export default EditTutor;
 
 const studentSchema = z.object({
   value: z.number(),
-  label: z.string(),  
 });
 
 const schema = z.object({
   id: z.number(),
-  firstName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  lastName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  username: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  // password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  email: z.string().regex(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
-  phone: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-  students: z.array(studentSchema), 
+  firstName: z
+    .string()
+    .min(3, "Debe contener al menos 3 caracteres")
+    .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  lastName: z
+    .string()
+    .min(3, "Debe contener al menos 3 caracteres")
+    .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  username: z
+    .string()
+    .min(3, "Debe contener al menos 3 caracteres")
+    .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
+  password: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.optional(
+      z
+        .string()
+        .min(6, "Debe contener al menos 6 caracteres")
+        .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico")
+    )
+  ),
+  email: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+
+    z.optional(
+      z
+        .string()
+        .regex(
+          /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+          "Dirección de correo electrónico inválida"
+        )
+    )
+  ),
+  phone: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.optional(
+      z
+        .string()
+        .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos")
+    )
+  ),
+  students: z.array(studentSchema),
 });
