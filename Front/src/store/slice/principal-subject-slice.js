@@ -170,7 +170,7 @@ const principalSubjectsSlice = createSlice({
       .addCase(fetchStudents.fulfilled, (state, action) => {
         state.isLoading = false;
         state.allStudents = action.payload.filter((student) => 
-          !state.subject?.students.find((current) => current.id === student.id)
+          !state.subject?.students?.find?.((current) => current.id === student.id)
         ).map(({id, firstName, lastName}) => ({
           value: id,
           label: `${firstName} ${lastName}`

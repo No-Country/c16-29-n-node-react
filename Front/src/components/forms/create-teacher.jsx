@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { setSelectedOptions } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
 const CreateTeacherForm = ({onClose, onSubmit}) =>{
+
     const subjects = useSelector(state=>state.subjects.subjects || []);
     const isSubjectsLoaded = Array.isArray(subjects) && subjects.length > 0;
     const selectedOptions = useSelector((state) => state.select.selectedOptions);
@@ -114,10 +115,10 @@ export default CreateTeacherForm;
 const schema = z.object({
     first_name: z.string().min(6, "El nombre es obligatorio").refine(isAlphabetic, "El nombre debe ser alfabético"),
     last_name: z.string().min(1, "El apellido es obligatorio").refine(isAlphabetic, "El apellido debe ser alfabético"),
-    email: z.string().optional().refine(isValidEmail,"Debe ser un correo válido"),
+    email: z.optional(z.string().optional().refine(isValidEmail,"Debe ser un correo válido")),
     username: z.string().min(6, "El usuario es obligatorio").refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
     password: z.string().min(6, "La contraseña es obligatoria").refine(isValidPassword, "La contraseña no es válida"),
-    phone: z.string().optional().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos"),
+    phone: z.optional(z.string().refine(isValidPhone, "Número de teléfono inválido, debe tener 10 dígitos")),
     subjects: z.array(z.object({
       value: z.number(),
     })).optional(),

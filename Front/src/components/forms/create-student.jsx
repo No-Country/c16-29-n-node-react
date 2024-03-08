@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Offcanvas from "../ui/offcanvas";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -132,13 +132,12 @@ const schema = z.object({
   lastName: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   username: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
   password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  // password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,12}$/, "Debe ser alfanumérico y contener al menos 1 letra minúscula, 1 letra mayúscula, 1 dígito, 1 carácter especial, y tener una longitud mínima de 6 caracteres y máxima de 12 caracteres"),
-  email: z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"),
-  phone: z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
+  email: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Dirección de correo electrónico inválida"))),
+  phone: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string().regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"))),
   grade: z.string().regex(/^\d{1}$/, "Grado inválido debe tener 1 dígito"),
-  // tutors: z.array(
-  //   z.object({
-  //     id: z.number(),
-  //   })
-  // ).nonempty("Debe seleccionar al menos un tutor"),
+  tutors: z.array(
+    z.object({
+      value: z.number(),
+    })
+  )
 })

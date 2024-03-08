@@ -16,7 +16,6 @@ const SubjectView = () => {
     type: ""
   });
   const dispatch = useDispatch()
-  const subjectId = useSelector((state) => state.principalSubject.id);
   const stateFetching = useSelector((state) => state.principalSubject.stateFetching);
   const stateUpdating = useSelector((state) => state.principalSubject.stateUpdating);
   const stateDeleting = useSelector((state) => state.principalSubject.stateDeleting);
@@ -60,14 +59,14 @@ const SubjectView = () => {
 
   const handleDeleteStudent = (id) => {
     dispatch(deassignStudent({
-      subject: subjectId,
+      subject: subject.id,
       user: id
     }))
   }
 
   const handleAssignStudent = (selected) => {
     dispatch(assignStudents({
-      id: subjectId,
+      id: subject.id,
       data: selected.map((option) => option.value)
     }))
   }

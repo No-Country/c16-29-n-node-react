@@ -46,6 +46,8 @@ const PrincipalTeachersView = () => {
     const formattedSubjects = teacherData.subjects.map(subject => ({ id: subject.value }));
     const dataToSubmit = {
       ...teacherData,
+      email: teacherData.email || undefined,
+      phone: teacherData.phone || undefined,
       subjects: formattedSubjects,
     };
   
@@ -72,6 +74,7 @@ const PrincipalTeachersView = () => {
       };
 
   const handleEditTeacher = async (teacherData) =>{
+    console.log(teacherData)
     if (selectedTeacherId) {
       // Se obtiene los valores iniciales para la comparación
       const initialValues = active.row;

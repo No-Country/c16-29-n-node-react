@@ -8,22 +8,24 @@ import { useEffect } from "react";
 import { fetchTeachers } from "../../store/slice/principal-subjects-slice";
 
 const CreateSubject = ({ onClose, onSubmit }) => {
-  const teachers = useSelector((state) => state.principalSubject.teachers);
+  const teachers = useSelector((state) => state.principalSubjects.teachers);
   const dispatch = useDispatch()
 
   const { formState: { errors }, register, handleSubmit, setValue } = useForm({
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
+    defaultValues: {
+      teachers: []
+    }
   })
-
 
   useEffect(() => {
     dispatch(fetchTeachers());
   }, [dispatch]);
 
-  const options = teachers.map((teacher) => ({
+  const options = teachers?.map((teacher) => ({
     value: teacher.id,
     label: `${teacher.first_name} ${teacher.last_name}`
-  }))
+  })) ?? [];
 
   return (
     <>
