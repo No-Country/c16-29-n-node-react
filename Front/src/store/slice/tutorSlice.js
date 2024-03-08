@@ -158,8 +158,7 @@ const tutorSlice = createSlice({
         state.stateAlertMessage = "No se pudo crear el tutor";
         state.alertType = "error";
       })
-      .addCase(createTutor.fulfilled, (state, action) => {
-        console.log(state, action)
+      .addCase(createTutor.fulfilled, (state) => {
         state.isLoading = false;
         state.stateCreating.isLoading = false;  
         state.stateDeleting.status = "completed";

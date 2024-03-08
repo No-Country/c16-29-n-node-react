@@ -153,7 +153,7 @@ const StudentsView = () => {
     const objetoEncontrado = data.filter(objeto => objeto.id === id);
     if (objetoEncontrado[0].tutors.length > 0 && objetoEncontrado[0].subjects.length === 0) {
       showAlert("No se puede eliminar el alumno si tiene un tutor asociado", "error");
-    } else if(objetoEncontrado[0].tutors.length === 0 && objetoEncontrado[0].subjects.length > 0){
+    } else if (objetoEncontrado[0].tutors.length === 0 && objetoEncontrado[0].subjects.length > 0) {
       showAlert("No se puede eliminar el alumno si tiene materias asociadas", "error");
     } else {
       dispatch(deleteStudent(id))
@@ -225,11 +225,15 @@ const StudentsView = () => {
   return (
     <div className="grow flex flex-col overflow-auto">
       {alert.message && (
-        <Alert
-          message={alert.message}
-          type={alert.type}
-          onDismiss={() => setAlert({ message: "", type: "" })}
-        />
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
+            />
+          </div>
+        </div>
       )}
       <p>{data.length} Registros</p>
       <SimpleTable
@@ -261,6 +265,10 @@ const StudentsView = () => {
               email: active.row.email,
               phone: active.row.phone,
               grade: active.row.grade,
+              tutors: active.row.tutors.map((tutor) => ({
+                value: tutor.id,
+                label: `${tutor.first_name} ${tutor.last_name}`
+              }))
             }}
           />
         )}

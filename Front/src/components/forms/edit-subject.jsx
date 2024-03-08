@@ -6,24 +6,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react";
 import { fetchTeachers } from "../../store/slice/principal-subjects-slice";
+import { parseValues } from "../../utils/validation";
 
 const EditSubject = ({ onClose, onSubmit, initialValues }) => {
-  const teachers = useSelector((state) => state.principalSubject.teachers);
+  const teachers = useSelector((state) => state.principalSubjects.teachers);
   const dispatch = useDispatch()
 
   const { formState: { errors }, register, handleSubmit, setValue, getValues } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues
+    defaultValues: parseValues(initialValues)
   })
 
   useEffect(() => {
     dispatch(fetchTeachers());
   }, [dispatch]);
 
-  const options = teachers.map((teacher) => ({
+  const options = teachers?.map((teacher) => ({
     value: teacher.id,
     label: `${teacher.first_name} ${teacher.last_name}`
-  }))
+  })) ?? [];
 
   return (
     <>
@@ -86,11 +87,19 @@ const EditSubject = ({ onClose, onSubmit, initialValues }) => {
 export default EditSubject;
 
 const schema = z.object({
-  name: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
-  grade: z.string().regex(/^\d{1}$/, "Debe ser un numero"),
-  divition: z.string().regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
-  teachers: z.optional(z.array(z.object({
+  name: z
+          .string()
+          .min(3, "Debe contener al menos 3 caracteres")
+          .regex(/^[\w\d\s]+$/, "Debe ser alfanumerico"),
+  grade: z
+          .string()
+          .regex(/^\d{1}$/, "Debe ser un solo digito"),
+  divition: z
+          .string()
+          .min(1, "Debe contener al menos un caracter")
+          .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
+  teachers: z.array(z.object({
     label: z.string(),
     value: z.number()
-  }))),
+  })),
 })

@@ -6,7 +6,9 @@ export const CLEAR_TUTORS_SELECTED_OPTIONS = 'CLEAR_TUTORS_SELECTED_OPTIONS'
 export const GET_STUDENTS = 'GET_STUDENTS'
 export const GET_TUTORS_OPTIONS = 'GET_TUTORS_OPTIONS'
 export const CREATE_STUDENT = 'CREATE_STUDENT'
-
+export const GET_BANNS = 'GET_BANNS'
+export const GET_EXAMS = 'GET_EXAMS'
+export const GET_MARKS = 'GET_MARKS'
 
 
 export const setSelectedTutorsOptions = (selectedTutorsOptions) => ({
@@ -38,6 +40,57 @@ export function getStudents() {
   };
 }
 
+export function getBanns() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await AxiosInstance.get(`banns/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_BANNS,
+      payload: json.data
+    });
+  };
+}
+
+export function getExams() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await AxiosInstance.get(`marks/exams/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_EXAMS,
+      payload: json.data
+    });
+  };
+}
+
+export function getMarks() {
+  return async function (dispatch) {
+    const token = getAccessToken()
+    const json = await AxiosInstance.get(`marks/current`,
+      { headers: { "x-access-token": token } }
+    );
+    return dispatch({
+      type: GET_MARKS,
+      payload: json.data
+    });
+  };
+}
+
+export function editBanns(data, id) {
+  return async function () {
+    const token = getAccessToken()
+    console.log(id);
+    const json = await AxiosInstance.put(`banns/${id}`,
+       data,
+      { headers: { "x-access-token": token } }
+    );
+    return json
+  };
+}
+
 export function createStudent(data) {
   return async function () {
     const token = getAccessToken()
@@ -64,6 +117,16 @@ export function deleteStudent(id) {
   return async function () {
     const token = getAccessToken()
     const json = await AxiosInstance.delete(`users/${id}`,
+      { headers: { "x-access-token": token } }
+    );
+    return json
+  };
+}
+
+export function deleteBann(id) {
+  return async function () {
+    const token = getAccessToken()
+    const json = await AxiosInstance.delete(`banns/${id}`,
       { headers: { "x-access-token": token } }
     );
     return json

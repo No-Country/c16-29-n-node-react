@@ -196,7 +196,7 @@ const SubjectsView = () => {
       },
     ];
   }, []);
-
+  
   return (
     <div className="grow flex flex-col overflow-auto">
       <p>{subjects.length} Registros</p>

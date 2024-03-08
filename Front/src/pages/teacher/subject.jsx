@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { SimpleTable } from "../../components/SimpleTabla"
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSubjects } from "../../store/slice/teacher-subject-slice";
+import { fetchSubjects } from "../../store/slice/teacher-subjects-slice";
 
 const Subject = () => {
 
@@ -44,7 +44,7 @@ const Subject = () => {
       {
         Header: "# Alumnos",
         id: "students",
-        accessorFn: (row) => row.students.length,
+        accessorFn: (row) => (console.log(row), row.students.length),
         cell: (props) => <p className="text-right pr-2">{props.cell.getValue()}</p>
       }
     ];
