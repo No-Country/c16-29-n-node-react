@@ -78,15 +78,36 @@ export function getMarks() {
   };
 }
 
-export function editBanns(data, id) {
-  return async function () {
-    const token = getAccessToken();
-    console.log(id);
-    const json = await AxiosInstance.put(`banns/${id}`, data, {
-      headers: { "x-access-token": token },
-    });
-    return json;
-  };
+export async function editBanns(data, id) {
+  const token = getAccessToken();
+  const json = await AxiosInstance.put(`banns/${id}`, data, {
+    headers: { "x-access-token": token },
+  });
+  return json;
+}
+
+export async function editMark(data, id) {
+  const token = getAccessToken();
+  const json = await AxiosInstance.put(`marks/${id}`, data, {
+    headers: { "x-access-token": token },
+  });
+  return json;
+}
+
+export async function createMark(data) {
+  const token = getAccessToken();
+  const json = await AxiosInstance.post(`marks`, data, {
+    headers: { "x-access-token": token },
+  });
+  return json;
+}
+
+export async function getMarksByExamId(id) {
+  const token = getAccessToken();
+  const res = await AxiosInstance.get(`marks/exams/${id}`, {
+    headers: { "x-access-token": token },
+  });
+  return res.data;
 }
 
 export async function createStudent(data) {
@@ -113,14 +134,12 @@ export async function deleteStudent(id) {
   return json;
 }
 
-export function deleteBann(id) {
-  return async function () {
-    const token = getAccessToken();
-    const json = await AxiosInstance.delete(`banns/${id}`, {
-      headers: { "x-access-token": token },
-    });
-    return json;
-  };
+export async function deleteBann(id) {
+  const token = getAccessToken();
+  const json = await AxiosInstance.delete(`banns/${id}`, {
+    headers: { "x-access-token": token },
+  });
+  return json;
 }
 
 export function getTutorsOptions() {

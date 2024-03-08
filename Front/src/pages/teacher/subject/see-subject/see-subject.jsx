@@ -204,8 +204,6 @@ const SubjectView = () => {
     ];
   }, [])
 
-  console.log(subject)
-
   return (
     <div
       className='grow flex flex-col overflow-y-auto'

@@ -3,10 +3,13 @@ import { SimpleTable } from "../../components/SimpleTabla";
 import Alert from "../../components/Alert";
 import MOCK from "./examsMock/mock";
 import { useDispatch, useSelector } from "react-redux";
-import { getExams } from "../../actions/actions";
+import { createMark, editMark, getExams, getMarksByExamId } from "../../actions/actions";
+import { parseValues } from "../../utils/validation";
+import Input from "../../components/Input";
+import Label from "../../components/Label";
+import Button from "../../components/ui/button";
 
 const Exams = () => {
-
   // Estados
 
   const dispatch = useDispatch();
@@ -15,25 +18,36 @@ const Exams = () => {
   const [data, setData] = useState(MOCK);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   // const [isScorePopupOpen, setIsScorePopupOpen] = useState(false);
-  const [activeStudent, setActiveStudent] = useState()
   const [alert, setAlert] = useState({ message: "", type: "" });
-  const [active, setActive] = useState({
-    type: "",
-    row: {}
-  });
+  const [active, setActive] = useState({});
+  const [marks, setMarks] = useState([]);
+  const [mark, setMark] = useState({});
   const [editPopupOpen, setEditPopupOpen] = useState(false);
 
   useEffect(() => {
-    if (alert.message) {
-      const timer = setTimeout(() => {
-        setAlert({ message: "", type: "" });
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [alert.message]);
+    (async () => {
+      let counter = 9999;
+      if (active.id) {
+        const data = await getMarksByExamId(active.id);
+        const marks = active.subject.students.map((student) => {
+          const mark = data.find(
+            (current) => current.student_id === student.id
+          );
+          return {
+            id: mark?.id ?? --counter,
+            fullName: student.fullName,
+            score: mark?.score,
+            note: mark?.note,
+            student_id: student.id
+          };
+        });
+        setMarks(marks);
+      }
+    })();
+  }, [active]);
 
   useEffect(() => {
-    dispatch(getExams())
+    dispatch(getExams());
   }, [alert]);
 
   // useEffect(() => {
@@ -46,13 +60,10 @@ const Exams = () => {
 
   // Funciones
 
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
-    setActive(null);
+    setActive({});
+    setMarks([]);
   };
 
   const handleActionClick = (action, row) => {
@@ -60,47 +71,60 @@ const Exams = () => {
     setIsPopupOpen(true);
   };
 
-  const handleEditButtonClick = (studentId) => {
-    handleEditScore(studentId);
+  const handleEditButtonClick = (student) => {
+    setMark(student);
+    setEditPopupOpen(true);
   };
 
-  console.log(exams);
-
-  const handleEditScore = (studentId) => {
-    const student = exams.flatMap(exam => exam.subject?.users).find(student => student && student.id === studentId);
-    if (student) {
-      setEditPopupOpen(true);
-      setActiveStudent(student);
-    } else {
-      console.error("El estudiante no fue encontrado");
-    }
-  };
-
-  const handleEditItem = (editedData) => {
-    setData(prevData => {
-      return prevData.map(exam => {
-        const updatedStudents = exam.subject.students.map(student => {
-          if (student.name === editedData.name) {
-            return {
-              ...student,
-              score: editedData.score,
-              notes: editedData.notes
-            };
-          }
-          return student;
+  const handleEditItem = (item) => {
+    if(item.score){
+      createMark({
+        ...item,
+        student_id: mark.student_id,
+        exam_id: active.id
+      })
+      .then(() => {
+        setActive({
+          ...active
         });
-        return {
-          ...exam,
-          subject: {
-            ...exam.subject,
-            students: updatedStudents
-          }
-        };
+        setAlert({
+          message: "Se editó la amonestacion correctamente",
+          type: "success",
+        });
+      })
+      .catch(() => {
+        setAlert({
+          message: "No se pudo editar la amonestacion",
+          type: "error",
+        });
+      })
+      .finally(() => {
+        setMark({});
+        handleCloseEditPopup();
       });
-    });
-    setEditPopupOpen(false);
-    setIsPopupOpen(false);
-    showAlert("Calificación editada exitosamente", "success");
+
+    } else {
+      editMark(item, mark.id)
+        .then(() => {
+          setActive({
+            ...active
+          });
+          setAlert({
+            message: "Se editó la amonestacion correctamente",
+            type: "success",
+          });
+        })
+        .catch(() => {
+          setAlert({
+            message: "No se pudo editar la amonestacion",
+            type: "error",
+          });
+        })
+        .finally(() => {
+          setMark({});
+          handleCloseEditPopup();
+        });
+    }
   };
 
   const handleCloseEditPopup = () => {
@@ -111,7 +135,7 @@ const Exams = () => {
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
 
-  // Columnas 
+  // Columnas
 
   const columns = useMemo(() => {
     return [
@@ -122,15 +146,12 @@ const Exams = () => {
       {
         Header: "Materia",
         accessorKey: "subject",
-        cell: ({ row: { original } }) => (
-          data ? (
-            <span>{original.subject?.name}</span>
-          ) : null
-        ),
+        cell: ({ row: { original } }) =>
+          data ? <span>{original.subject?.name}</span> : null,
       },
       {
         Header: "Titulo",
-        accessorKey: "title"
+        accessorKey: "title",
       },
       {
         Header: "Acciones",
@@ -158,77 +179,59 @@ const Exams = () => {
       },
       {
         Header: "Observaciones",
-        accessorKey: "notes"
+        accessorKey: "note",
       },
       {
         Header: "Acciones",
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex justify-end gap-2">
-            <button onClick={() => handleEditButtonClick(original.id)}>
+            <button onClick={() => handleEditButtonClick(original)}>
               <img src={"/assets/edit-action.svg"} alt="editar alumno" />
             </button>
           </div>
         ),
       },
     ];
-  }, [exams]);
+  }, [marks]);
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
-
-  const EditScoreForm = ({ student, handleEdit }) => {
-    const [score, setScore] = useState(student ? student.score : '');
-    const [notes, setNotes] = useState(student ? student.notes : '');
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (student) {
-        handleEdit({ name: student.name, score, notes });
-      }
-    };
-
-    return (
-      <form className="flex-column h-3/4 p-4" onSubmit={handleSubmit}>
-        <div className="flex flex-col h-16 justify-start">
-          <label className="font-medium" htmlFor="score">Puntaje</label>
-          <input className="bg-[#F4F4F4] h-3/4 border border-[#98AEBC] mt-1 rounded-md" type="number" id="score" onChange={(e) => setScore(e.target.value)} />
-        </div>
-        <div className="flex flex-col h-16 my-6">
-          <label className="font-medium" htmlFor="notes">Observación</label>
-          <input className="bg-[#F4F4F4] h-3/4 border border-[#98AEBC] mt-1 rounded-md" id="notes" onChange={(e) => setNotes(e.target.value)} />
-        </div>
-        <div className="flex h-10 gap-4 justify-start items-center mt-8">
-          <button className="bg-[#9312FF] w-28 text-white p-2 rounded-md" type="submit">Confirmar</button>
-          <button className="bg-[#FFFFFF] border border-[#98AEBC] w-28 text-black p-2 rounded-md" onClick={handleCloseEditPopup}>Cancelar</button>
-        </div>
-      </form>
-    );
-  };
 
   return (
     <div>
-      {alert.message && (
-        <Alert
-          message={alert.message}
-          type={alert.type}
-          onDismiss={() => setAlert({ message: "", type: "" })}
-        />
+       {alert.message && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
+            />
+          </div>
+        </div>
       )}
-      {!isPopupOpen && (
-        <SimpleTable
-          columns={columns}
-          data={exams}
-          handleActionClick={handleActionClick}
-        />
-      )}
+      {!isPopupOpen && <SimpleTable columns={columns} data={exams} />}
       {isPopupOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-500 bg-opacity-75">
-          <div className="relative h-2/4 w-3/4 md:w-1/2 lg:w-2/3 bg-white rounded-lg shadow-lg p-6">
-            <button className="absolute top-0 right-0 p-2" onClick={handlePopupClose}>
-              <svg className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          <div className="relative bg-white rounded-lg shadow-lg p-6">
+            <button
+              className="absolute top-0 right-0 p-2"
+              onClick={handlePopupClose}
+            >
+              <svg
+                className="h-6 w-6 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
             {active && (
@@ -236,20 +239,23 @@ const Exams = () => {
                 <h3 className="text-lg font-semibold">{active.subject.name}</h3>
               </div>
             )}
-            {active.subject.users.length !== 0 && <SimpleTable
-              columns={columnsStudent}
-              data={active.subject.users}
-            />}
+            <SimpleTable columns={columnsStudent} data={marks} />
           </div>
         </div>
       )}
       {editPopupOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-500 bg-opacity-75 rounded-md">
-          <div className="relative w-1/3 h-96 bg-white rounded-lg shadow-lg">
+          <div className="relative max-w-[40vw] bg-white rounded-lg shadow-lg">
             <div className="flex justify-center items-center bg-[#1490FC] w-full h-24 rounded-t-md">
-              <h2 className="text-center text-[#FFFFFF] text-lg font-semibold">Asigne un puntaje para {activeStudent.name} en {active.name}</h2>
+              <h2 className="px-4 text-[#FFFFFF] text-lg font-semibold">
+                Asigne un puntaje para {mark.fullName} en {active.title}
+              </h2>
             </div>
-            <EditScoreForm student={activeStudent} handleEdit={handleEditItem} />
+            <EditScoreForm 
+              handleEdit={handleEditItem} 
+              initialValues={mark} 
+              onClose={handleCloseEditPopup}
+            />
           </div>
         </div>
       )}
@@ -258,3 +264,64 @@ const Exams = () => {
 };
 
 export default Exams;
+
+const EditScoreForm = ({ handleEdit, onClose, initialValues }) => {
+  const parsed = parseValues(initialValues);
+  const [score, setScore] = useState(parsed.score);
+  const [note, setNote] = useState(parsed.note);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(score, note)
+    if (initialValues.score) {
+      handleEdit(parseValues({note}));
+    } else {
+      handleEdit(parseValues({
+        note,
+        score
+      }));
+    }
+  };
+
+  return (
+    <form className="flex-column p-4" onSubmit={handleSubmit}>
+      <div className="flex flex-col justify-start">
+        <Label className="font-medium" htmlFor="score">
+          Puntaje
+        </Label>
+        <Input
+          disabled={Boolean(initialValues.score)}
+          min={1}
+          max={10}
+          type="number"
+          id="score"
+          value={score}
+          onChange={(e) => setScore(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col my-6">
+        <Label className="font-medium" htmlFor="note">
+          Observación
+        </Label>
+        <Input
+          id="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+      </div>
+      <div className="flex h-10 gap-4 justify-start items-center mt-8">
+        <Button
+          type="submit"
+        >
+          Confirmar
+        </Button>
+        <Button
+          onClick={onClose}
+          variant={"purple-outlined"}
+        >
+          Cancelar
+        </Button>
+      </div>
+    </form>
+  );
+};

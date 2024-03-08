@@ -30,7 +30,10 @@ const EditNonAttendance = ({ onClose, onSubmit, initialValues }) => {
 
   const { formState: { errors }, register, handleSubmit, setValue, getValues, watch } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues
+    defaultValues: {
+      initialValues,
+      type: initialTypeValue
+    }
   });
 
   const handleFormSubmit = (formData) => {

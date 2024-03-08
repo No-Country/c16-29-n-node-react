@@ -3,6 +3,7 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
+import { parseValues } from "../../utils/validation";
 
 const data = [
   {
@@ -20,9 +21,13 @@ const data = [
 ]
 
 const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
+  const initialType = data.find((option) => option.value === initialValues.type) ?? data[2];
   const { formState: { errors }, register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialValues
+    defaultValues: {
+      ...parseValues(initialValues),
+      type: initialType
+    }
   })
 
   const handleFormSubmit = (formData) => {
@@ -56,7 +61,7 @@ const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
               placeholder="Seleccionar..."
               onChange={(option) => setValue("type", option)}
               options={data}
-              defaultValue={initialValues.type}
+              defaultValue={initialType}
             ></Select>
             {errors?.type && <p className="text-red-500 text-xs">{errors?.type.message}</p>}
           </div>
@@ -87,7 +92,6 @@ export default TeacherEditBann;
 const schema = z.object({
   reason: z.string().min(1, "Requerido"),
   type: z.object({
-    label: z.string().min(1, "Requerido"),
     value: z.string().min(1, "Requerido")
   }),
   note: z.string().optional()

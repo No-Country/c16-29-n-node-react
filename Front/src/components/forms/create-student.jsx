@@ -23,7 +23,7 @@ const CreateStudent = ({ onClose, onSubmit }) => {
 
   useEffect(() => {
     dispatch(getTutorsOptions())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     setValue("tutors", selectedTutorsOptions)
@@ -68,6 +68,7 @@ const CreateStudent = ({ onClose, onSubmit }) => {
               Contraseña
             </label>
             <input
+              type="password"
               {...register("password")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.password ? 'border-red-500' : 'rounded'}`}
             />

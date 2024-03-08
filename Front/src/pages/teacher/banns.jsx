@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react";
 // import Button from "../../components/ui/button";
-import { SimpleTable } from "../../components/SimpleTabla"
+import { SimpleTable } from "../../components/SimpleTabla";
 import Offcanvas from "../../components/ui/offcanvas";
 import useDisclosure from "../../hooks/useDisclosure";
 import Modal from "../../components/ui/modal";
@@ -11,15 +11,19 @@ import Alert from "../../components/Alert";
 import { deleteBann, editBanns, getBanns } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
 
-const Banns = () => {
+const MAP = {
+  WARNING: "Advertencia",
+  SUSPENDED: "Suspension",
+  EXPELLED: "Expulsion",
+};
 
-  const [data, setData] = useState([])
+const Banns = () => {
   const dispatch = useDispatch();
   const banns = useSelector((state) => state.banns.banns);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [active, setActive] = useState({
     type: "",
-    row: {}
+    row: {},
   });
   const offcanvas = useDisclosure();
   const modal = useDisclosure();
@@ -34,88 +38,111 @@ const Banns = () => {
   }, [alert.message]);
 
   useEffect(() => {
-    dispatch(getBanns())
-  }, [alert]);
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
+    dispatch(getBanns());
+  }, [dispatch]);
 
   const resetState = (action) => () => {
     action();
     setActive({
       type: "",
-      row: {}
+      row: {},
     });
-  }
+  };
 
   const handleConfirmEditItem = (row) => {
     setActive({
       type: "edit",
-      row
-    })
+      row,
+    });
     offcanvas.handleOpen();
-  }
+  };
 
   const handleConfirmDeleteItem = (row) => {
     setActive({
       type: "delete",
-      row
-    })
+      row,
+    });
     modal.handleOpen();
-  }
+  };
 
   const handleEditItem = (row) => {
     const newItem = {
       reason: row.reason,
       type: row.type?.value,
       note: row.note,
-    }
-    dispatch(editBanns(newItem, row.id))
-    showAlert("Alumno editado exitosamente", "success");
-    offcanvas.handleClose();
-  }
+    };
+    editBanns(newItem, row.id)
+      .then(() => {
+        dispatch(getBanns());
+        resetState(offcanvas.handleClose)();
+        setAlert({
+          message: "Se editó la amonestacion correctamente",
+          type: "success",
+        });
+      })
+      .catch(() => {
+        setAlert({
+          message: "No se pudo editar la amonestacion",
+          type: "error",
+        });
+      });
+  };
 
   const handleDeleteItem = ({ id }) => {
-    dispatch(deleteBann(id))
-    showAlert("Amonestación eliminada exitosamente", "error");
-  }
+    deleteBann(id)
+      .then(() => {
+        dispatch(getBanns());
+        resetState(offcanvas.handleClose)();
+        setAlert({
+          message: "Se elminó la amonestacion correctamente",
+          type: "success",
+        });
+      })
+      .catch(() => {
+        setAlert({
+          message: "No se pudo eliminar la amonestacion",
+          type: "error",
+        });
+      });
+  };
 
   const columns = useMemo(() => {
     return [
       {
+        id: "date",
         Header: "Fecha",
-        accessorKey: "date",
+        accessorFn: (row) => new Date(row.date).toLocaleDateString({
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
       },
       {
         Header: "Razón",
         accessorKey: "reason",
       },
       {
+        id: "type",
         Header: "Gravedad",
-        accessorKey: "type",
+        accessorFn: (row) => MAP[row.type],
       },
       {
         Header: "Alumno",
         accessorKey: "student",
         cell: ({ row: { original } }) => (
-          data ? (
-            <span>{original.student?.fullName}</span>
-          ) : null
+          <span>{original.student?.fullName}</span>
         ),
       },
       {
         Header: "Materia",
         accessorKey: "subject",
         cell: ({ row: { original } }) => (
-          data ? (
-            <span>{original.subject?.fullName}</span>
-          ) : null
+          <span>{original.subject?.fullName}</span>
         ),
       },
       {
         Header: "Nota",
-        accessorKey: "note"
+        accessorKey: "note",
       },
       {
         Header: "Acciones",
@@ -132,7 +159,7 @@ const Banns = () => {
         ),
       },
     ];
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -147,10 +174,7 @@ const Banns = () => {
           </div>
         </div>
       )}
-      <SimpleTable
-        columns={columns}
-        data={banns}
-      />
+      <SimpleTable columns={columns} data={banns} />
       <Offcanvas
         isOpen={offcanvas.isOpen}
         onClose={resetState(offcanvas.handleClose)}
@@ -169,20 +193,17 @@ const Banns = () => {
           />
         )}
       </Offcanvas>
-      <Modal
-        isOpen={modal.isOpen}
-        onClose={modal.handleClose}
-      >
+      <Modal isOpen={modal.isOpen} onClose={modal.handleClose}>
         {active.type === "delete" && (
           <ConfirmDelete
-            text={`${active.row.name} ${active.row.grade}° ${active.row.divition}`}
+            text={`amonestacion`}
             onClose={resetState(modal.handleClose)}
             onConfirm={() => handleDeleteItem(active.row)}
           />
         )}
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default Banns
+export default Banns;

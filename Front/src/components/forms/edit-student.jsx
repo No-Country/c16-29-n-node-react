@@ -110,6 +110,7 @@ const EditStudent = ({ onClose, onSubmit, initialValues }) => {
               Contraseña
             </label>
             <input
+              type="password"
               {...register("password")}
               className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
                 errors?.password ? "border-red-500" : "rounded"

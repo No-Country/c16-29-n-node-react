@@ -23,6 +23,9 @@ const authSlice = createSlice({
       state.role = initialState.role;
       state.accessToken = initialState.accessToken;
       state.status = initialState.status;
+    },
+    resetStatus: (state) => {
+      state.status = "idle";
     }
   },
   extraReducers(builder){
@@ -47,6 +50,6 @@ export const login = createAsyncThunk("auth/login", async ({ username, password 
   return response.data;
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, resetStatus } = authSlice.actions;
 
 export default authSlice.reducer;

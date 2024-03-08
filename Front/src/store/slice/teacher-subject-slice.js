@@ -193,14 +193,14 @@ const teacherSubjectSlice = createSlice({
         state.isLoading = false;
         state.stateCreating.isLoading = false;
         state.stateCreating.status = "rejected";
-        state.alertMessage = "No se pudo actualizar la materia";
+        state.alertMessage = "No se pudo crear la evaluacion";
         state.alertType = "error";
       })
       .addCase(createExam.fulfilled, (state) => {
         state.isLoading = false;
         state.stateCreating.isLoading = false;
         state.stateCreating.status = "completed";
-        state.alertMessage = "Se desasigno el usuario correctamente";
+        state.alertMessage = "Se creo la evaluacion correctamente";
         state.alertType = "success";
       })
       .addCase(createNonAttendances.pending, (state) => {

@@ -44,7 +44,7 @@ const Subject = () => {
       {
         Header: "# Alumnos",
         id: "students",
-        accessorFn: (row) => (console.log(row), row.students.length),
+        accessorFn: (row) => row.students.length,
         cell: (props) => <p className="text-right pr-2">{props.cell.getValue()}</p>
       }
     ];

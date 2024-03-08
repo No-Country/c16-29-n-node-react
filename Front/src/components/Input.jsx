@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import validateInput from '../utils/validateInput';
 export const Input = ({ type, name, value, onChange, placeholder, validateInputConfig, ...rest }) =>{
       const [error, setError] = useState('');
@@ -17,15 +17,14 @@ export const Input = ({ type, name, value, onChange, placeholder, validateInputC
 
     return(
         <>
-        <input className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${error ? 'border-red-500' : 'rounded'}`}
-         type={type}
-        name={name}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder={placeholder}
-        validations={validateInputConfig}
-        {...rest}
+        <input className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${error ? 'border-red-500' : 'rounded'} disabled:opacity-50`}
+          type={type}
+          name={name}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          {...rest}
         />       
          {error && <p className="text-red-500 text-xs">{error}</p>}
         </>
