@@ -1,10 +1,13 @@
-import { SET_SELECTED_OPTIONS, SET_TUTORS_SELECTED_OPTIONS, CLEAR_TUTORS_SELECTED_OPTIONS, GET_STUDENTS, GET_TUTORS_OPTIONS } from '../actions/actions'
+import { SET_SELECTED_OPTIONS, SET_TUTORS_SELECTED_OPTIONS, CLEAR_TUTORS_SELECTED_OPTIONS, GET_STUDENTS, GET_TUTORS_OPTIONS, GET_BANNS, GET_EXAMS } from '../actions/actions'
 
 const initialState = {
   selectedTutorsOptions: [],
   selectedOptions: [],
   students: [],
   tutorsOptions: [],
+  banns: [],
+  exams: [],
+  marks: [],
 }
 
 function getRandomColor() {
@@ -37,6 +40,16 @@ const selectReducer = (state = initialState, action) => {
       return {
         ...state,
         students: action.payload,
+      }
+    case GET_BANNS:
+      return {
+        ...state,
+        banns: action.payload,
+      }
+    case GET_EXAMS:
+      return {
+        ...state,
+        exams: action.payload,
       }
     case GET_TUTORS_OPTIONS: {
       const tutorsOptions = action.payload.map(tutor => ({
