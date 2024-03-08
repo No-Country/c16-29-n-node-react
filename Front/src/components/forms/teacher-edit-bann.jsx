@@ -19,36 +19,6 @@ const data = [
   },
 ]
 
-const students = [
-  {
-    value: "Bart Simpsons",
-    label: "Bart Simpsons"
-  },
-  {
-    value: "Lisa Simpsons",
-    label: "Lisa Simpsons"
-  },
-  {
-    value: "Homero Simpsons",
-    label: "Homero Simpsons"
-  },
-]
-
-const subjects = [
-  {
-    value: "Lengua",
-    label: "Lengua"
-  },
-  {
-    value: "Matematica",
-    label: "Matematica"
-  },
-  {
-    value: "Geografia",
-    label: "Geografia"
-  },
-]
-
 const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
   const { formState: { errors }, register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(schema),
@@ -56,7 +26,11 @@ const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
   })
 
   const handleFormSubmit = (formData) => {
-    onSubmit(formData);
+    const newItem = {
+      ...formData,
+      id: initialValues.id
+    }
+    onSubmit(newItem);
   };
 
   return (
@@ -64,19 +38,8 @@ const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
       <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
-            <label htmlFor="date" className="text-base font-medium">
-              Fecha de amonestacion
-            </label>
-            <input
-              type="date"
-              {...register("date")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${errors?.date ? 'border-red-500' : 'rounded'}`}
-            />
-            {errors?.date && <p className="text-red-500 text-xs">{errors?.date.message}</p>}
-          </div>
-          <div className="flex flex-col">
             <label htmlFor="reason" className="text-base font-medium">
-              Razon
+              Razón
             </label>
             <input
               {...register("reason")}
@@ -85,43 +48,17 @@ const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
             {errors?.reason && <p className="text-red-500 text-xs">{errors?.reason.message}</p>}
           </div>
           <div>
-            <label htmlFor="gravity" className="text-base font-medium">
+            <label htmlFor="type" className="text-base font-medium">
               Gravedad
             </label>
             <Select
-              id="gravity"
+              id="type"
               placeholder="Seleccionar..."
-              onChange={(option) => setValue("gravity", option)}
+              onChange={(option) => setValue("type", option)}
               options={data}
-              defaultValue={initialValues.gravity}
+              defaultValue={initialValues.type}
             ></Select>
-            {errors?.gravity && <p className="text-red-500 text-xs">{errors?.gravity.message}</p>}
-          </div>
-          <div>
-            <label htmlFor="student" className="text-base font-medium">
-              Alumno
-            </label>
-            <Select
-              id="student"
-              placeholder="Seleccionar..."
-              onChange={(option) => setValue("student", option)}
-              options={students}
-              defaultValue={initialValues.student}
-            ></Select>
-            {errors?.student && <p className="text-red-500 text-xs">{errors?.student.message}</p>}
-          </div>
-          <div>
-            <label htmlFor="subject" className="text-base font-medium">
-              Materia
-            </label>
-            <Select
-              id="subject"
-              placeholder="Seleccionar..."
-              onChange={(option) => setValue("subject", option)}
-              options={subjects}
-              defaultValue={initialValues.subject}
-            ></Select>
-            {errors?.subject && <p className="text-red-500 text-xs">{errors?.subject.message}</p>}
+            {errors?.type && <p className="text-red-500 text-xs">{errors?.type.message}</p>}
           </div>
           <div className="flex flex-col">
             <label htmlFor="note" className="text-base font-medium">
@@ -148,25 +85,10 @@ const TeacherEditBann = ({ onClose, onSubmit, initialValues }) => {
 export default TeacherEditBann;
 
 const schema = z.object({
-  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
-  reason: z.string("Requerido").min(1, "Requerido"),
-  gravity: z.object({
-    label: z.string().min(1),
-    value: z.string()
-  }, {
-    required_error: "Requerido"
-  }),
-  student: z.object({
-    label: z.string().min(1),
-    value: z.string()
-  }, {
-    required_error: "Requerido"
-  }),
-  subject: z.object({
-    label: z.string().min(1),
-    value: z.string()
-  }, {
-    required_error: "Requerido"
+  reason: z.string().min(1, "Requerido"),
+  type: z.object({
+    label: z.string().min(1, "Requerido"),
+    value: z.string().min(1, "Requerido")
   }),
   note: z.string().optional()
 });
