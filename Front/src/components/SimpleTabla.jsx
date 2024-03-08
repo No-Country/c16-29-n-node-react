@@ -17,26 +17,6 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
   const [filtering, setFiltering] = useState("");
   const [rowSelection, setRowSelection] = useState({});
 
-  //en la propiedad Header va lo que se ven en la cabezera de la tabla
-  // const columns = [
-  //   {
-  //     Header: "Notas ",
-  //     accessorKey: "Nombre Completo",
-  //   },
-  //   {
-  //     Header: "Nombres de paises",
-  //     accessorKey: "Materia Asociada",
-  //   },
-  //   {
-  //     Header: "Estado",
-  //     accessorKey: "Estado",
-  //   },
-  //   {
-  //     Header: "Algo",
-  //     accessorKey: "Acciones",
-  //   },
-  // ];
-
   useEffect(() => {
     onSelect?.(rowSelection)
   }, [rowSelection])
@@ -59,15 +39,8 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
     onGlobalFilterChange: setFiltering,
   });
 
-  // faltantes:
-  // 1-font-poppins: la letra no es la misma..
-  // 2-no puedo cambiar de color al svg cuando hago click, sin crear un script CSS..
-  // 3-los bortones del rol profesor estan hardcodeados.
-  // 4-los botones para ordenar alfabeticamente no les pude dar funcion
-  // 5- la anchura de las celdas se modifican
-
   return (
-    <div className="grow flex flex-col items-start">
+    <div className="grow flex flex-col overflow-hidden items-start">
       <div className="w-full my-4 flex justify-between items-center gap-4">
         <div className="flex gap-4">
           <div className="flex border-2 rounded py-2 px-2 has-[:focus]:border-1 has-[:focus]:border-black">
@@ -86,9 +59,9 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
           {actions}
         </div>
       </div>
-      <div className="w-full  overflow-auto scrollbar grow mb-4">
+      <div className="w-full overflow-auto scrollbar grow mb-4">
         <table className="w-full border-solid rounded border-[#C6D5DB] shadow-custom border-2">
-          <thead className="bg-[#DCE5E9]">
+          <thead className="bg-[#DCE5E9] sticky top-[-1px]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -104,12 +77,6 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
                             header.column.columnDef.Header,
                             header.getContext()
                           )}
-                          {/* {
-                            {
-                              asc: "^",
-                              desc: "v",
-                            }[header.column.getIsSorted() ?? null]
-                          } */}
                         </div>
                       )}
                       <div
@@ -127,37 +94,6 @@ export const SimpleTable = ({ columns, data, actions, onSelect, filters }) => {
             ))}
           </thead>
           <tbody>
-            {/* 
-            <tbody>
-            {table.getRowModel().rows.length === 0 ? (
-              <tr>
-                <td
-                  className="px-3 py-1 text-[#4D5862] text-[16px] font-poppins not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
-                  colSpan={table.visibleColumns?.length} // MODIFICACION 1
-                >
-                  Sin datos
-                </td>
-              </tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b-[1px] border-solid border-[#ADADAD]"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-3 py-1 w-[418px] text-[#4D5862] text-[16px] font-poppins not-italic font-normal leading-6 text-left bg-[#FFFFFD] whitespace-normal overflow-y-auto"
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-
-                </tr>
-              ))
-              )}
-          </tbody>
-           */}
             {table.getRowModel().rows.length === 0
               ? (
                 <tr>

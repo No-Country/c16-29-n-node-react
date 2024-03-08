@@ -12,6 +12,8 @@ import {
 import Modal from "../../components/ui/modal";
 import ConfirmDelete from "../../components/modals/confirm-delete";
 import Alert from "../../components/Alert";
+import { formatDate } from "../../utils/dates";
+
 const NonAssistances = () => {
   const modal = useDisclosure();
   const nonassistancesList = useSelector(
@@ -115,8 +117,9 @@ const NonAssistances = () => {
   const columns = useMemo(() => {
     return [
       {
+        id: "date",
         Header: "Fecha",
-        accessorKey: "date",
+        accessorFn: (row) => formatDate(new Date(row.date)),
       },
       {
         Header: "Alumno",
@@ -155,7 +158,7 @@ const NonAssistances = () => {
   }, [nonassistancesList]);
   const offcanvas = useDisclosure();
   return (
-    <div>
+    <div className="grow flex flex-col overflow-y-auto">
       <SimpleTable columns={columns} data={nonassistancesList} />
       {alert.message && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">

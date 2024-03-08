@@ -10,6 +10,7 @@ import ConfirmDelete from "../../components/modals/confirm-delete";
 import Alert from "../../components/Alert";
 import { deleteBann, editBanns, getBanns } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { formatDate } from "../../utils/dates";
 
 const MAP = {
   WARNING: "Advertencia",
@@ -111,11 +112,7 @@ const Banns = () => {
       {
         id: "date",
         Header: "Fecha",
-        accessorFn: (row) => new Date(row.date).toLocaleDateString({
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
+        accessorFn: (row) => formatDate(new Date(row.date)),
       },
       {
         Header: "Razón",
@@ -162,7 +159,7 @@ const Banns = () => {
   }, []);
 
   return (
-    <div>
+    <div className="grow flex flex-col overflow-y-auto">
       {alert.message && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
           <div className=" p-4 rounded w-auto ">

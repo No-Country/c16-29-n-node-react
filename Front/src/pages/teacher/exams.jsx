@@ -8,6 +8,7 @@ import { parseValues } from "../../utils/validation";
 import Input from "../../components/Input";
 import Label from "../../components/Label";
 import Button from "../../components/ui/button";
+import { formatDate } from "../../utils/dates";
 
 const Exams = () => {
   // Estados
@@ -139,8 +140,9 @@ const Exams = () => {
   const columns = useMemo(() => {
     return [
       {
+        id: "date",
         Header: "Fecha",
-        accessorKey: "date",
+        accessorFn: (row) => formatDate(new Date(row.date)),
       },
       {
         Header: "Materia",
@@ -199,7 +201,7 @@ const Exams = () => {
   // ------------------------------------------------------------------------------ //
 
   return (
-    <div>
+    <div className="grow flex flex-col overflow-y-auto">
        {alert.message && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
           <div className=" p-4 rounded w-auto ">

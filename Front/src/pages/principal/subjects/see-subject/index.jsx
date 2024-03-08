@@ -93,7 +93,7 @@ const SubjectView = () => {
 
   return (
     <div
-      className='grow overflow-y-auto'
+      className='grow flex flex-col overflow-y-auto'
     >
        {alert.message && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
