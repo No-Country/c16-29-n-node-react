@@ -261,6 +261,10 @@ const StudentsView = () => {
               email: active.row.email,
               phone: active.row.phone,
               grade: active.row.grade,
+              tutors: active.row.tutors.map((tutor) => ({
+                value: tutor.id,
+                label: `${tutor.first_name} ${tutor.last_name}`
+              }))
             }}
           />
         )}

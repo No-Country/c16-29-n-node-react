@@ -8,19 +8,12 @@ import {
   isValidPhone,
   isValidEmail,
   isValidPassword,
+  parseValues,
 } from "../../utils/validation";
 import { useEffect } from "react";
 import SelectWithFilters from "../SelectWithFilters";
 import { setSelectedOptions } from "../../actions/actions";
 import { useDispatch, useSelector } from "react-redux";
-const parseValues = (values) => {
-  return Object.entries(values).reduce((acc, [key, value]) => {
-    if (value) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
-};
 
 const EditTeacher = ({ onClose, onSubmit, initialValues }) => {
   const selectedOptions = useSelector((state) => state.select.selectedOptions);
@@ -207,37 +200,23 @@ const EditTeacher = ({ onClose, onSubmit, initialValues }) => {
 
 export default EditTeacher;
 const schema = z.object({
-  first_name: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.optional(
-      z
-        .string()
-        .min(6, "El nombre es obligatorio")
-        .refine(isAlphabetic, "El nombre debe ser alfabético")
-    )
-  ),
-  last_name: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.optional(
-      z
-        .string()
-        .min(1, "El apellido es obligatorio")
-        .refine(isAlphabetic, "El apellido debe ser alfabético")
-    )
-  ),
+  first_name: z
+    .string()
+    .min(6, "El nombre es obligatorio")
+    .refine(isAlphabetic, "El nombre debe ser alfabético"),
+
+  last_name: z
+    .string()
+    .min(1, "El apellido es obligatorio")
+    .refine(isAlphabetic, "El apellido debe ser alfabético"),
   email: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z.optional(z.string().refine(isValidEmail, "Debe ser un correo válido"))
   ),
-  username: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.optional(
-      z
-        .string()
-        .min(6, "El usuario es obligatorio")
-        .refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico")
-    )
-  ),
+  username: z
+    .string()
+    .min(6, "El usuario es obligatorio")
+    .refine(isAlphaNumeric, "El nombre de usuario debe ser alfanumérico"),
   password: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z.optional(
@@ -258,11 +237,9 @@ const schema = z.object({
         )
     )
   ),
-  subjects: z.optional(
-    z.array(
-      z.object({
-        value: z.number(),
-      })
-    )
+  subjects: z.array(
+    z.object({
+      value: z.number(),
+    })
   ),
 });

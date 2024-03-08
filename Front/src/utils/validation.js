@@ -16,3 +16,12 @@ export const isValidPhone = phone => {
 export const minLength = (value, length) => {
   return value.length >= length;
 };
+
+export const parseValues = (values) => {
+  return Object.entries(values).reduce((acc, [key, value]) => {
+    if (value) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+};

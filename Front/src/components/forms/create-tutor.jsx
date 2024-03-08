@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Offcanvas from "../ui/offcanvas";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -9,65 +9,62 @@ import { setSelectedOptions } from "../../actions/actions";
 import { getStudents } from "../../store/slice/tutorSlice";
 
 const CreateTutor = ({ onClose, onSubmit }) => {
+  // const students = useSelector(state=>state.students.students || []);
+  const students = useSelector((state) => state.tutor.students || []);
+  const isStudentsLoaded = Array.isArray(students) && students.length > 0;
+  const selectedOptions = useSelector((state) => state.select.selectedOptions);
+  const dispatch = useDispatch();
 
-    // const students = useSelector(state=>state.students.students || []);
-    const students = useSelector(state=>state.tutor.students || []);
-    const isStudentsLoaded = Array.isArray(students) && students.length > 0;
-    const selectedOptions = useSelector((state) => state.select.selectedOptions);    
-    const dispatch = useDispatch();
-
-    
-    const {
+  const {
     formState: { errors },
     register,
     handleSubmit,
     setValue,
   } = useForm({
     resolver: zodResolver(schema),
-});
+  });
 
-  useEffect(()=> {
-  dispatch(getStudents())
-},[])
-
+  useEffect(() => {
+    dispatch(getStudents());
+  }, [dispatch]);
 
   const handleSelectChange = (selectedOptions) => {
     dispatch(setSelectedOptions(selectedOptions));
   };
 
-  const options = students.map(students => ({
+  const options = students.map((students) => ({
     value: students.id,
     label: students.label,
     color: students.color,
   }));
 
-//   const [options, setOptions] = useState([
-//     {
-//       id: 1,
-//       value: "ocean",
-//       label: "Bart Simpson",
-//       name: "Bart Simpson",
-//       color: "#00B8D9",
-//     },
-//     {
-//       id: 2,
-//       value: "orange",
-//       label: "Lisa Simpson",
-//       name: "Lisa Simpson",
-//       color: "#FF8B00",
-//     },
-//     {
-//       id: 3,
-//       value: "forest",
-//       label: "Homero Simpson",
-//       name: "Homero Simpson",
-//       color: "#00875A",
-//     },
-//   ]);
+  //   const [options, setOptions] = useState([
+  //     {
+  //       id: 1,
+  //       value: "ocean",
+  //       label: "Bart Simpson",
+  //       name: "Bart Simpson",
+  //       color: "#00B8D9",
+  //     },
+  //     {
+  //       id: 2,
+  //       value: "orange",
+  //       label: "Lisa Simpson",
+  //       name: "Lisa Simpson",
+  //       color: "#FF8B00",
+  //     },
+  //     {
+  //       id: 3,
+  //       value: "forest",
+  //       label: "Homero Simpson",
+  //       name: "Homero Simpson",
+  //       color: "#00875A",
+  //     },
+  //   ]);
 
   useEffect(() => {
     setValue("students", selectedOptions);
-  }, [selectedOptions]);
+  }, [selectedOptions, setValue]);
 
   return (
     <>
@@ -169,15 +166,15 @@ const CreateTutor = ({ onClose, onSubmit }) => {
               Alumnos Asociados
             </label>
             {isStudentsLoaded ? (
-                <SelectWithFilter 
+              <SelectWithFilter
                 //   id="students"
-                  data={options}
-                  selectedOptions={selectedOptions}
-                  setSelectedOptions={handleSelectChange}
-                />
-          ) : ( 
-            <p>Cargando studiantes ....</p>
-          )}
+                data={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={handleSelectChange}
+              />
+            ) : (
+              <p>Cargando studiantes ....</p>
+            )}
             {/* <SelectWithFilter
               data={options}
               selectedOptions={selectedOptions}
@@ -203,35 +200,43 @@ export default CreateTutor;
 const schema = z.object({
   firstName: z
     .string()
-    .min(3)
-    .max(15)
+    .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   lastname: z
     .string()
-    .min(3)
-    .max(15)
+    .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[a-zA-Z\s]+$/, "Debe ser alfabetico"),
   username: z
     .string()
-    .min(3)
-    .max(15)
+    .min(3, "Debe contener al menos 3 caracteres")
     .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  password: z.string().regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
-  email: z
+  password: z
     .string()
-    .regex(
-      /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-      "Dirección de correo electrónico inválida"
-    ),
-  phone: z
-    .string()
-    .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos"),
-
-  students: z
-    .array(
-      z.object({        
-        value: z.number(),
-        label: z.string()
-      })
+    .min(3, "Debe contener al menos 3 caracteres")
+    .regex(/^[\w\d\s]+$/, "Debe ser alfanumérico"),
+  email: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.optional(
+      z
+        .string()
+        .regex(
+          /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+          "Dirección de correo electrónico inválida"
+        )
     )
+  ),
+  phone: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.optional(
+      z
+        .string()
+        .regex(/^\d{10}$/, "Número de teléfono inválido, debe tener 10 dígitos")
+    )
+  ),
+  students: z.array(
+    z.object({
+      value: z.number(),
+      label: z.string(),
+    })
+  ),
 });
