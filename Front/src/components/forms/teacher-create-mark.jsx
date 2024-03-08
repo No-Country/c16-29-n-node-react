@@ -3,22 +3,9 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// DATA MOCKEADA
-const data = [
-  {
-    value: 1,
-    label: "Operaciones Simples - Escrito",
-  },
-  {
-    value: 1,
-    label: "Analisis Matematico - Escrito",
-  },
-  {
-    value: 1,
-    label: "Operaciones con Polinomios - Escritos",
-  },
-];
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchExams } from "../../store/slice/teacher-subject-slice";
 
 const TeacherCreateMark = ({ onClose, onSubmit }) => {
   const {
@@ -30,36 +17,33 @@ const TeacherCreateMark = ({ onClose, onSubmit }) => {
     resolver: zodResolver(schema),
   });
 
+  const exams = useSelector((state) => state.teacherSubject.exams);
+  const dispatch = useDispatch();
+
+  const options = exams.map((exam) => ({
+    value: exam.id,
+    label: exam.title
+  }));
+
+  useEffect(() => {
+    dispatch(fetchExams());
+  }, [dispatch])
+
   return (
     <>
       <Offcanvas.Body>
         <div className="flex flex-col gap-2">
           <div>
-            <label htmlFor="exam" className="text-base font-medium">
+            <label htmlFor="exam_id" className="text-base font-medium">
               Examen
             </label>
             <Select
-              id="exam"
-              onChange={(option) => setValue("exam", option)}
-              options={data}
+              id="exam_id"
+              onChange={(option) => setValue("exam_id", option)}
+              options={options}
             ></Select>
-            {errors?.exam && (
-              <p className="text-red-500 text-xs">{errors?.exam.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="date" className="text-base font-medium">
-              Fecha de la puntuacion
-            </label>
-            <input
-              type="date"
-              {...register("date")}
-              className={`bg-cyan-50 border rounded py-1.5 px-3 border-gray-400 ${
-                errors?.date ? "border-red-500" : "rounded"
-              }`}
-            />
-            {errors?.date && (
-              <p className="text-red-500 text-xs">{errors?.date.message}</p>
+            {errors?.exam_id && (
+              <p className="text-red-500 text-xs">{errors?.exam_id.message}</p>
             )}
           </div>
           <div className="flex flex-col">
@@ -104,13 +88,11 @@ const TeacherCreateMark = ({ onClose, onSubmit }) => {
 export default TeacherCreateMark;
 
 const schema = z.object({
-  exam: z.object({
-    label: z.string(),
+  exam_id: z.object({
     value: z.number(),
   }, {
     required_error: "Requerido"
   }),
   score: z.coerce.number(),
-  date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
-  note: z.string(),
+  note: z.preprocess((value) => value === "" ? undefined : value, z.optional(z.string())),
 });

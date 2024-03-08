@@ -11,14 +11,22 @@ import TeacherCreateMark from '../../../../components/forms/teacher-create-mark'
 import TeacherCreateNonAttendance from '../../../../components/forms/teacher-create-nonattendance';
 import TeacherCreateExam from '../../../../components/forms/teacher-create-exam';
 import { useSelector, useDispatch } from "react-redux";
-import { createExam, fetchSubjectByFullname } from "../../../../store/slice/teacher-subject-slice";
+import { createBann, createExam, createMark, createNonAttendances, createNote, fetchSubjectByName, hideAlert, resetStates } from "../../../../store/slice/teacher-subject-slice";
+import Alert from '../../../../components/Alert';
 
 const SubjectView = () => {
   const dispatch = useDispatch();
   const subject = useSelector((state) => state.teacherSubject.subject);
+  const stateCreating = useSelector((state) => state.teacherSubject.stateCreating);
+  const alertMessage = useSelector((state) => state.teacherSubject.alertMessage);
+  const alertType = useSelector((state) => state.teacherSubject.alertType);
   const [active, setActive] = useState({
     type: "",
     row: {}
+  });
+  const [alert, setAlert] = useState({
+    message: "",
+    type: {}
   });
   const { id } = useParams();
   const { handleClose, handleOpen, isOpen } = useDisclosure();
@@ -27,13 +35,33 @@ const SubjectView = () => {
 
   useEffect(() => {
     const [name, grade, divition] = id.split("_");
-    dispatch(createExam())
-    dispatch(fetchSubjectByFullname({
-      name,
-      grade: grade[0],
-      divition
-    }))
-  }, [dispatch]);
+    if (
+      !stateCreating.isLoading
+    ) {
+      const status = [stateCreating];
+      if (status.some(({ status }) => status === "rejected")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+      } else if (status.some(({ status }) => status === "completed")) {
+        setAlert({
+          message: alertMessage,
+          type: alertType,
+        });
+        dispatch(resetStates());
+        resetState();
+        handleClose();
+      }
+      dispatch(hideAlert());
+      dispatch(fetchSubjectByName({
+        name,
+        grade: grade[0],
+        divition
+      }))
+    }
+  }, [dispatch, stateCreating]);
 
   const resetState = (action) => () => {
     action();
@@ -86,8 +114,49 @@ const SubjectView = () => {
   }
 
   const handleCreateExam = (row) => {
-    console.log(row);
-    dispatch(createExam(row))
+    dispatch(createExam({
+      ...row,
+      date: new Date(row.date).toISOString(),
+      subject_id: subject.id
+    }));
+  }
+
+  const handleCreateNonAttendances = (row) => {
+    dispatch(createNonAttendances({
+      ...row,
+      type: row.type.value,
+      date: new Date(row.date).toISOString(),
+      subject_id: subject.id,
+      students: Object.keys(selecteds).map(Number)
+    }));
+  }
+
+  const handleCreateBann = (row) => {
+    dispatch(createBann({
+      ...row,
+      type: row.type.value,
+      date: new Date(row.date).toISOString(),
+      subject_id: subject.id,
+      student_id: active.row.id
+    }));
+  }
+
+  const handleCreateNote = (row) => {
+    dispatch(createNote({
+      ...row,
+      is_public: row.is_public.value,
+      date: new Date(row.date).toISOString(),
+      subject_id: subject.id,
+      student_id: active.row.id
+    }));
+  }
+
+  const handleCreateMark = (row) => {
+    dispatch(createMark({
+      ...row,
+      exam_id: row.exam_id.value,
+      student_id: active.row.id
+    }));
   }
 
   const columns = useMemo(() => {
@@ -141,6 +210,17 @@ const SubjectView = () => {
     <div
       className='grow flex flex-col overflow-y-auto'
     >
+      {alert.message && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50">
+          <div className=" p-4 rounded w-auto ">
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              onDismiss={() => setAlert({ message: "", type: "" })}
+            />
+          </div>
+        </div>
+      )}
       <SimpleTable 
         columns={columns}
         data={subject?.students ?? []}
@@ -164,25 +244,25 @@ const SubjectView = () => {
       >
         { active.type === "Registrar Anotacion" && (
           <TeacherCreateNote 
-            onSubmit={() => 1}
+            onSubmit={handleCreateNote}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Amonestacion" && (
           <TeacherCreateBann 
-            onSubmit={() => 1}
+            onSubmit={handleCreateBann}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Calificacion" && (
           <TeacherCreateMark 
-            onSubmit={() => 1}
+            onSubmit={handleCreateMark}
             onClose={resetState(handleClose)}
           />
         )}
         { active.type === "Registrar Inasistencias" && (
           <TeacherCreateNonAttendance 
-            onSubmit={() => 1}
+            onSubmit={handleCreateNonAttendances}
             onClose={resetState(handleClose)}
           />
         )}

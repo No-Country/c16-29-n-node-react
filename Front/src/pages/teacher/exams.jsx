@@ -2,11 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { SimpleTable } from "../../components/SimpleTabla";
 import Alert from "../../components/Alert";
 import MOCK from "./examsMock/mock";
+import { useDispatch, useSelector } from "react-redux";
+import { getExams } from "../../actions/actions";
 
 const Exams = () => {
 
   // Estados
 
+  const dispatch = useDispatch();
+  const exams = useSelector((state) => state.exams.exams);
+  // const marks = useSelector((state) => state.marks.marks);
   const [data, setData] = useState(MOCK);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   // const [isScorePopupOpen, setIsScorePopupOpen] = useState(false);
@@ -27,6 +32,14 @@ const Exams = () => {
     }
   }, [alert.message]);
 
+  useEffect(() => {
+    dispatch(getExams())
+  }, [alert]);
+
+  // useEffect(() => {
+  //   console.log(active);
+  // }, [active]);
+
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -43,31 +56,21 @@ const Exams = () => {
   };
 
   const handleActionClick = (action, row) => {
-    setActive(row.subject);
+    setActive(row);
     setIsPopupOpen(true);
   };
 
-  const handleEditButtonClick = (studentName) => {
-    handleEditScore(studentName);
+  const handleEditButtonClick = (studentId) => {
+    handleEditScore(studentId);
   };
 
-  const handleEditScore = (studentName) => {
-    const getStudentByName = (name) => {
-      for (const exam of data) {
+  console.log(exams);
 
-        const student = exam.subject.students.find(student => student.name === name);
-
-        if (student) {
-          return student;
-        }
-      }
-
-      return null;
-    }
-    const selectedStudent = getStudentByName(studentName);
-    if (selectedStudent) {
+  const handleEditScore = (studentId) => {
+    const student = exams.flatMap(exam => exam.subject?.users).find(student => student && student.id === studentId);
+    if (student) {
       setEditPopupOpen(true);
-      setActiveStudent(selectedStudent);
+      setActiveStudent(student);
     } else {
       console.error("El estudiante no fue encontrado");
     }
@@ -147,7 +150,7 @@ const Exams = () => {
     return [
       {
         Header: "Alumno",
-        accessorKey: "name",
+        accessorKey: "fullName",
       },
       {
         Header: "Puntaje",
@@ -162,14 +165,14 @@ const Exams = () => {
         id: "actions",
         cell: ({ row: { original } }) => (
           <div className="flex justify-end gap-2">
-            <button onClick={() => handleEditButtonClick(original.name)}>
-              <img src={"/assets/edit-action.svg"} alt="ver alumno" />
+            <button onClick={() => handleEditButtonClick(original.id)}>
+              <img src={"/assets/edit-action.svg"} alt="editar alumno" />
             </button>
           </div>
         ),
       },
     ];
-  }, []);
+  }, [exams]);
 
   // ------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------ //
@@ -216,7 +219,7 @@ const Exams = () => {
       {!isPopupOpen && (
         <SimpleTable
           columns={columns}
-          data={data}
+          data={exams}
           handleActionClick={handleActionClick}
         />
       )}
@@ -228,15 +231,15 @@ const Exams = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <SimpleTable
-              columns={columnsStudent}
-              data={active.students}
-            />
             {active && (
               <div className="mt-4">
-                <h3 className="text-lg font-semibold">{active.name}</h3>
+                <h3 className="text-lg font-semibold">{active.subject.name}</h3>
               </div>
             )}
+            {active.subject.users.length !== 0 && <SimpleTable
+              columns={columnsStudent}
+              data={active.subject.users}
+            />}
           </div>
         </div>
       )}

@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 const data = [
   {
-    value: 0,
+    value: false,
     label: "No"
   },
   {
-    value: 1,
+    value: true,
     label: "Si"
   },
 ]
@@ -18,7 +18,7 @@ const data = [
 const TeacherCreateNote = ({ onClose, onSubmit }) => {
   const { formState: { errors }, register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(schema)
-  })
+  });
   
   return (
     <>
@@ -46,15 +46,15 @@ const TeacherCreateNote = ({ onClose, onSubmit }) => {
             {errors?.note && <p className="text-red-500 text-xs">{errors?.note.message}</p>}
           </div>
           <div>
-            <label htmlFor="isPublic" className="text-base font-medium">
+            <label htmlFor="is_public" className="text-base font-medium">
               ¿Es Publico?
             </label>
             <Select
-              id="isPublic"
-              onChange={(option) => setValue("isPublic", option)}
+              id="is_public"
+              onChange={(option) => setValue("is_public", option)}
               options={data}
             ></Select>
-            {errors?.isPublic && <p className="text-red-500 text-xs">{errors?.isPublic.message}</p>}
+            {errors?.is_public && <p className="text-red-500 text-xs">{errors?.is_public.message}</p>}
           </div>
         </div>
       </Offcanvas.Body>
@@ -73,9 +73,8 @@ export default TeacherCreateNote;
 const schema = z.object({
   date: z.string().refine((date) => date && new Date(date).toISOString(), "Debe ser una fecha"),
   note: z.string().min(1, "Requerido"),
-  isPublic: z.object({
-    value: z.number().min(0).max(1),
-    label: z.string()
+  is_public: z.object({
+    value: z.boolean()
   }, {
     required_error: "Requerido"
   })
