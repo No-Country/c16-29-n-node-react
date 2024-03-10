@@ -23,6 +23,7 @@ const CreateStudent = ({ onClose, onSubmit }) => {
 
   useEffect(() => {
     dispatch(getTutorsOptions())
+    dispatch(setSelectedTutorsOptions([]))
   }, [dispatch])
 
   useEffect(() => {
